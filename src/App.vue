@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <div id="app">
-      <nav-bar :isHome="isHome()"></nav-bar>
+      <nav-bar></nav-bar>
       <router-view class="container px-5 sm:px-20 py-20 flex justify-center" />
     </div>
   </v-app>
@@ -15,15 +15,6 @@ export default {
   name: "App",
   components: {
     NavBar
-  },
-  methods: {
-    isHome: function() {
-      if (this.$router.currentRoute.name !== "Home") {
-        return false;
-      } else {
-        return true;
-      }
-    }
   }
 };
 </script>
