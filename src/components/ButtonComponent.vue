@@ -1,6 +1,6 @@
 <template>
   <v-row align="center" justify="space-around">
-    <v-btn depressed color="primary">{{title}}</v-btn>
+    <v-btn depressed color="primary" elevation="10">{{title}}</v-btn>
   </v-row>
 </template>
 

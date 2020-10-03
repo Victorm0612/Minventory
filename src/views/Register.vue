@@ -2,7 +2,9 @@
   <v-container>
     <span>REGISTRARSE</span>
     <register-component></register-component>
-    <button-component :title="title"></button-component>
+    <router-link to="/client-main">
+      <button-component :title="title"></button-component>
+    </router-link>
   </v-container>
 </template>
 
@@ -21,6 +23,6 @@ export default {
     return {
       title: "Registrarse"
     };
-  },
+  }
 };
 </script>
