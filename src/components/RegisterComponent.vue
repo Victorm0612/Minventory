@@ -1,7 +1,5 @@
 <template>
   <div>
-    <span>REGISTRARSE</span>
-
     <v-form v-model="valid">
       <v-container>
         <v-row>
@@ -78,7 +76,7 @@
           </v-col>
 
           <v-col cols="12" md="4">
-            <v-combobox v-model="gender" label="Género" :items="genderItems"></v-combobox>
+            <v-combobox v-model="gender" label="Género" :items="genderItems" :rules="genderRules"></v-combobox>
           </v-col>
         </v-row>
       </v-container>
@@ -120,7 +118,9 @@ export default {
     docNumRules: [value => !!value || "Este campo no puede estar vacio"],
     address: "",
     addressRules: [value => !!value || "Este campo no puede estar vacio"],
-    genderItems: ["Femenino", "Masculino", "Prefiero no decir", "Otro"]
+    gender: "",
+    genderItems: ["Femenino", "Masculino", "Prefiero no decir", "Otro"],
+    genderRules: [value => !!value || "Este campo no puede estar vacio"]
   }),
   methods: {
     isNumber: function(evt) {
