@@ -23,6 +23,15 @@
             </v-list-item-icon>
             <v-list-item-title>CUENTA</v-list-item-title>
           </v-list-item>
+
+          <v-list-item @click="moveToRoute('Login')">
+            <v-list-item-icon>
+              <v-icon>fas fa-sign-in-alt</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>INICIAR SESION</v-list-item-title>
+          </v-list-item>
+
+
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
