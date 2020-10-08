@@ -4,7 +4,7 @@
       <router-link to="/">
         <v-toolbar-title>MINVENTORY</v-toolbar-title>
       </router-link>
-      <v-app-bar-nav-icon class="right-position-menu" @click="drawer = true"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon class="right-position" @click="drawer = true"></v-app-bar-nav-icon>
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" absolute temporary right>
@@ -54,7 +54,7 @@ export default {
   color: #ffffff;
   text-decoration: none;
 }
-.right-position-menu {
+.right-position {
   margin-left: auto;
   margin-right: 0;
 }

@@ -4,6 +4,12 @@
       <v-sheet height="64">
         <v-toolbar flat>
           <v-toolbar-title v-if="$refs.calendar">{{ $refs.calendar.title }}</v-toolbar-title>
+          <v-btn fab text small color="grey darken-2" @click="prev">
+            <v-icon small>fas fa-chevron-left</v-icon>
+          </v-btn>
+          <v-btn fab text small color="grey darken-2" @click="next">
+            <v-icon small>fas fa-chevron-right</v-icon>
+          </v-btn>
           <v-spacer></v-spacer>
         </v-toolbar>
       </v-sheet>
@@ -16,7 +22,7 @@
           :event-color="getEventColor"
           :type="type"
           @click:event="showEvent"
-          @click:day="newEvent"
+          @click:day="quotationDialog = true"
           @change="updateRange"
         ></v-calendar>
         <v-menu
@@ -47,30 +53,81 @@
             </v-card-actions>
           </v-card>
         </v-menu>
-
-        <v-menu
-          v-model="selectedOpen2"
-          :close-on-content-click="false"
-          position-x="50"
-        >
-          <v-card elevation="2" color="grey lighten-4" min-width="350px" flat>
-            <v-toolbar :color="selectedEvent2.color" dark>
-              <v-btn icon>
-                <v-icon>far fa-edit</v-icon>
-              </v-btn>
-              <v-toolbar-title v-html="selectedEvent2.name"></v-toolbar-title>
-              <v-spacer></v-spacer>
-            </v-toolbar>
-            <v-card-text>
-              <span v-html="selectedEvent2"></span>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn text color="secondary" @click="selectedOpen2 = false">Cancel</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
       </v-sheet>
     </v-col>
+    <v-dialog v-model="quotationDialog" max-width="500px">
+      <v-card>
+        <v-card-title>Solicitud de cotización</v-card-title>
+        <v-card-text>
+          <v-select
+            v-model="cbServiceType"
+            :items="serviceType"
+            label="Tipo de servicio"
+            item-value="text"
+          ></v-select>
+          <v-textarea v-model="taDescription" outlined name="input-7-4" label="Descripción:"></v-textarea>
+          <v-menu
+            ref="menu"
+            v-model="menu2"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            :return-value.sync="time"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="time"
+                label="Selecciona una hora"
+                prepend-icon="mdi-clock-time-four-outline"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-time-picker
+              v-if="menu2"
+              v-model="time"
+              format="24hr"
+              :allowed-hours="allowedHours"
+              :allowed-minutes="allowedMinutes"
+              min="8:00"
+              max="17:00"
+              full-width
+              @click:minute="$refs.menu.save(time)"
+            ></v-time-picker>
+          </v-menu>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            class="right-position"
+            color="primary"
+            text
+            @click="confirmDialog = true"
+          >Confirmar</v-btn>
+          <v-btn class="right-position" color="primary" text @click="closeQuotation">Cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="confirmDialog" max-width="400px" min-width="400px">
+      <v-card>
+        <v-card-title>CONFIRMAR</v-card-title>
+        <v-card-text>
+          <v-textarea v-model="taDescription" outlined name="input-7-4" label="Descripción:"></v-textarea>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            class="right-position"
+            color="primary"
+            text
+            @click="confirmDialog = false"
+          >Confirmar</v-btn>
+          <v-btn class="right-position" color="primary" text @click="confirmDialog = false">Cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-row>
 </template>
 
@@ -83,10 +140,23 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    selectedEvent2: {},
-    selectedOpen2: false,
     createEvent: null,
     createStart: null,
+    quotationDialog: false,
+    confirmDialog: false,
+    cbServiceType: "",
+    serviceType: [
+      { text: "Servicio 1" },
+      { text: "Servicio 2" },
+      { text: "Servicio 3" },
+      { text: "Servicio 4" },
+      { text: "Servicio 5" },
+      { text: "Servicio 6" },
+      { text: "Servicio 7" }
+    ],
+    taDescription: "",
+    time: null,
+    menu2: false,
     events: [],
     colors: [
       "blue",
@@ -96,22 +166,18 @@ export default {
       "green",
       "orange",
       "grey darken-1"
-    ],
-    names: [
-      "Meeting",
-      "Holiday",
-      "PTO",
-      "Travel",
-      "Event",
-      "Birthday",
-      "Conference",
-      "Party"
     ]
   }),
   mounted() {
     this.$refs.calendar.checkChange();
   },
   methods: {
+    prev() {
+      this.$refs.calendar.prev();
+    },
+    next() {
+      this.$refs.calendar.next();
+    },
     getEventColor(event) {
       return event.color;
     },
@@ -137,28 +203,6 @@ export default {
     },
     updateRange() {
       const events = [];
-
-      //const min = new Date(`${start.date}T00:00:00`);
-      //const max = new Date(`${end.date}T23:59:59`);
-      //const days = (max.getTime() - min.getTime()) / 86400000;
-      //const eventCount = this.rnd(days, days + 20);
-
-      /**for (let i = 0; i < eventCount; i++) {
-        const allDay = this.rnd(0, 3) === 0;
-        const firstTimestamp = this.rnd(min.getTime(), max.getTime());
-        const first = new Date(firstTimestamp - (firstTimestamp % 900000));
-        const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000;
-        const second = new Date(first.getTime() + secondTimestamp);
-
-        events.push({
-          name: this.names[this.rnd(0, this.names.length - 1)],
-          start: first,
-          end: second,
-          color: this.colors[this.rnd(0, this.colors.length - 1)],
-          timed: !allDay
-        });
-      }**/
-
       const allDay = this.rnd(0, 3) === 0;
       events.push({
         name: "Prueba",
@@ -184,20 +228,21 @@ export default {
       };
       //this.events.push(this.createEvent);
       //console.log(this.createEvent);
-      const open = () => {
-        this.selectedEvent2 = this.createEvent;
-        setTimeout(() => {
-          this.selectedOpen2 = true;
-        }, 10);
-      };
-
-      if (this.selectedOpen2) {
-        this.selectedOpen2 = false;
-        setTimeout(open, 10);
-      } else {
-        open();
-        this.events.push(this.createEvent);
-      }
+    },
+    allowedHours: value =>
+      value >= 8 &&
+      value <= 17 &&
+      value != 9 &&
+      value != 11 &&
+      value != 12 &&
+      value != 14 &&
+      value != 16,
+    allowedMinutes: value => value == 0,
+    closeQuotation() {
+      this.cbServiceType = "";
+      this.taDescription = "";
+      this.time = null;
+      this.quotationDialog = false;
     }
   }
 };
