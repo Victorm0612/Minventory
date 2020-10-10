@@ -66,56 +66,28 @@
             item-value="text"
           ></v-select>
           <v-textarea v-model="taDescription" outlined name="input-7-4" label="Descripción:"></v-textarea>
-          <v-menu
-            ref="menu"
-            v-model="menu2"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            :return-value.sync="time"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="time"
-                label="Selecciona una hora"
-                prepend-icon="mdi-clock-time-four-outline"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-time-picker
-              v-if="menu2"
-              v-model="time"
-              format="24hr"
-              :allowed-hours="allowedHours"
-              :allowed-minutes="allowedMinutes"
-              min="8:00"
-              max="17:00"
-              full-width
-              @click:minute="$refs.menu.save(time)"
-            ></v-time-picker>
-          </v-menu>
+          <v-chip-group v-model="selection" active-class="deep-purple accent-4 white--text" column>
+            <v-chip>8:00</v-chip>
+            <v-chip>10:00</v-chip>
+            <v-chip>13:00</v-chip>
+            <v-chip>15:00</v-chip>
+            <v-chip>17:00</v-chip>
+          </v-chip-group>
         </v-card-text>
         <v-card-actions>
-          <v-btn
-            class="right-position"
-            color="primary"
-            text
-            @click="confirmDialog = true"
-          >Confirmar</v-btn>
+          <v-btn class="right-position" color="primary" text @click="confirmDialog = true">Confirmar</v-btn>
           <v-btn class="right-position" color="primary" text @click="closeQuotation">Cerrar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog v-model="confirmDialog" max-width="400px" min-width="400px">
       <v-card>
-        <v-card-title>CONFIRMAR</v-card-title>
+        <v-card-title>Confirmación</v-card-title>
         <v-card-text>
-          <v-textarea v-model="taDescription" outlined name="input-7-4" label="Descripción:"></v-textarea>
+          <span>¿Está seguro que desea continuar?</span> <br><br>
+          <span>Tipo de servicio: {{cbServiceType}}</span> <br>
+          <span>Descripción: {{taDescription}}</span> <br>
+          <span>Hora: {{availability[selection]}}</span> <br>
         </v-card-text>
         <v-card-actions>
           <v-btn
@@ -155,8 +127,14 @@ export default {
       { text: "Servicio 7" }
     ],
     taDescription: "",
-    time: null,
-    menu2: false,
+    selection: 0,
+    availability: [
+      "08:00",
+      "10:00",
+      "13:00",
+      "15:00",
+      "17:00" 
+    ],
     events: [],
     colors: [
       "blue",
@@ -229,20 +207,14 @@ export default {
       //this.events.push(this.createEvent);
       //console.log(this.createEvent);
     },
-    allowedHours: value =>
-      value >= 8 &&
-      value <= 17 &&
-      value != 9 &&
-      value != 11 &&
-      value != 12 &&
-      value != 14 &&
-      value != 16,
-    allowedMinutes: value => value == 0,
     closeQuotation() {
       this.cbServiceType = "";
       this.taDescription = "";
-      this.time = null;
+      this.selection = 0;
       this.quotationDialog = false;
+    },
+    confirmQuotation() {
+
     }
   }
 };
