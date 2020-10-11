@@ -36,7 +36,9 @@ def element_list(request):
 def element_detail(request, pk):
     try:
         element = Element.objects.get(pk=pk)
+
     except Element.DoesNotExist:
+
         return HttpResponse(status=404)
     if request.method == 'GET':
         serializer = ElementSerializer(element)
