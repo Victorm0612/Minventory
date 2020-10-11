@@ -21,3 +21,11 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# virtualenv
+.venv
+venv/
+ENV/
+.vscode
+api-env/
+drf/
