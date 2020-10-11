@@ -22,7 +22,7 @@
           :event-color="getEventColor"
           :type="type"
           @click:event="showEvent"
-          @click:day="quotationDialog = true"
+          @click:day="newEvent"
           @change="updateRange"
         ></v-calendar>
         <v-menu
@@ -33,23 +33,30 @@
         >
           <v-card color="grey lighten-4" min-width="350px" flat>
             <v-toolbar :color="selectedEvent.color" dark>
-              <v-btn icon>
-                <v-icon>far fa-edit</v-icon>
-              </v-btn>
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-btn icon>
-                <v-icon>fas fa-heart</v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>fas fa-ellipsis-v</v-icon>
+              <v-btn icon class="right-position">
+                <v-icon>far fa-edit</v-icon>
               </v-btn>
             </v-toolbar>
             <v-card-text>
-              <span v-html="selectedEvent"></span>
+              <span>Detalles de la solicitud</span>
+              <br />
+              <br />
+              <span>Tipo de servicio: {{selectedEvent.service_type}}</span>
+              <br />
+              <span>Descripción: {{selectedEvent.description}}</span>
+              <br />
+              <span>Fecha: {{selectedEvent.start}}</span>
+              <br />
             </v-card-text>
             <v-card-actions>
-              <v-btn text color="secondary" @click="selectedOpen = false">Cancel</v-btn>
+              <v-btn
+                class="right-position"
+                text
+                color="secondary"
+                @click="selectedOpen = false"
+              >Cerrar</v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -64,8 +71,15 @@
             :items="serviceType"
             label="Tipo de servicio"
             item-value="text"
+            :rules="rules"
           ></v-select>
-          <v-textarea v-model="taDescription" outlined name="input-7-4" label="Descripción:"></v-textarea>
+          <v-textarea
+            v-model="taDescription"
+            outlined
+            name="input-7-4"
+            label="Descripción:"
+            :rules="rules"
+          ></v-textarea>
           <v-chip-group v-model="selection" active-class="deep-purple accent-4 white--text" column>
             <v-chip>8:00</v-chip>
             <v-chip>10:00</v-chip>
@@ -75,27 +89,28 @@
           </v-chip-group>
         </v-card-text>
         <v-card-actions>
-          <v-btn class="right-position" color="primary" text @click="confirmDialog = true">Confirmar</v-btn>
+          <v-btn class="right-position" color="primary" text @click="validateData">Confirmar</v-btn>
           <v-btn class="right-position" color="primary" text @click="closeQuotation">Cerrar</v-btn>
         </v-card-actions>
+        <v-alert v-model="incompleteData" v-if="incompleteData" border="left" color="red" dismissible type="error">Por favor llena todos los campos</v-alert>
       </v-card>
     </v-dialog>
     <v-dialog v-model="confirmDialog" max-width="400px" min-width="400px">
       <v-card>
         <v-card-title>Confirmación</v-card-title>
         <v-card-text>
-          <span>¿Está seguro que desea continuar?</span> <br><br>
-          <span>Tipo de servicio: {{cbServiceType}}</span> <br>
-          <span>Descripción: {{taDescription}}</span> <br>
-          <span>Hora: {{availability[selection]}}</span> <br>
+          <span>¿Está seguro que desea continuar?</span>
+          <br />
+          <br />
+          <span>Tipo de servicio: {{cbServiceType}}</span>
+          <br />
+          <span>Descripción: {{taDescription}}</span>
+          <br />
+          <span>Hora: {{availability[selection]}}</span>
+          <br />
         </v-card-text>
         <v-card-actions>
-          <v-btn
-            class="right-position"
-            color="primary"
-            text
-            @click="confirmDialog = false"
-          >Confirmar</v-btn>
+          <v-btn class="right-position" color="primary" text @click="confirmQuotation">Confirmar</v-btn>
           <v-btn class="right-position" color="primary" text @click="confirmDialog = false">Cerrar</v-btn>
         </v-card-actions>
       </v-card>
@@ -112,6 +127,8 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
+    eventCanceled: false,
+    eventDate: "",
     createEvent: null,
     createStart: null,
     quotationDialog: false,
@@ -128,13 +145,7 @@ export default {
     ],
     taDescription: "",
     selection: 0,
-    availability: [
-      "08:00",
-      "10:00",
-      "13:00",
-      "15:00",
-      "17:00" 
-    ],
+    availability: ["08:00", "10:00", "13:00", "15:00", "17:00"],
     events: [],
     colors: [
       "blue",
@@ -144,7 +155,9 @@ export default {
       "green",
       "orange",
       "grey darken-1"
-    ]
+    ],
+    rules: [value => !!value || "Este campo no puede estar vacio"],
+    incompleteData: false
   }),
   mounted() {
     this.$refs.calendar.checkChange();
@@ -187,6 +200,8 @@ export default {
         start: new Date("2020-10-05T18:00:00"),
         end: new Date("2020-10-05T18:59:59"),
         color: this.colors[this.rnd(0, this.colors.length - 1)],
+        service_type: "Servicio 1",
+        description: "Una descripción",
         timed: !allDay
       });
 
@@ -196,25 +211,44 @@ export default {
       return Math.floor((b - a + 1) * Math.random()) + a;
     },
     newEvent({ date }) {
-      this.createStart = new Date(`${date}T00:00:00`);
-      this.createEvent = {
-        name: `Solicitud de cotización`,
-        color: this.colors[this.rnd(0, this.colors.length - 1)],
-        start: this.createStart,
-        end: this.createStart,
-        timed: true
-      };
-      //this.events.push(this.createEvent);
-      //console.log(this.createEvent);
+      this.eventCanceled = false;
+      this.quotationDialog = true;
+      this.eventDate = date;
     },
     closeQuotation() {
       this.cbServiceType = "";
       this.taDescription = "";
       this.selection = 0;
-      this.quotationDialog = false;
+      this.eventCanceled = true;
+      this.incompleteData, this.quotationDialog = false;
     },
     confirmQuotation() {
+      this.confirmDialog = false;
 
+      if (!this.eventCanceled) {
+        this.createStart = new Date(
+          `${this.eventDate}T${this.availability[this.selection]}:00`
+        );
+        this.createEvent = {
+          name: "Solicitud de cotización",
+          color: this.colors[this.rnd(0, this.colors.length - 1)],
+          start: this.createStart,
+          end: this.createStart,
+          service_type: this.cbServiceType,
+          description: this.taDescription,
+          timed: true
+        };
+
+        this.events.push(this.createEvent);
+      }
+      this.closeQuotation();
+    },
+    validateData() {
+      if (this.cbServiceType != "" && this.taDescription != "") {
+        this.confirmDialog = true;
+      } else {
+        this.incompleteData = true;
+      }
     }
   }
 };
