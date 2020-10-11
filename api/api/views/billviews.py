@@ -38,7 +38,7 @@ def bill_detail(request, pk):
         bill = Bill.objects.get(pk=pk)
 
     except Bill.DoesNotExist:
-        
+
         return HttpResponse(status=404)
     if request.method == 'GET':
         serializer = BillSerializer(bill)
