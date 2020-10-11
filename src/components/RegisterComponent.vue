@@ -6,7 +6,7 @@
           <v-col cols="12" md="4">
             <v-text-field
               v-model="firstname"
-              :rules="nameRules"
+              :rules="[rules.required]"
               label="Nombre"
               @keypress="isLetter($event)"
               required
@@ -16,7 +16,7 @@
           <v-col cols="12" md="4">
             <v-text-field
               v-model="lastname"
-              :rules="nameRules"
+              :rules="[rules.required]"
               label="Apellido"
               @keypress="isLetter($event)"
               required
@@ -26,7 +26,7 @@
           <v-col cols="12" md="4">
             <v-text-field
               v-model="mobile"
-              :rules="mobileRules"
+              :rules="[rules.required, rules.mobileRules]"
               label="Número de celular"
               @keypress="isNumber($event)"
               required
@@ -36,12 +36,17 @@
 
         <v-row>
           <v-col cols="12" md="4">
-            <v-text-field v-model="email" :rules="emailRules" label="Correo electrónico" required></v-text-field>
+            <v-text-field
+              v-model="email"
+              :rules="[rules.required, rules.emailRules]"
+              label="Correo electrónico"
+              required
+            ></v-text-field>
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
               v-model="password"
-              :rules="passwordRules"
+              :rules="[rules.required, rules.passwordRules]"
               label="Contraseña"
               type="password"
               required
@@ -51,7 +56,7 @@
           <v-col cols="12" md="4">
             <v-text-field
               v-model="confirmpassword"
-              :rules="passwordRules"
+              :rules="[rules.required, rules.passwordRules, passwordConfirmationRule]"
               label="Confirmar contraseña"
               type="password"
               required
@@ -64,7 +69,7 @@
             <v-combobox label="Tipo de documento" v-model="docTypeValue" :items="docType"></v-combobox>
             <v-text-field
               v-model="documentnumber"
-              :rules="docNumRules"
+              :rules="[rules.required]"
               label="Número de documento"
               @keypress="isNumber($event)"
               required
@@ -72,13 +77,32 @@
           </v-col>
 
           <v-col cols="12" md="4">
-            <v-text-field v-model="address" :rules="addressRules" label="Dirección" required></v-text-field>
+            <v-text-field v-model="address" :rules="[rules.required]" label="Dirección" required></v-text-field>
           </v-col>
 
           <v-col cols="12" md="4">
-            <v-combobox v-model="gender" label="Género" :items="genderItems" :rules="genderRules"></v-combobox>
+            <v-combobox
+              v-model="gender"
+              label="Género"
+              :items="genderItems"
+              :rules="[rules.required]"
+            ></v-combobox>
           </v-col>
         </v-row>
+        <v-btn
+          :disabled="!valid"
+          depressed
+          color="primary"
+          elevation="10"
+          @click="moveToMainPageClient"
+        >Registrarse</v-btn>
+        <br />
+        <br />
+        <span>¿Ya tienes una cuenta?</span>
+        <br />
+        <router-link to="/login">
+          <span>Haz click aquí para Iniciar Sesión</span>
+        </router-link>
       </v-container>
     </v-form>
   </div>
@@ -91,22 +115,10 @@ export default {
     valid: false,
     firstname: "",
     lastname: "",
-    nameRules: [value => !!value || "Este campo no puede estar vacio"],
     mobile: "",
-    mobileRules: [
-      value => !!value || "Este campo no puede estar vacio",
-      value =>
-        value.length == 10 || "El número de celular debe contener 10 dígitos",
-      value => !/\D+/.test(value) || "Ingresa un telefono valido"
-    ],
     email: "",
-    emailRules: [
-      value => !!value || "Este campo no puede estar vacio",
-      value => /.+@.+/.test(value) || "Ingresa un correo valido"
-    ],
     password: "",
     confirmpassword: "",
-    passwordRules: [value => !!value || "Este campo no puede estar vacio"],
     docType: [
       "Cédula de ciudadanía",
       "Cédula de extranjería",
@@ -115,13 +127,28 @@ export default {
     ],
     docTypeValue: "Cédula de ciudadanía",
     documentnumber: "",
-    docNumRules: [value => !!value || "Este campo no puede estar vacio"],
     address: "",
-    addressRules: [value => !!value || "Este campo no puede estar vacio"],
     gender: "",
     genderItems: ["Femenino", "Masculino", "Prefiero no decir", "Otro"],
-    genderRules: [value => !!value || "Este campo no puede estar vacio"]
+    rules: {
+      required: value => !!value || "Este campo no puede estar vacio",
+      mobileRules: value =>
+        value.length == 10 || "El número de celular debe contener 10 dígitos",
+      emailRules: value => /.+@.+/.test(value) || "Ingresa un correo valido",
+      passwordRules: value =>
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%&])(?=.{8,})/.test(
+          value
+        ) ||
+        "*Mínimo 8 caracteres. *Mínimo una letra minúscula. *Mínimo una letra mayúscula. *Mínimo un número. *Mínimo un caracter especial[!@#%&]."
+    }
   }),
+  computed: {
+    passwordConfirmationRule() {
+      return () =>
+        this.password === this.confirmpassword ||
+        "Las contraseñas deben coincidir";
+    }
+  },
   methods: {
     isNumber: function(evt) {
       evt = evt ? evt : window.event;
@@ -147,6 +174,9 @@ export default {
       } else {
         return true;
       }
+    },
+    moveToMainPageClient: function() {
+      this.$router.push({ name: "ClientMain" });
     }
   }
 };
