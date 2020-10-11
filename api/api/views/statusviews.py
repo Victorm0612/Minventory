@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.statusmodels import Status
-from api.models.statusserializer import StatusSerializer
+from api.serializers.statusserializer import StatusSerializer
 
 class JSONResponse(HttpResponse):
     """

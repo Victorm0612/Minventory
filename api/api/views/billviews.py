@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.billmodels import Bill
-from api.models.billserializer import BillSerializer
+from api.serializers.billserializer import BillSerializer
 
 # Trabajar a partir de aqui
 class JSONResponse(HttpResponse):
@@ -36,7 +36,7 @@ def bill_list(request):
 def bill_detail(request, pk):
     try:
         bill = Bill.objects.get(pk=pk)
-    except BillSerializer.DoesNotExist:
+    except Bill.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'GET':
         serializer = BillSerializer(bill)

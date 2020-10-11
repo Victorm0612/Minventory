@@ -19,8 +19,8 @@ class User(models.Model):
 
     name = models.TextField(max_length=50, validators=[OnlyLetters])
     last_name = models.TextField(max_length=50, validators=[OnlyLetters])
-    document_number = models.IntegerField(default=0)
-    phone = models.IntegerField(default=0)
+    document_number = models.IntegerField(unique=True)
+    phone = models.IntegerField(unique=True)
     # EmailField=verifica que tenga @ y unique para que no esté usado
     email = models.EmailField(max_length=200,unique=True)
     password = models.TextField(max_length=250)

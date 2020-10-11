@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.elementmodels import Element
-from api.models.elementserializer import ElementSerializer
+from api.serializers.elementserializer import ElementSerializer
 
 # Trabajar a partir de aqui
 class JSONResponse(HttpResponse):
@@ -36,7 +36,7 @@ def element_list(request):
 def element_detail(request, pk):
     try:
         element = Element.objects.get(pk=pk)
-    except ElementSerializer.DoesNotExist:
+    except Element.DoesNotExist:
         return HttpResponse(status=404)
     if request.method == 'GET':
         serializer = ElementSerializer(element)

@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.inventorymodels import Inventory
-from api.models.inventoryserializer import InventorySerializer
+from api.serializers.inventoryserializer import InventorySerializer
 
 class JSONResponse(HttpResponse):
     """
