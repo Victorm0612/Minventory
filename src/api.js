@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const url = 'http://localhost:8000/user/'
+const url = 'http://localhost:8000/api/user/'
 
 function getUsers() {
     return  axios
