@@ -4,9 +4,9 @@ from django.db import models
 
 # Create your models here.
 class User(models.Model):
-    TYPE_ADMIN = 1
-    TYPE_CLIENT = 2
-    TYPE_EMPLOYEE = 3
+    TYPE_ADMIN = "admin"
+    TYPE_CLIENT = "client"
+    TYPE_EMPLOYEE = "employee"
     TYPE_CHOICES = ((TYPE_ADMIN, 1), (TYPE_CLIENT, 2), (TYPE_EMPLOYEE, 3))
     FEMALE = "femenino"
     MASCULINE = "masculino"
@@ -26,4 +26,4 @@ class User(models.Model):
     password = models.TextField(max_length=250)
     address = models.TextField(max_length=50)
     gender = models.CharField(max_length=19, choices=TYPE_GENDER)
-    type = models.IntegerField(default=0, choices=TYPE_CHOICES)
+    type = models.TextField(max_length=8, choices=TYPE_CHOICES)
