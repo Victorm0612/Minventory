@@ -77,7 +77,8 @@ WSGI_APPLICATION = 'ProjectoDs1.wsgi.application'
 CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
-    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S'
+    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
+    'EXCEPTION_HANDLER': 'ProjectoDs1.api.utils.custom_exception_handler'
 }
 
 # Database
