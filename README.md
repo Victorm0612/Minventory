@@ -4,6 +4,15 @@
 ```
 npm install
 ```
+### Install npm-run-all
+```
+npm install npm-run-all --save-dev
+```
+
+### Compiles BackEnd & FrontEnd same time
+```
+npm run all
+```
 
 ### Compiles and hot-reloads for development
 ```
