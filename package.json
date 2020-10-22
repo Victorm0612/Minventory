@@ -6,11 +6,14 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "py-serve": "cd api/ProjectoDs1/drf/Scripts && activate && cd ../.. && cd .. && python manage.py runserver",
+    "all": "npm-run-all --parallel py-serve serve"
   },
   "dependencies": {
     "axios": "^0.20.0",
     "core-js": "~3.6.5",
+    "npm-run-all": "^4.1.5",
     "vue": "~2.6.12",
     "vue-router": "~3.4.5",
     "vuetify": "~2.3.12",
