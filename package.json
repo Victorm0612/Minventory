@@ -7,7 +7,9 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "py-serve": "cd api/ProjectoDs1/drf/Scripts && activate && cd ../.. && cd .. && python manage.py runserver",
+    "py-serve": "script.bat && activate && cd ../.. && cd .. && python manage.py runserver",
+    "py-serve-li": "script.sh",
+    "all-li": "npm-run-all --parallel py-serve-li serve",
     "all": "npm-run-all --parallel py-serve serve"
   },
   "dependencies": {
