@@ -1,7 +1,7 @@
 from django.db import models
 from api.models.elementmodels import Element
 from api.models.statusmodels import Status
-from api.models.statusmodels import User
+from api.models.usermodels import User
 
 
 # Create your models here.
@@ -14,8 +14,8 @@ class Task(models.Model):
     # La @realization_date tiene que ser asignada por el admin, es la
     # fecha en que se realiza el trabajo, por tanto no es autoasignada
     # Formato: YYYY-MM-DD
-    realization_date = models.DateTimeTimeField()
-    fkAssignment_worker = models.IntegerField(User, related_name="User_id", on_delete=models.CASCADE)
-    fkElement_id = models.IntegerField(Element, related_name="Element_id", on_delete=models.CASCADE)
+    realization_date = models.DateTimeField()
+    fkAssignment_worker = models.ForeignKey(User, related_name="User_id", on_delete=models.CASCADE)
+    fkElement_id = models.ForeignKey(Element, related_name="Element_id", on_delete=models.CASCADE)
     fkTask_status = models.ForeignKey(Status, related_name='Status_id', on_delete=models.CASCADE)
 
