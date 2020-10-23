@@ -1,4 +1,6 @@
 from django.db import models
+from api.models.elementmodels import Element
+from api.models.statusmodels import Status
 
 
 # Create your models here.
@@ -15,3 +17,7 @@ class Task(models.Model):
     fkAssignment_worker = models.IntegerField(default=0)
     fkElement_id = models.IntegerField(default=0)
     fkTask_status = models.IntegerField(default=0)
+    realization_date = models.DateTimeField()
+    fkAssignment_worker = models.IntegerField()
+    fkTask_status = models.ForeignKey(Status, related_name='Status_id', on_delete=models.CASCADE)
+

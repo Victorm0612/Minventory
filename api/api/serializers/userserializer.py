@@ -1,3 +1,5 @@
+from django.core import exceptions
+
 from rest_framework import serializers
 from api.models.usermodels import User
 

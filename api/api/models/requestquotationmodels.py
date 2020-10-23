@@ -1,4 +1,5 @@
 from django.db import models
+from api.models.usermodels import User
 
 
 # Create your models here.
@@ -12,4 +13,4 @@ class RequestQuotation(models.Model):
     approved = models.BooleanField()
     service_type = models.TextField(max_length=50)
     description = models.TextField(max_length=200)
-    fkUser_int = models.IntegerField()
+    fkUser_int = models.ForeignKey(User, related_name='User_id', on_delete=models.CASCADE)
