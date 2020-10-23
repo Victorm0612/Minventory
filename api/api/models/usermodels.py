@@ -26,4 +26,4 @@ class User(models.Model):
     password = models.TextField(max_length=250)
     address = models.TextField(max_length=50)
     gender = models.CharField(max_length=19, choices=TYPE_GENDER)
-    type = models.IntegerField(default=0, choices=TYPE_CHOICES)
+    type = models.IntegerField(choices=TYPE_CHOICES)
