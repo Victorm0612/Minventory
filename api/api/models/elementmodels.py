@@ -2,7 +2,6 @@ from django.db import models
 from api.models.inventorymodels import Inventory
 
 
-# Create your models here.
 class Element(models.Model):
     name = models.TextField(max_length=30)
     description = models.TextField(max_length=200, blank=True)

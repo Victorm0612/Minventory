@@ -2,7 +2,6 @@ from django.db import models
 from api.models.usermodels import User
 
 
-# Create your models here.
 class RequestQuotation(models.Model):
     RANGE_1 = "8:00 - 9:30"
     RANGE_2 = "10:00 - 11:30"

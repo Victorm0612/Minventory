@@ -1,12 +1,5 @@
 from django.db import models
 
-# Create your models here.
-
-
-# Formato
-DATE_INPUT_FORMATS = ['%d-%m-%Y']
-
-
 class Bill(models.Model):
     # La fecha aqui es autogenerada, al momento de crearse la factura,
     # se ingresa la fecha del dia en que se creó

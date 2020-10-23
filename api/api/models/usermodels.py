@@ -2,7 +2,6 @@ from django.core.validators import RegexValidator
 from django.db import models
 
 
-# Create your models here.
 class User(models.Model):
     TYPE_ADMIN = 1
     TYPE_CLIENT = 2

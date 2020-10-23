@@ -1,7 +1,6 @@
 from django.db import models
 
 
-# Create your models here.
 class Inventory(models.Model):
     # La fecha aqui es autogenerada, en el momento en que se realice un
     # cambio respecto a un elemento relacionado con algún inventario,

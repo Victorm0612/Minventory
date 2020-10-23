@@ -4,7 +4,6 @@ from api.models.statusmodels import Status
 from api.models.usermodels import User
 
 
-# Create your models here.
 class Task(models.Model):
     # Al momento de crearse una tarea, quiere decir que fue aprobada
     # por ende, la fecha de aprobacion es el dia en que se crea
