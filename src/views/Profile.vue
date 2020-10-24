@@ -8,7 +8,7 @@
 import ProfileComponent from "@/components/ProfileComponent.vue";
 
 export default {
-    name: 'Profile',
+    name: "Profile",
     components: {
     ProfileComponent
   }
