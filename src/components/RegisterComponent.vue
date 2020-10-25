@@ -130,7 +130,7 @@ export default {
     documentnumber: "",
     address: "",
     gender: "",
-    genderItems: ["femenino", "masculino", "prefiero no decir", "otro"],
+    genderItems: ["Femenino", "Masculino", "Prefiero no decir", "Otro"],
     rules: {
       required: value => !!value || "Este campo no puede estar vacio",
       mobileRules: value =>
@@ -186,7 +186,7 @@ export default {
             email: this.email,
             password: this.password,
             address: this.address,
-            gender: this.gender,
+            gender: this.gender.toLowerCase(),
             type: "client"
       })
       .then(res=>{
