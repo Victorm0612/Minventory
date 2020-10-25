@@ -22,7 +22,7 @@ export default {
   created() {
     return api
       .getUsers()
-      .then(response => (this.users = response))
+      .then(response => response)
       .finally(() => (console.log(this.users)));
   }
 };

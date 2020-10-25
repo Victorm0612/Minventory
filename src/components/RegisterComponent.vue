@@ -94,7 +94,7 @@
           depressed
           color="primary"
           elevation="10"
-          @click="moveToMainPageClient"
+          @click="saveUser"
         >Registrarse</v-btn>
         <br />
         <br />
@@ -109,6 +109,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: "RegisterComponent",
   data: () => ({
@@ -175,9 +176,28 @@ export default {
         return true;
       }
     },
+    saveUser(evt){
+      evt.preventDefault();
+      axios.post('user/',{
+            name: this.firstname,
+            last_name: this.lastname,
+            document_number: this.documentnumber,
+            phone: this.mobile,
+            email: this.email,
+            password: this.password,
+            address: this.address,
+            gender: this.gender,
+            type: "client"
+      })
+      .then(res=>{
+        console.log(res.data);
+        setTimeout(() => { this.$router.push({ name: "Login" }); }, 1500);
+      })
+      //let userToSave = new User(this.firstname, this.lastname, this.documentnumber,this.phone,this.email,this.password,this.address,this.gender,2)
+    },
     moveToMainPageClient: function() {
       this.$router.push({ name: "ClientMain" });
     }
-  }
+  },     
 };
 </script>
