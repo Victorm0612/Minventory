@@ -193,10 +193,6 @@ export default {
         console.log(res.data);
         setTimeout(() => { this.$router.push({ name: "Login" }); }, 1500);
       })
-      //let userToSave = new User(this.firstname, this.lastname, this.documentnumber,this.phone,this.email,this.password,this.address,this.gender,2)
-    },
-    moveToMainPageClient: function() {
-      this.$router.push({ name: "ClientMain" });
     }
   },     
 };
