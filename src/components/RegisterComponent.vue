@@ -130,7 +130,7 @@ export default {
     documentnumber: "",
     address: "",
     gender: "",
-    genderItems: ["Femenino", "Masculino", "Prefiero no decir", "Otro"],
+    genderItems: ["femenino", "masculino", "prefiero no decir", "otro"],
     rules: {
       required: value => !!value || "Este campo no puede estar vacio",
       mobileRules: value =>
