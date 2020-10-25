@@ -69,48 +69,8 @@
         </v-alert>
       </v-col>
     </v-row>
-    
   </v-container>
 </template>
-
- <!---<template>
-
- <div>
-    <v-container>
-        <v-row align="center" justify="center">
-          <v-col cols="12" sm="8" md="3">
-            <h1>Iniciar Sesión</h1>
-            <v-text-field
-              label="Usuario o correo electrónico"
-              :rules="[rules.required, rules.email]"
-              v-model="email"
-              hide-details="auto">
-            </v-text-field>
-            <v-text-field
-              label="Contraseña"
-              :rules="[rules.required, rules.password]"
-              :append-icon="show ? 'fas fa-eye' : 'fas fa-eye-slash'"
-              v-model="password"
-              :type="show ? 'text' : 'password'"
-              @click:append="show = !show">
-            </v-text-field>
-            <v-btn text color="primary" @click="getUser">Iniciar Sesión</v-btn>
-            <h4>¿No estás registrado?</h4>
-            <router-link text color="primary" to="register">Registrarse</router-link>
-          </v-col>
-          <v-col cols="12">
-            <v-btn text color="primary">Ingresar como Empleado</v-btn>
-            <v-btn text color="primary">Ingresar como Administrador</v-btn>
-            <v-alert class="mt-3" 
-                :value="show_credentials"
-                :type="alert ? 'success' : 'error'"
-                >{{message}}
-            </v-alert>
-          </v-col>
-        </v-row>
-    </v-container>
-  </div> 
-</template>--->
 
 <script>
 import axios from 'axios';
