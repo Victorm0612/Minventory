@@ -52,14 +52,14 @@
           <v-row class="justify-center">
             <v-col cols="12" md="4">
               <v-text-field
-                :disabled="!editProfile"
+                :disabled="true"
                 v-model="form.documentType"
                 label="Tipo de documento"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="4">
               <v-text-field
-                :disabled="!editProfile"
+                :disabled="true"
                 v-model="form.documentNumber"
                 label="Número de documento"
               ></v-text-field>
@@ -75,7 +75,7 @@
             </v-col>
             <v-col cols="12" md="4">
               <v-text-field
-                :disabled="!editProfile"
+                :disabled="true"
                 v-model="form.gender"
                 label="Género"
               ></v-text-field>
