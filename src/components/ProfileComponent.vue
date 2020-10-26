@@ -229,9 +229,10 @@ export default {
   },
   computed: {
     passwordConfirmationRule() {
-      return () =>
+      return (
         this.form.password === this.form.confirmPassword ||
-        "Las contraseñas deben coincidir";
+        "Las contraseñas deben coincidir"
+      );
     },
     mobileRules() {
       return () =>
