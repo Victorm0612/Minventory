@@ -28,6 +28,7 @@ venv/
 ENV/
 .vscode
 api-env/
+postgres-data/
 drf/
 script.bat
 script.sh
