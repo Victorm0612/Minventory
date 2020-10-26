@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height" fluid>
     <v-row class="d-flex" align="center" justify="center">
-      <v-col cols="12" sm="5" md="4">
+      <v-col cols="12" sm="8" md="6">
         <v-card class="elevation-12 __b-20">
           <v-card-text>
             <v-container fluid>
@@ -11,7 +11,7 @@
                     Iniciar Sesión
                   </h3>
                   <h4 class="subtitle-1 mb-3">
-                    ¡Bienvenido {{message_user}}!
+                    ¡ Bienvenido {{message_user}} !
                   </h4>
                 </v-col>
               </v-row>
