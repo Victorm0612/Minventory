@@ -52,6 +52,7 @@ local_settings.py
 
 # dotenv
 .env
+ProjectoDs1/.env
 
 # virtualenv
 .venv
