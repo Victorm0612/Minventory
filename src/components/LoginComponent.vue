@@ -19,7 +19,7 @@
                 <v-col cols="12" class="aling-center">
                   <v-form>
                     <v-text-field
-                    label="correo electrónico"
+                    label="Correo electrónico"
                     type="email"
                     outlined dense
                     :rules="[rules.required, rules.email]"
