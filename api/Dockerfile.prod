@@ -24,12 +24,6 @@ RUN pip install -r requirements.txt
 # copy project
 COPY . .
 
-# collect static files
-RUN python manage.py collectstatic --noinput
-
 # add and run as non-root user
 RUN adduser -D minventoryuser
 USER minventoryuser
-
-# run gunicorn
-CMD gunicorn ProjectoDs1.wsgi.application --bind 0.0.0.0:$PORT
