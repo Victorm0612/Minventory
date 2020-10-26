@@ -23,6 +23,12 @@ docker-compose up
 
 Then the API should be available on http://localhost:8000/
 
+to stop the API run:
+
+```
+docker-compose down
+```
+
 ### Without Docker
 
 Keep in mind that this project uses PostgreSQL as DB so, you should have it installed (just in case that you are not using Docker).
