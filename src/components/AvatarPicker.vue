@@ -5,7 +5,7 @@
     transition="dialog-bottom-transition"
     v-model="show"
   >
-    <v-card>
+    <v-card class="block-x-overflow">
       <v-toolbar dark color="primary">
         <v-toolbar-title>Select an Avatar</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -67,3 +67,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+.block-x-overflow{
+   overflow-x: hidden;
+}
+</style>>
