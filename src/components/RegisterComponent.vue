@@ -79,11 +79,11 @@
                     </v-row>
                     <v-row>
                       <v-col cols="6">
-                        <v-combobox 
+                        <v-select 
                         label="Tipo de documento" 
                         v-model="docTypeValue" 
                         :items="docType">
-                        </v-combobox>
+                        </v-select>
                       </v-col>
                       <v-col cols="6">
                         <v-text-field
@@ -105,12 +105,12 @@
                         </v-text-field>
                       </v-col>
                       <v-col cols="12">
-                        <v-combobox
+                        <v-select
                           v-model="gender"
                           label="Género"
                           :items="genderItems"
                           :rules="[rules.required]"
-                        ></v-combobox>
+                        ></v-select>
                       </v-col>
                       <v-col cols="12">
                         <v-btn
