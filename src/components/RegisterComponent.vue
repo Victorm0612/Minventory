@@ -1,111 +1,145 @@
 <template>
-  <div>
-    <v-form v-model="valid">
-      <v-container>
-        <v-row>
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="firstname"
-              :rules="[rules.required]"
-              label="Nombre"
-              @keypress="isLetter($event)"
-              required
-            ></v-text-field>
-          </v-col>
-
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="lastname"
-              :rules="[rules.required]"
-              label="Apellido"
-              @keypress="isLetter($event)"
-              required
-            ></v-text-field>
-          </v-col>
-
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="mobile"
-              :rules="[rules.required, rules.mobileRules]"
-              label="Número de celular"
-              @keypress="isNumber($event)"
-              required
-            ></v-text-field>
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="email"
-              :rules="[rules.required, rules.emailRules]"
-              label="Correo electrónico"
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="password"
-              :rules="[rules.required, rules.passwordRules]"
-              label="Contraseña"
-              type="password"
-              required
-            ></v-text-field>
-          </v-col>
-
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="confirmpassword"
-              :rules="[rules.required, rules.passwordRules, passwordConfirmationRule]"
-              label="Confirmar contraseña"
-              type="password"
-              required
-            ></v-text-field>
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col cols="12" md="4">
-            <v-combobox label="Tipo de documento" v-model="docTypeValue" :items="docType"></v-combobox>
-            <v-text-field
-              v-model="documentnumber"
-              :rules="[rules.required]"
-              label="Número de documento"
-              @keypress="isNumber($event)"
-              required
-            ></v-text-field>
-          </v-col>
-
-          <v-col cols="12" md="4">
-            <v-text-field v-model="address" :rules="[rules.required]" label="Dirección" required></v-text-field>
-          </v-col>
-
-          <v-col cols="12" md="4">
-            <v-combobox
-              v-model="gender"
-              label="Género"
-              :items="genderItems"
-              :rules="[rules.required]"
-            ></v-combobox>
-          </v-col>
-        </v-row>
-        <v-btn
-          :disabled="!valid"
-          depressed
-          color="primary"
-          elevation="10"
-          @click="saveUser"
-        >Registrarse</v-btn>
-        <br />
-        <br />
-        <span>¿Ya tienes una cuenta?</span>
-        <br />
-        <router-link to="/login">
-          <span>Haz click aquí para Iniciar Sesión</span>
-        </router-link>
-      </v-container>
-    </v-form>
-  </div>
+  <v-container class="fill-height" fluid>
+    <v-row class="d-flex" align="center" justify="center">
+      <v-col cols="12" sm="8" md="6">
+        <v-card class="elevation-12 __b-20 pa-4">
+          <v-card-text>
+            <v-container fluid>
+              <v-row>
+                <v-col cols="12" class="text-center">
+                  <h3 class="headline">Registrate</h3>
+                  <h4 class="subtitle-1 mb-3">En nuestra plataforma web</h4>
+                </v-col>
+              </v-row>
+              <v-row align="center">
+                <v-col cols="12" class="align-center">
+                  <v-form v-model="valid">
+                    <v-row>
+                      <v-col cols="6">
+                        <v-text-field
+                        v-model="firstname"
+                        :rules="[rules.required]"
+                        label="Nombre"
+                        @keypress="isLetter($event)"
+                        required
+                      ></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          v-model="lastname"
+                          :rules="[rules.required]"
+                          label="Apellido"
+                          @keypress="isLetter($event)"
+                          required
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-text-field
+                      v-model="mobile"
+                      :rules="[rules.required, rules.mobileRules]"
+                      label="Número de celular"
+                      @keypress="isNumber($event)"
+                      required
+                    ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                          v-model="email"
+                          :rules="[rules.required, rules.emailRules]"
+                          label="Correo electrónico"
+                          required
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="6">
+                        <v-text-field
+                          v-model="password"
+                          :rules="[rules.required, rules.passwordRules, passwordConfirmationRule]"
+                          label="Contraseña"
+                          :append-icon="show ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                          :type="show ? 'text' : 'password'"
+                          @click:append="show = !show"
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          v-model="confirmpassword"
+                          :rules="[rules.required, rules.passwordRules, passwordConfirmationRule]"
+                          label="Confirmar contraseña"
+                          :append-icon="show ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                          :type="show ? 'text' : 'password'"
+                          @click:append="show = !show"
+                          required
+                        ></v-text-field>        
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="6">
+                        <v-combobox 
+                        label="Tipo de documento" 
+                        v-model="docTypeValue" 
+                        :items="docType">
+                        </v-combobox>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          v-model="documentnumber"
+                          :rules="[rules.required]"
+                          label="Número de documento"
+                          @keypress="isNumber($event)"
+                          required
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-text-field 
+                        v-model="address" 
+                        :rules="[rules.required]" 
+                        label="Dirección" 
+                        required>
+                        </v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-combobox
+                          v-model="gender"
+                          label="Género"
+                          :items="genderItems"
+                          :rules="[rules.required]"
+                        ></v-combobox>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-btn
+                          :disabled="!valid"
+                          depressed
+                          class="text-none px-5"
+                          color="primary"
+                          elevation="10"
+                          @click="saveUser"
+                        >Registrarte
+                        </v-btn>
+                        <br />
+                        <br />
+                        <span>¿Ya tienes una cuenta?</span>
+                        <br />
+                        <router-link to="/login">
+                          <span>Haz click aquí para Iniciar Sesión</span>
+                        </router-link>
+                      </v-col>
+                    </v-row>
+                  </v-form>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -115,6 +149,7 @@ export default {
   name: "RegisterComponent",
   data: () => ({
     valid: false,
+    show: false,
     firstname: "",
     lastname: "",
     mobile: "",
@@ -146,10 +181,8 @@ export default {
   }),
   computed: {
     passwordConfirmationRule() {
-      return () =>
-        this.password === this.confirmpassword ||
-        "Las contraseñas deben coincidir";
-    }
+      return this.password === this.confirmpassword || "Las contraseñas deben coincidir";
+      }
   },
   methods: {
     isNumber: function(evt) {

@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    <span>REGISTRARSE</span>
     <register-component></register-component>
   </v-container>
 </template>
