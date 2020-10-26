@@ -109,7 +109,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '@/api';
+import User from '@/classes/user'
 export default {
   name: "RegisterComponent",
   data: () => ({
@@ -178,21 +179,25 @@ export default {
     },
     saveUser(evt){
       evt.preventDefault();
-      axios.post('user/',{
-            name: this.firstname,
-            last_name: this.lastname,
-            document_number: this.documentnumber,
-            phone: this.mobile,
-            email: this.email,
-            password: this.password,
-            address: this.address,
-            gender: this.gender.toLowerCase(),
-            type: "client"
-      })
-      .then(res=>{
-        console.log(res.data);
-        setTimeout(() => { this.$router.push({ name: "Login" }); }, 1500);
-      })
+      let user = new User(
+        this.firstname,
+        this.lastname,
+        this.documentnumber,
+        this.mobile,
+        this.email,
+        this.password,
+        this.address,
+        this.gender.toLowerCase(),
+        "client"
+      );
+      return api
+        .createUser(user)
+        .then(res=>console.log("post response: "+res.data))
+        .finally(() =>
+          setTimeout(()=>{
+            this.$router.push({name: "Login"});
+          }, 1500)
+        );
     }
   },     
 };

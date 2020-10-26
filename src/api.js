@@ -1,31 +1,25 @@
 import axios from 'axios'
 
-const url = 'http://localhost:8000/api/user/'
-
 function getUsers() {
     return axios
-        .get(url)
+        .get('user/')
         .then(response => response.data)
         .catch((error) => {
             console.log("Error when getting users: " + error);
         })
 }
 
-function createUser() {
-    return axios({
-        method: 'post',
-        url: url,
-        data: {
-            name: "victor",
-            last_name: "Janse",
-            document_number: 1185530787,
-            phone: 3166365487,
-            email: "ejemplo@ejemplo.com",
-            password: "aaaA1235#",
-            address: "some address",
-            gender: "femenino",
-            type: 2
-        }
+function createUser(user) {
+    return axios.post('user/', {
+        name: user.getName(),
+        last_name: user.getLastName(),
+        document_number: user.getDocumentNumber(),
+        phone: user.getPhone(),
+        email: user.getEmail(),
+        password: user.getPassword(),
+        address: user.getAddress(),
+        gender: user.getGender(),
+        type: user.getType()
     }).catch((error) => {
         console.log("Error while creating user: " + error);
         console.log(this.data)

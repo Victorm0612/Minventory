@@ -20,4 +20,32 @@ export default class User {
         this.Gender = gender;
         this.Type = type;
     }
+
+    getName() {
+        return this.FirstName
+    }
+    getLastName() {
+        return this.LastName
+    }
+    getDocumentNumber() {
+        return this.DocumentNumber
+    }
+    getPhone() {
+        return this.Phone
+    }
+    getEmail() {
+        return this.Email
+    }
+    getPassword() {
+        return this.Password
+    }
+    getAddress() {
+        return this.Address
+    }
+    getGender() {
+        return this.Gender
+    }
+    getType() {
+        return this.Type
+    }
 }
