@@ -60,6 +60,7 @@ venv/
 ENV/
 .vscode
 api-env/
+postgres-data/
 drf/
 
 
