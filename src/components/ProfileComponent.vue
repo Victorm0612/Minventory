@@ -114,8 +114,10 @@
                       rules.passwordRules,
                       passwordConfirmationRule
                     ]"
+                    :append-icon="show ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                    :type="show ? 'text' : 'password'"
+                    @click:append="show = !show"
                     label="Contraseña"
-                    type="password"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
@@ -127,8 +129,10 @@
                       rules.passwordRules,
                       passwordConfirmationRule
                     ]"
+                    :append-icon="show ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                    :type="show ? 'text' : 'password'"
+                    @click:append="show = !show"
                     label="Confirmar contraseña"
-                    type="password"
                     required
                   ></v-text-field>
                 </v-col>
@@ -190,6 +194,7 @@ export default {
   components: { AvatarPicker },
   data() {
     return {
+      show: false,
       loading: false,
       valid: true,
       form: {
