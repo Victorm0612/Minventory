@@ -8,12 +8,12 @@
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" absolute temporary right>
       <v-list nav-dense>
-        <v-lis-item-group active-class="deep-purple--text text--accent-4">
+        <v-list-item-group active-class="deep-purple--text text--accent-4">
           <v-list-item v-for="link in links" :key="link.text" @click="moveToRoute(link.route)">
             <v-list-item-icon><v-icon>{{link.icon}}</v-icon></v-list-item-icon>
-            <v-list-title class="text-capitalize">{{link.text}}</v-list-title>
+            <v-list-item-title class="text-capitalize">{{link.text}}</v-list-item-title>
           </v-list-item>
-        </v-lis-item-group>
+        </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
   </div>
@@ -48,7 +48,6 @@ export default {
 #nav-bar a {
   color: #ffffff;
   text-decoration: none;
-  margin-bottom: 10px;
 }
 .right-position {
   margin-left: auto;
