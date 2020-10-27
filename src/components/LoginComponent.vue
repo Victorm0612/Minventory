@@ -11,7 +11,7 @@
                     Iniciar Sesión
                   </h3>
                   <h4 class="subtitle-1 mb-3">
-                    ¡ Bienvenido {{message_user}} !
+                    ¡ Bienvenido {{ message_user }} !
                   </h4>
                 </v-col>
               </v-row>
@@ -19,27 +19,40 @@
                 <v-col cols="12" class="aling-center">
                   <v-form>
                     <v-text-field
-                    label="Correo electrónico"
-                    type="email"
-                    outlined dense
-                    :rules="[rules.required, rules.email]"
-                    v-model="email">
+                      label="Correo electrónico"
+                      type="email"
+                      outlined
+                      dense
+                      :rules="[rules.required, rules.email]"
+                      v-model="email"
+                    >
                     </v-text-field>
                     <v-text-field
-                    label="Contraseña"
-                    outlined dense
-                    :rules="[rules.required, rules.password]"
-                    :append-icon="show ? 'fas fa-eye' : 'fas fa-eye-slash'"
-                    v-model="password"
-                    :type="show ? 'text' : 'password'"
-                    @click:append="show = !show">
+                      label="Contraseña"
+                      outlined
+                      dense
+                      :rules="[rules.required, rules.password]"
+                      :append-icon="show ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                      v-model="password"
+                      :type="show ? 'text' : 'password'"
+                      @click:append="show = !show"
+                    >
                     </v-text-field>
                     <div class="d-flex">
-                      <v-btn text color="primary" class="text-none px-2 __btn-login-text" @click="moveToRegister">
+                      <v-btn
+                        text
+                        color="primary"
+                        class="text-none px-2 __btn-login-text"
+                        @click="moveToRegister"
+                      >
                         Crear cuenta
                       </v-btn>
-                      <v-spacer/>
-                      <v-btn color="primary" class="text-none px-2" @click="getUser">
+                      <v-spacer />
+                      <v-btn
+                        color="primary"
+                        class="text-none px-2"
+                        @click="getUser"
+                      >
                         Iniciar Sesión
                       </v-btn>
                     </div>
@@ -50,25 +63,25 @@
                 <v-col>
                   <v-radio-group>
                     <v-radio
-                    v-for="item in typeUser"
-                    :key="item"
-                    @click="message_user=item"
-                    :label="`Ingresar como ${item}`"
-                    :value="item"
-                    requiered
+                      v-for="item in typeUser"
+                      :key="item"
+                      @click="message_user = item"
+                      :label="`Ingresar como ${item}`"
+                      :value="item"
+                      requiered
                     ></v-radio>
-                    </v-radio-group>
+                  </v-radio-group>
                 </v-col>
               </v-row>
             </v-container>
           </v-card-text>
         </v-card>
         <v-dialog v-model="dialog" width="350">
-          <v-alert  
+          <v-alert
             style="margin-bottom: 0; text-align: start;"
             type="error"
             transition="scale-transition"
-            >
+          >
             Por favor, revise los datos ingresados e inténtelo nuevamente.
           </v-alert>
         </v-dialog>
@@ -86,17 +99,17 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 export default {
   name: "LoginComponent",
   data() {
     return {
-      typeUser:['Administrador','Empleado','Cliente'],
-      users:[],
+      typeUser: ["Administrador", "Empleado", "Cliente"],
+      users: [],
       step: 1,
       email: "",
       password: "",
-      message_user:"",
+      message_user: "",
       show: false,
       dialog: false,
       load: false,
@@ -121,30 +134,35 @@ export default {
         }, 3000);
     }
   },
-  created(){
-      axios.get('user/')
-      .then(res=>{
-        this.users=res.data
-        console.log(this.users)})
+  created() {
+    axios.get("user/").then(res => {
+      this.users = res.data;
+      console.log(this.users);
+    });
   },
   methods: {
-    getUser(evt){
+    getUser(evt) {
       evt.preventDefault();
-      for(let user of this.users){
-        if(user.email == this.email && user.password == this.password && this.message_user !== ""){
+      for (let user of this.users) {
+        if (
+          user.email == this.email &&
+          user.password == this.password &&
+          this.message_user !== ""
+        ) {
           this.load = !this.load;
-          setTimeout(() => { this.$router.push({ name: "ClientMain" }); }, 3000);
+          setTimeout(() => {
+            this.$router.push({ name: "ClientMain" });
+          }, 3000);
           break;
-        }
-        else{
-          this.dialog="true"
-          console.log()
+        } else {
+          this.dialog = "true";
+          console.log();
         }
       }
     },
     moveToRegister: function() {
       this.$router.push({ name: "Register" });
     }
-  },
+  }
 };
 </script>
