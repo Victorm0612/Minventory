@@ -6,33 +6,14 @@
       </router-link>
       <v-app-bar-nav-icon class="right-position" @click="drawer = true"></v-app-bar-nav-icon>
     </v-app-bar>
-
     <v-navigation-drawer v-model="drawer" absolute temporary right>
-      <v-list nav dense>
-        <v-list-item-group active-class="deep-purple--text text--accent-4">
-          <v-list-item @click="moveToRoute('Home')">
-            <v-list-item-icon>
-              <v-icon>fas fa-home</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>INICIO</v-list-item-title>
+      <v-list nav-dense>
+        <v-lis-item-group active-class="deep-purple--text text--accent-4">
+          <v-list-item v-for="link in links" :key="link.text" @click="moveToRoute(link.route)">
+            <v-list-item-icon><v-icon>{{link.icon}}</v-icon></v-list-item-icon>
+            <v-list-title class="text-capitalize">{{link.text}}</v-list-title>
           </v-list-item>
-
-          <v-list-item @click="moveToRoute('Register')">
-            <v-list-item-icon>
-              <v-icon>fas fa-user-circle</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>CUENTA</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item @click="moveToRoute('Login')">
-            <v-list-item-icon>
-              <v-icon>fas fa-sign-in-alt</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>INICIAR SESION</v-list-item-title>
-          </v-list-item>
-
-
-        </v-list-item-group>
+        </v-lis-item-group>
       </v-list>
     </v-navigation-drawer>
   </div>
@@ -43,7 +24,12 @@ export default {
   name: "NavBar",
   data() {
     return {
-      drawer: false
+      drawer: false,
+      links: [
+        {icon: 'fas fa-home', text: 'Inicio', route:'Home'},
+        {icon: 'fas fa-user-circle',text:'Perfil', route: 'Profile'},
+        {icon: 'fas fa-sign-in-alt', text: 'Iniciar Sesión', route:'Login'}
+      ]
     };
   },
   methods: {
@@ -62,6 +48,7 @@ export default {
 #nav-bar a {
   color: #ffffff;
   text-decoration: none;
+  margin-bottom: 10px;
 }
 .right-position {
   margin-left: auto;
