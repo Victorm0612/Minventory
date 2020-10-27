@@ -1,4 +1,4 @@
-<template v-slot:activator="{ on, attrs }">
+<template>
   <v-container class="fill-height" fluid>
     <v-row class="d-flex" align="center" justify="center">
       <v-col cols="12" sm="8" md="6">
@@ -128,13 +128,11 @@
                       </v-col>
                       <v-col cols="12">
                         <v-btn
-                          :disabled="!valid"
+                          :disabled="false"
                           depressed
                           class="text-none px-5"
                           color="primary"
                           elevation="10"
-                          v-bind="attrs"
-                          v-on="on"
                           @click="saveUser"
                           >Registrarte
                         </v-btn>
