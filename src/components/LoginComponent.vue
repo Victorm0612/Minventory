@@ -1,4 +1,4 @@
-<template>
+<template v-slot:activator="{ on, attrs }">
   <v-container class="fill-height" fluid>
     <v-row class="d-flex" align="center" justify="center">
       <v-col cols="12" sm="8" md="6">
@@ -39,7 +39,7 @@
                         Crear cuenta
                       </v-btn>
                       <v-spacer/>
-                      <v-btn color="primary" class="text-none px-2" @click="getUser">
+                      <v-btn color="primary" class="text-none px-2" @click="getUser" v-bind="attrs" v-on="on">
                         Iniciar Sesión
                       </v-btn>
                     </div>
@@ -55,6 +55,7 @@
                     @click="message_user=item"
                     :label="`Ingresar como ${item}`"
                     :value="item"
+                    requiered
                     ></v-radio>
                     </v-radio-group>
                 </v-col>
@@ -62,11 +63,23 @@
             </v-container>
           </v-card-text>
         </v-card>
-        <v-alert class="mt-3" 
-        :value="show_credentials"
-        :type="alert ? 'success' : 'error'">
-        {{message_login}}
-        </v-alert>
+        <v-dialog v-model="dialog" width="350">
+          <v-alert  
+            style="margin-bottom: 0; text-align: start;"
+            type="error"
+            transition="scale-transition"
+            >
+            Por favor, revise los datos ingresados e inténtelo nuevamente.
+          </v-alert>
+        </v-dialog>
+        <v-overlay :value="load">
+          <v-progress-circular
+            :width="5"
+            indeterminate
+            color="white"
+            size="64"
+          ></v-progress-circular>
+        </v-overlay>
       </v-col>
     </v-row>
   </v-container>
@@ -80,14 +93,13 @@ export default {
     return {
       typeUser:['Administrador','Empleado','Cliente'],
       users:[],
-      message_login: "",
-      message_user: "",
       step: 1,
       email: "",
       password: "",
+      message_user:"",
       show: false,
-      show_credentials: false,
-      alert: false,
+      dialog: false,
+      load: false,
       rules: {
         required: value => !!value || "Complete el campo.",
         password: value => {
@@ -101,6 +113,14 @@ export default {
       }
     };
   },
+  watch: {
+    overlay(val) {
+      val &&
+        setTimeout(() => {
+          this.load = false;
+        }, 3000);
+    }
+  },
   created(){
       axios.get('user/')
       .then(res=>{
@@ -111,18 +131,16 @@ export default {
     getUser(evt){
       evt.preventDefault();
       for(let user of this.users){
-        if(user.email == this.email && user.password == this.password){
-          this.message_login="Loading..."
-          this.alert= true
-          setTimeout(() => { this.$router.push({ name: "ClientMain" }); }, 1500);
+        if(user.email == this.email && user.password == this.password && this.message_user !== ""){
+          this.load = !this.load;
+          setTimeout(() => { this.$router.push({ name: "ClientMain" }); }, 3000);
           break;
         }
         else{
-          this.message_login="El correo o la contraseña ingresada no son correctas."
-          this.alert= false
+          this.dialog="true"
+          console.log()
         }
       }
-      this.show_credentials = true;
     },
     moveToRegister: function() {
       this.$router.push({ name: "Register" });
