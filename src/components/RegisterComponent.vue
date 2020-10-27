@@ -1,4 +1,4 @@
-<template>
+<template v-slot:activator="{ on, attrs }">
   <v-container class="fill-height" fluid>
     <v-row class="d-flex" align="center" justify="center">
       <v-col cols="12" sm="8" md="6">
@@ -17,12 +17,12 @@
                     <v-row>
                       <v-col cols="6">
                         <v-text-field
-                        v-model="firstname"
-                        :rules="[rules.required]"
-                        label="Nombre"
-                        @keypress="isLetter($event)"
-                        required
-                      ></v-text-field>
+                          v-model="firstname"
+                          :rules="[rules.required]"
+                          label="Nombre"
+                          @keypress="isLetter($event)"
+                          required
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="6">
                         <v-text-field
@@ -37,12 +37,12 @@
                     <v-row>
                       <v-col cols="12">
                         <v-text-field
-                      v-model="mobile"
-                      :rules="[rules.required, rules.mobileRules]"
-                      label="Número de celular"
-                      @keypress="isNumber($event)"
-                      required
-                    ></v-text-field>
+                          v-model="mobile"
+                          :rules="[rules.required, rules.mobileRules]"
+                          label="Número de celular"
+                          @keypress="isNumber($event)"
+                          required
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12">
                         <v-text-field
@@ -57,9 +57,15 @@
                       <v-col cols="6">
                         <v-text-field
                           v-model="password"
-                          :rules="[rules.required, rules.passwordRules, passwordConfirmationRule]"
+                          :rules="[
+                            rules.required,
+                            rules.passwordRules,
+                            passwordConfirmationRule
+                          ]"
                           label="Contraseña"
-                          :append-icon="show ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                          :append-icon="
+                            show ? 'fas fa-eye' : 'fas fa-eye-slash'
+                          "
                           :type="show ? 'text' : 'password'"
                           @click:append="show = !show"
                           required
@@ -68,21 +74,28 @@
                       <v-col cols="6">
                         <v-text-field
                           v-model="confirmpassword"
-                          :rules="[rules.required, rules.passwordRules, passwordConfirmationRule]"
+                          :rules="[
+                            rules.required,
+                            rules.passwordRules,
+                            passwordConfirmationRule
+                          ]"
                           label="Confirmar contraseña"
-                          :append-icon="show ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                          :append-icon="
+                            show ? 'fas fa-eye' : 'fas fa-eye-slash'
+                          "
                           :type="show ? 'text' : 'password'"
                           @click:append="show = !show"
                           required
-                        ></v-text-field>        
+                        ></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col cols="6">
-                        <v-select 
-                        label="Tipo de documento" 
-                        v-model="docTypeValue" 
-                        :items="docType">
+                        <v-select
+                          label="Tipo de documento"
+                          v-model="docTypeValue"
+                          :items="docType"
+                        >
                         </v-select>
                       </v-col>
                       <v-col cols="6">
@@ -97,11 +110,12 @@
                     </v-row>
                     <v-row>
                       <v-col cols="12">
-                        <v-text-field 
-                        v-model="address" 
-                        :rules="[rules.required]" 
-                        label="Dirección" 
-                        required>
+                        <v-text-field
+                          v-model="address"
+                          :rules="[rules.required]"
+                          label="Dirección"
+                          required
+                        >
                         </v-text-field>
                       </v-col>
                       <v-col cols="12">
@@ -114,13 +128,15 @@
                       </v-col>
                       <v-col cols="12">
                         <v-btn
-                          :disabled="!valid"
+                          :disabled="false"
                           depressed
                           class="text-none px-5"
                           color="primary"
                           elevation="10"
+                          v-bind="attrs"
+                          v-on="on"
                           @click="saveUser"
-                        >Registrarte
+                          >Registrarte
                         </v-btn>
                         <br />
                         <br />
@@ -137,19 +153,38 @@
             </v-container>
           </v-card-text>
         </v-card>
+        <v-dialog v-model="dialog" width="300">
+          <v-alert
+            style="margin-bottom: 0;"
+            type="error"
+            transition="scale-transition"
+          >
+            Por favor, revise los datos ingresados e inténtelo nuevamente.
+          </v-alert>
+        </v-dialog>
+        <v-overlay :value="load">
+          <v-progress-circular
+            :width="5"
+            indeterminate
+            color="white"
+            size="64"
+          ></v-progress-circular>
+        </v-overlay>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import api from '@/api';
-import User from '@/classes/user'
+import api from "@/api";
+import User from "@/classes/user";
 export default {
   name: "RegisterComponent",
   data: () => ({
     valid: false,
     show: false,
+    dialog: false,
+    load: false,
     firstname: "",
     lastname: "",
     mobile: "",
@@ -179,10 +214,21 @@ export default {
         "*Mínimo 8 caracteres. *Mínimo una letra minúscula. *Mínimo una letra mayúscula. *Mínimo un número. *Mínimo un caracter especial[!@#%&]."
     }
   }),
+  watch: {
+    overlay(val) {
+      val &&
+        setTimeout(() => {
+          this.load = false;
+        }, 3000);
+    }
+  },
   computed: {
     passwordConfirmationRule() {
-      return this.password === this.confirmpassword || "Las contraseñas deben coincidir";
-      }
+      return (
+        this.password === this.confirmpassword ||
+        "Las contraseñas deben coincidir"
+      );
+    }
   },
   methods: {
     isNumber: function(evt) {
@@ -210,7 +256,7 @@ export default {
         return true;
       }
     },
-    saveUser(evt){
+    saveUser(evt) {
       evt.preventDefault();
       let user = new User(
         this.firstname,
@@ -225,13 +271,17 @@ export default {
       );
       return api
         .createUser(user)
-        .then(res=>console.log("post response: "+res.data))
-        .finally(() =>
-          setTimeout(()=>{
-            this.$router.push({name: "Login"});
-          }, 1500)
-        );
+        .then(res => {
+          console.log("post response: " + res.data);
+          this.load = !this.load;
+          setTimeout(() => {
+            this.$router.push({ name: "Login" });
+          }, 1500);
+        })
+        .catch(() => {
+          this.dialog = true;
+        });
     }
-  },     
+  }
 };
 </script>

@@ -22,7 +22,6 @@ function createUser(user) {
         type: user.getType()
     }).catch((error) => {
         console.log("Error while creating user: " + error);
-        console.log(this.data)
     })
 }
 
