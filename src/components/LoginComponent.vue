@@ -1,4 +1,4 @@
-<template v-slot:activator="{ on, attrs }">
+<template>
   <v-container class="fill-height" fluid>
     <v-row class="d-flex" align="center" justify="center">
       <v-col cols="12" sm="8" md="6">
@@ -39,7 +39,7 @@
                         Crear cuenta
                       </v-btn>
                       <v-spacer/>
-                      <v-btn color="primary" class="text-none px-2" @click="getUser" v-bind="attrs" v-on="on">
+                      <v-btn color="primary" class="text-none px-2" @click="getUser">
                         Iniciar Sesión
                       </v-btn>
                     </div>
