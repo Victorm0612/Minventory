@@ -116,10 +116,11 @@ export default {
       load: false,
       rules: {
         required: value => !!value || "Complete el campo.",
-        password: value => {
-          const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%&])(?=.{8,})/;
-          return pattern.test(value) || "Mínimo 8 caracteres";
-        },
+        password: value =>
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[*!@#%&])(?=.{8,})/.test(
+          value
+        ) ||
+        "*Recuerda que tu clave tiene: Mínimo 8 caracteres. *Mínimo una letra minúscula. *Mínimo una letra mayúscula. *Mínimo un número. *Mínimo un caracter especial[!@#%&*].",
         email: value => {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           return pattern.test(value) || "e-mail inválido.";
@@ -145,22 +146,25 @@ export default {
     getUser(evt) {
       evt.preventDefault();
       if(this.message_user == ""){
-        this.dialog = "true"
+        this.dialog = true;
         this.message = "Por favor seleccione una opción."
       }else{
           for (let user of this.users) {
-            if (
-              user.email == this.email &&
-              user.password == this.password
-            ) {
-              this.load = !this.load;
-              setTimeout(() => {
-                this.$router.push({ name: "ClientMain" });
-              }, 3000);
-              break;
-            } else {
-              this.dialog = "true";
-              this.message = "Por favor, revise los datos ingresados e inténtelo nuevamente."
+            if(user.type.substring(0, 3) === this.message_user.toLowerCase().substring(0,3)){
+              if (user.email == this.email && user.password == this.password) {
+                this.dialog = false;
+                this.load = !this.load;
+                setTimeout(() => {this.$router.push({ name: "ClientMain" });}, 3000);
+                break;
+              } 
+              else {
+                this.dialog = true;
+                this.message = "Por favor, revise los datos ingresados e inténtelo nuevamente."
+              }
+            }
+            else{
+              this.dialog = true;
+              this.message = "El tipo de usuario seleccionado no es correcto."
             }
           }
       }

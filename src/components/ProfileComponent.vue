@@ -217,10 +217,10 @@ export default {
         required: value => !!value || "Este campo no puede estar vacio",
         emailRules: value => /.+@.+/.test(value) || "Ingresa un correo valido",
         passwordRules: value =>
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%&])(?=.{8,})/.test(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%&*])(?=.{8,})/.test(
             value
           ) ||
-          "*Mínimo 8 caracteres. *Mínimo una letra minúscula. *Mínimo una letra mayúscula. *Mínimo un número. *Mínimo un caracter especial[!@#%&]."
+          "*Mínimo 8 caracteres. *Mínimo una letra minúscula. *Mínimo una letra mayúscula. *Mínimo un número. *Mínimo un caracter especial[!@#%&*]."
       }
     };
   },
