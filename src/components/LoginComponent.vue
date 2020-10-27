@@ -82,7 +82,7 @@
             type="error"
             transition="scale-transition"
           >
-            Por favor, revise los datos ingresados e inténtelo nuevamente.
+            {{message}}
           </v-alert>
         </v-dialog>
         <v-overlay :value="load">
@@ -110,6 +110,7 @@ export default {
       email: "",
       password: "",
       message_user: "",
+      message: "",
       show: false,
       dialog: false,
       load: false,
@@ -143,21 +144,25 @@ export default {
   methods: {
     getUser(evt) {
       evt.preventDefault();
-      for (let user of this.users) {
-        if (
-          user.email == this.email &&
-          user.password == this.password &&
-          this.message_user !== ""
-        ) {
-          this.load = !this.load;
-          setTimeout(() => {
-            this.$router.push({ name: "ClientMain" });
-          }, 3000);
-          break;
-        } else {
-          this.dialog = "true";
-          console.log();
-        }
+      if(this.message_user == ""){
+        this.dialog = "true"
+        this.message = "Por favor seleccione una opción."
+      }else{
+          for (let user of this.users) {
+            if (
+              user.email == this.email &&
+              user.password == this.password
+            ) {
+              this.load = !this.load;
+              setTimeout(() => {
+                this.$router.push({ name: "ClientMain" });
+              }, 3000);
+              break;
+            } else {
+              this.dialog = "true";
+              this.message = "Por favor, revise los datos ingresados e inténtelo nuevamente."
+            }
+          }
       }
     },
     moveToRegister: function() {
