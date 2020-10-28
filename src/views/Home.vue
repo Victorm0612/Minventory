@@ -18,12 +18,5 @@ export default {
   data: () => ({
     users: []
   }),
-  //Prueba para el llamado a la api, no necesario en la versión final
-  created() {
-    return api
-      .getUsers()
-      .then(response => response)
-      .finally(() => (console.log(this.users)));
-  }
 };
 </script>
