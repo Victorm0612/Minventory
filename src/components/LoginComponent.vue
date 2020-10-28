@@ -11,7 +11,7 @@
                     Iniciar Sesión
                   </h3>
                   <h4 class="subtitle-1 mb-3">
-                    ¡ Bienvenido {{ message_user }} !
+                    ¡Bienvenido!
                   </h4>
                 </v-col>
               </v-row>
@@ -43,7 +43,7 @@
                         text
                         color="primary"
                         class="text-none px-2 __btn-login-text"
-                        @click="moveToRegister"
+                        @click="moveToPage('Register')"
                       >
                         Crear cuenta
                       </v-btn>
@@ -51,26 +51,12 @@
                       <v-btn
                         color="primary"
                         class="text-none px-2"
-                        @click="getUser"
+                        @click="moveToPage('ClientMain')"
                       >
                         Iniciar Sesión
                       </v-btn>
                     </div>
                   </v-form>
-                </v-col>
-              </v-row>
-              <v-row align="center">
-                <v-col>
-                  <v-radio-group>
-                    <v-radio
-                      v-for="item in typeUser"
-                      :key="item"
-                      @click="message_user = item"
-                      :label="`Ingresar como ${item}`"
-                      :value="item"
-                      requiered
-                    ></v-radio>
-                  </v-radio-group>
                 </v-col>
               </v-row>
             </v-container>
@@ -82,7 +68,7 @@
             type="error"
             transition="scale-transition"
           >
-            {{message}}
+            Por favor, revise los datos ingresados e inténtelo nuevamente.
           </v-alert>
         </v-dialog>
         <v-overlay :value="load">
@@ -99,27 +85,24 @@
 </template>
 
 <script>
-import axios from "axios";
+//import axios from "axios";
 export default {
   name: "LoginComponent",
   data() {
     return {
-      typeUser: ["Administrador", "Empleado", "Cliente"],
-      users: [],
       step: 1,
       email: "",
       password: "",
-      message_user: "",
-      message: "",
       show: false,
       dialog: false,
       load: false,
       rules: {
         required: value => !!value || "Complete el campo.",
-        password: value => {
-          const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%&])(?=.{8,})/;
-          return pattern.test(value) || "Mínimo 8 caracteres";
-        },
+        password: value =>
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[*!@#%&])(?=.{8,})/.test(
+            value
+          ) ||
+          "*Recuerda que tu clave tiene: Mínimo 8 caracteres. *Mínimo una letra minúscula. *Mínimo una letra mayúscula. *Mínimo un número. *Mínimo un caracter especial[!@#%&*].",
         email: value => {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           return pattern.test(value) || "e-mail inválido.";
@@ -135,38 +118,26 @@ export default {
         }, 3000);
     }
   },
-  created() {
-    axios.get("user/").then(res => {
-      this.users = res.data;
-      console.log(this.users);
-    });
-  },
-  methods: {
-    getUser(evt) {
+  methods: {        
+    /*getUser(evt) {
+
       evt.preventDefault();
-      if(this.message_user == ""){
-        this.dialog = "true"
-        this.message = "Por favor seleccione una opción."
-      }else{
-          for (let user of this.users) {
-            if (
-              user.email == this.email &&
-              user.password == this.password
-            ) {
-              this.load = !this.load;
-              setTimeout(() => {
-                this.$router.push({ name: "ClientMain" });
-              }, 3000);
-              break;
-            } else {
-              this.dialog = "true";
-              this.message = "Por favor, revise los datos ingresados e inténtelo nuevamente."
-            }
-          }
-      }
-    },
-    moveToRegister: function() {
-      this.$router.push({ name: "Register" });
+      for (let user of this.users) {
+        if (user.email == this.email && user.password == this.password) {
+          this.dialog = false;
+          this.load = !this.load;
+          setTimeout(() => {
+            this.$router.push({ name: "ClientMain" });
+          }, 3000);
+          break;
+        } else {
+          this.dialog = true;
+        }
+      } 
+    },*/
+    moveToPage: function(route) {
+      this.load = !this.load;
+      setTimeout(() => {this.$router.push({ name: route });}, 3000);
     }
   }
 };
