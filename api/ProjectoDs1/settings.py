@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'api',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'api',
+    'knox',
+    'rest_framework.authtoken',
+
 ]
 
 MIDDLEWARE = [
@@ -54,6 +57,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'ProjectoDs1.urls'
+
+AUTH_USER_MODEL = 'api.User'
 
 TEMPLATES = [
     {
@@ -77,8 +82,12 @@ WSGI_APPLICATION = 'ProjectoDs1.wsgi.application'
 CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'knox.auth.TokenAuthentication',
+    ),
     'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
-    'EXCEPTION_HANDLER': 'ProjectoDs1.api.utils.custom_exception_handler'
+    'EXCEPTION_HANDLER': 'ProjectoDs1.api.utils.custom_exception_handler',
 }
 
 # Database

@@ -4,6 +4,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.usermodels import User
 from api.serializers.userserializer import UserSerializer
+from rest_framework.authtoken.models import Token
 
 
 class JSONResponse(HttpResponse):

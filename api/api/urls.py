@@ -6,6 +6,7 @@ from api.views import inventoryviews
 from api.views import requestquotationviews
 from api.views import statusviews
 from api.views import taskviews
+from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     url(r'^user/$', userviews.user_list),
