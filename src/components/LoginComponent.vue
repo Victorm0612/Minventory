@@ -43,7 +43,7 @@
                         text
                         color="primary"
                         class="text-none px-2 __btn-login-text"
-                        @click="moveToRegister"
+                        @click="moveToPage('Register')"
                       >
                         Crear cuenta
                       </v-btn>
@@ -51,7 +51,7 @@
                       <v-btn
                         color="primary"
                         class="text-none px-2"
-                        @click="getUser"
+                        @click="moveToPage('ClientMain')"
                       >
                         Iniciar Sesión
                       </v-btn>
@@ -85,13 +85,11 @@
 </template>
 
 <script>
-import axios from "axios";
+//import axios from "axios";
 export default {
   name: "LoginComponent",
   data() {
     return {
-      typeUser: ["Administrador", "Empleado", "Cliente"],
-      users: [],
       step: 1,
       email: "",
       password: "",
@@ -120,8 +118,9 @@ export default {
         }, 3000);
     }
   },
-  methods: {
-    getUser(evt) {
+  methods: {        
+    /*getUser(evt) {
+
       evt.preventDefault();
       for (let user of this.users) {
         if (user.email == this.email && user.password == this.password) {
@@ -134,10 +133,11 @@ export default {
         } else {
           this.dialog = true;
         }
-      }
-    },
-    moveToRegister: function() {
-      this.$router.push({ name: "Register" });
+      } 
+    },*/
+    moveToPage: function(route) {
+      this.load = !this.load;
+      setTimeout(() => {this.$router.push({ name: route });}, 3000);
     }
   }
 };
