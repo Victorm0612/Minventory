@@ -120,13 +120,6 @@ export default {
         }, 3000);
     }
   },
-  beforeCreate() {
-    axios.get('user/')
-    .then(res => {
-      this.users = res.data;
-      }
-    );
-  },
   methods: {
     getUser(evt) {
       evt.preventDefault();
