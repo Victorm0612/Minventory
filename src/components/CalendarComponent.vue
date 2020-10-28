@@ -3,7 +3,9 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat>
-          <v-toolbar-title v-if="$refs.calendar">{{ $refs.calendar.title }}</v-toolbar-title>
+          <v-toolbar-title v-if="$refs.calendar">{{
+            $refs.calendar.title
+          }}</v-toolbar-title>
           <v-btn fab text small color="grey darken-2" @click="prev">
             <v-icon small>fas fa-chevron-left</v-icon>
           </v-btn>
@@ -23,7 +25,6 @@
           :type="type"
           @click:event="showEvent"
           @click:day="newEvent"
-          @change="updateRange"
         ></v-calendar>
         <v-menu
           v-model="selectedOpen"
@@ -43,11 +44,11 @@
               <span>Detalles de la solicitud</span>
               <br />
               <br />
-              <span>Tipo de servicio: {{selectedEvent.service_type}}</span>
+              <span>Tipo de servicio: {{ selectedEvent.service_type }}</span>
               <br />
-              <span>Descripción: {{selectedEvent.description}}</span>
+              <span>Descripción: {{ selectedEvent.description }}</span>
               <br />
-              <span>Fecha: {{selectedEvent.start}}</span>
+              <span>Fecha: {{ selectedEvent.start }}</span>
               <br />
             </v-card-text>
             <v-card-actions>
@@ -56,7 +57,8 @@
                 text
                 color="secondary"
                 @click="selectedOpen = false"
-              >Cerrar</v-btn>
+                >Cerrar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -80,8 +82,12 @@
             label="Descripción:"
             :rules="rules"
           ></v-textarea>
-          <v-chip-group v-model="selection" active-class="deep-purple accent-4 white--text" column>
-            <v-chip>8:00</v-chip>
+          <v-chip-group
+            v-model="selection"
+            active-class="deep-purple accent-4 white--text"
+            column
+          >
+            <v-chip>08:00</v-chip>
             <v-chip>10:00</v-chip>
             <v-chip>13:00</v-chip>
             <v-chip>15:00</v-chip>
@@ -89,10 +95,30 @@
           </v-chip-group>
         </v-card-text>
         <v-card-actions>
-          <v-btn class="right-position" color="primary" text @click="validateData">Confirmar</v-btn>
-          <v-btn class="right-position" color="primary" text @click="closeQuotation">Cerrar</v-btn>
+          <v-btn
+            class="right-position"
+            color="primary"
+            text
+            @click="validateData"
+            >Confirmar</v-btn
+          >
+          <v-btn
+            class="right-position"
+            color="primary"
+            text
+            @click="closeQuotation"
+            >Cerrar</v-btn
+          >
         </v-card-actions>
-        <v-alert v-model="incompleteData" v-if="incompleteData" border="left" color="red" dismissible type="error">Por favor llena todos los campos</v-alert>
+        <v-alert
+          v-model="incompleteData"
+          v-if="incompleteData"
+          border="left"
+          color="red"
+          dismissible
+          type="error"
+          >Por favor llena todos los campos</v-alert
+        >
       </v-card>
     </v-dialog>
     <v-dialog v-model="confirmDialog" max-width="400px" min-width="400px">
@@ -102,26 +128,51 @@
           <span>¿Está seguro que desea continuar?</span>
           <br />
           <br />
-          <span>Tipo de servicio: {{cbServiceType}}</span>
+          <span>Tipo de servicio: {{ cbServiceType }}</span>
           <br />
-          <span>Descripción: {{taDescription}}</span>
+          <span>Descripción: {{ taDescription }}</span>
           <br />
-          <span>Hora: {{availability[selection]}}</span>
+          <span>Hora: {{ availability[selection] }}</span>
           <br />
         </v-card-text>
         <v-card-actions>
-          <v-btn class="right-position" color="primary" text @click="confirmQuotation">Confirmar</v-btn>
-          <v-btn class="right-position" color="primary" text @click="confirmDialog = false">Cerrar</v-btn>
+          <v-btn
+            class="right-position"
+            color="primary"
+            text
+            @click="confirmQuotation"
+            >Confirmar</v-btn
+          >
+          <v-btn
+            class="right-position"
+            color="primary"
+            text
+            @click="confirmDialog = false"
+            >Cerrar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="alertDialog" width="300">
+          <v-alert
+            style="margin-bottom: 0;"
+            type="error"
+            transition="scale-transition"
+          >
+            {{ alertMessage }}
+          </v-alert>
+        </v-dialog>
   </v-row>
 </template>
 
 <script>
+import api from "@/api";
+import RequestQuotation from "@/classes/requestQuotation";
 export default {
   name: "CalendarComponent",
   data: () => ({
+    alertDialog: false,
+    alertMessage: "",
     focus: "",
     type: "month",
     selectedEvent: {},
@@ -145,19 +196,17 @@ export default {
     ],
     taDescription: "",
     selection: 0,
-    availability: ["08:00", "10:00", "13:00", "15:00", "17:00"],
-    events: [],
-    colors: [
-      "blue",
-      "indigo",
-      "deep-purple",
-      "cyan",
-      "green",
-      "orange",
-      "grey darken-1"
+    availability: [
+      "08:00 - 09:30",
+      "10:00 - 11:30",
+      "13:00 - 14:30",
+      "15:00 - 16:30",
+      "17:00 - 18:30"
     ],
+    events: [],
     rules: [value => !!value || "Este campo no puede estar vacio"],
-    incompleteData: false
+    incompleteData: false,
+    request_quotation: {}
   }),
   mounted() {
     this.$refs.calendar.checkChange();
@@ -175,8 +224,6 @@ export default {
     showEvent({ nativeEvent, event }) {
       const open = () => {
         this.selectedEvent = event;
-        console.log(nativeEvent);
-        console.log(event);
         this.selectedElement = nativeEvent.target;
         setTimeout(() => {
           this.selectedOpen = true;
@@ -192,24 +239,6 @@ export default {
 
       nativeEvent.stopPropagation();
     },
-    updateRange() {
-      const events = [];
-      const allDay = this.rnd(0, 3) === 0;
-      events.push({
-        name: "Prueba",
-        start: new Date("2020-10-05T18:00:00"),
-        end: new Date("2020-10-05T18:59:59"),
-        color: this.colors[this.rnd(0, this.colors.length - 1)],
-        service_type: "Servicio 1",
-        description: "Una descripción",
-        timed: !allDay
-      });
-
-      this.events = events;
-    },
-    rnd(a, b) {
-      return Math.floor((b - a + 1) * Math.random()) + a;
-    },
     newEvent({ date }) {
       this.eventCanceled = false;
       this.quotationDialog = true;
@@ -220,28 +249,49 @@ export default {
       this.taDescription = "";
       this.selection = 0;
       this.eventCanceled = true;
-      this.incompleteData, this.quotationDialog = false;
+      this.incompleteData = false;
+      this.quotationDialog = false;
     },
     confirmQuotation() {
-      this.confirmDialog = false;
-
       if (!this.eventCanceled) {
-        this.createStart = new Date(
-          `${this.eventDate}T${this.availability[this.selection]}:00`
-        );
-        this.createEvent = {
-          name: "Solicitud de cotización",
-          color: this.colors[this.rnd(0, this.colors.length - 1)],
-          start: this.createStart,
-          end: this.createStart,
-          service_type: this.cbServiceType,
-          description: this.taDescription,
-          timed: true
-        };
-
-        this.events.push(this.createEvent);
+        this.newRequestQuotation();
+        this.confirmDialog = false;
       }
+      
+    },
+    drawEvent() {
+      this.createStart = new Date(
+        `${this.eventDate}T${this.availability[this.selection].substring(0, 5)}:00`
+      );
+      this.createEvent = {};
+      this.createEvent = {
+        name: "Solicitud de cotización",
+        color: "cyan",
+        start: this.createStart,
+        end: this.createStart,
+        service_type: this.cbServiceType,
+        description: this.taDescription,
+        timed: true
+      };
+      this.events.push(this.createEvent);
       this.closeQuotation();
+    },
+    newRequestQuotation() {
+      let request_quotation = new RequestQuotation(
+        this.eventDate,
+        this.availability[this.selection],
+        false,
+        this.cbServiceType,
+        this.taDescription,
+        2
+      );
+      return api
+        .createRequestQuotation(request_quotation)
+        .then(resp =>
+          resp.status == 400
+            ? (this.alertDialog = true) && (this.alertMessage = resp.data.scheduled_date_and_time_range[0]) && (this.confirmDialog = false)
+            : this.drawEvent()
+        );
     },
     validateData() {
       if (this.cbServiceType != "" && this.taDescription != "") {
