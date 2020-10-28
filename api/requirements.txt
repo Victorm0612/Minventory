@@ -11,3 +11,8 @@ coreapi
 psycopg2
 gunicorn==20.0.4
 whitenoise==5.2.0
+knox
+cryptography
+jinja2
+boto3
+django-rest-knox
