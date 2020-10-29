@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <div id="app">
-      <nav-bar></nav-bar>
+      <nav-bar id="navbar"></nav-bar>
       <router-view class="container px-5 sm:px-20 py-20 flex justify-center" />
     </div>
   </v-app>
@@ -26,6 +26,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 35px;
 }
+#navbar{
+  margin-bottom: 5rem;
+
+}
+
 </style>
