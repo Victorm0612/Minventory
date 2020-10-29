@@ -25,7 +25,25 @@ function createUser(user) {
     })
 }
 
+function createRequestQuotation(request_quotation) {
+    return axios.post('quotation/', {
+        scheduled_date: request_quotation.getScheduledDate(),
+        time_range: request_quotation.getTimeRange(),
+        approved: request_quotation.getApproved(),
+        service_type: request_quotation.getServiceType(),
+        description: request_quotation.getDescription(),
+        fkUser_int: request_quotation.getUser()
+    })
+    .then(response => response)
+    .catch((error) => {
+        if (error.response) {
+            return error.response;
+          }
+    })
+}
+
 export default {
     getUsers,
     createUser,
+    createRequestQuotation,
 }
