@@ -265,7 +265,7 @@ export default {
         this.password,
         this.address,
         this.gender.toLowerCase().replace(/ /g, "_"),
-        "client"
+        3
       );
       return api
         .createUser(user)

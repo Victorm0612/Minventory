@@ -11,11 +11,8 @@ class RequestQuotationSerializer(serializers.ModelSerializer):
             rangoUsuario = data.get('time_range')
             ocupado = RequestQuotation.objects.filter(scheduled_date=fechaUsuario, time_range=rangoUsuario)
             if ocupado:
-                raise serializers.ValidationError({"scheduled_date and time_range": "Ese rango de hora en esa fecha está ocupado"})
+                raise serializers.ValidationError({"scheduled_date_and_time_range": "Ese rango de hora en esa fecha está ocupado"})
             return data
-        if ocupado:
-            raise serializers.ValidationError({"scheduled_date_and_time_range": "Ese rango de hora en esa fecha está ocupado"})
-        return data
 
     class Meta:
         model = RequestQuotation

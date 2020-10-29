@@ -27,7 +27,7 @@ export default {
       drawer: false,
       links: [
         {icon: 'fas fa-home', text: 'Inicio', route:'Home'},
-        {icon: 'fas fa-user-circle',text:'Perfil', route: 'Profile'},
+        //{icon: 'fas fa-user-circle',text:'Perfil', route: 'Profile'},
         {icon: 'fas fa-sign-in-alt', text: 'Iniciar Sesión', route:'Login'}
       ]
     };

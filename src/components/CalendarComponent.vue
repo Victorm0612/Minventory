@@ -283,7 +283,7 @@ export default {
         false,
         this.cbServiceType,
         this.taDescription,
-        2
+        1
       );
       return api
         .createRequestQuotation(request_quotation)
