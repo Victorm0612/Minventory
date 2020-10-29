@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^user/$', userviews.user_list),
     url(r'^user/(?P<pk>[0-9]+)/$', userviews.user_detail),
     url(r'^login/$', userviews.login_view),
+    url(r'^register/$', userviews.create_user),
 
     url(r'^bill/$', billviews.bill_list),
     url(r'^bill/(?P<pk>[0-9]+)/$', billviews.bill_detail),
