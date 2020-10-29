@@ -23,7 +23,19 @@ class JSONResponse(HttpResponse):
         kwargs['content_type'] = 'application/json'
         super(JSONResponse, self).__init__(content, **kwargs)
 
-@api_view(['GET','POST'])
+@api_view(['POST'])
+@permission_classes([AllowAny])
+@csrf_exempt
+def create_user(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = UserSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JSONResponse(serializer.data, status=201)
+        return JSONResponse(serializer.errors, status=400)
+
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @csrf_protect
 def user_list(request):
@@ -31,13 +43,7 @@ def user_list(request):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return JSONResponse(serializer.data)
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = UserSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JSONResponse(serializer.data, status=201)
-        return JSONResponse(serializer.errors, status=400)
+    
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
@@ -76,7 +82,7 @@ def login_view(request):
     if(user is None):
         raise exceptions.AuthenticationFailed('Usuario no encontrado')
     if (user.password != password):
-        raise exceptions.AuthenticationFailed('email y/o password incorrectos')
+        raise exceptions.AuthenticationFailed('Email y/o password incorrectos')
     serialized_user = UserSerializer(user).data
     access_token = generate_access_token(user)
     refresh_token = generate_refresh_token(user)
@@ -92,29 +98,24 @@ def login_view(request):
 @permission_classes([AllowAny])
 @csrf_protect
 def refresh_token_view(request):
-    '''
-    To obtain a new access_token this view expects 2 important things:
-        1. a cookie that contains a valid refresh_token
-        2. a header 'X-CSRFTOKEN' with a valid csrf token, client app can get it from cookies "csrftoken"
-    '''
     User = get_user_model()
     refresh_token = request.COOKIES.get('refreshtoken')
     if refresh_token is None:
         raise exceptions.AuthenticationFailed(
-            'Authentication credentials were not provided.')
+            'Las credenciales de autenticación no fueron dadas.')
     try:
         payload = jwt.decode(
             refresh_token, settings.REFRESH_TOKEN_SECRET, algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
         raise exceptions.AuthenticationFailed(
-            'expired refresh token, please login again.')
+            'El token expiró, por favor vuelve a iniciar sesión.')
 
     user = User.objects.filter(id=payload.get('user_id')).first()
     if user is None:
-        raise exceptions.AuthenticationFailed('User not found')
+        raise exceptions.AuthenticationFailed('No se encontró el usuario')
 
     if not user.is_active:
-        raise exceptions.AuthenticationFailed('user is inactive')
+        raise exceptions.AuthenticationFailed('El ususario está incativo')
 
 
     access_token = generate_access_token(user)
