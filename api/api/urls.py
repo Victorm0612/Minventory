@@ -24,6 +24,7 @@ urlpatterns = [
 
     url(r'^quotation/$', requestquotationviews.quotation_list),
     url(r'^quotation/(?P<pk>[0-9]+)/$', requestquotationviews.quotation_detail),
+    url(r'^quotation/usercitas/(?P<fk>[0-9]+)/$', requestquotationviews.user_quotation),
 
     url(r'^status/$', statusviews.status_list),
     url(r'^status/(?P<pk>[0-9]+)/$', statusviews.status_detail),

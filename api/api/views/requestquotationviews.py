@@ -4,6 +4,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.requestquotationmodels import RequestQuotation
 from api.serializers.requestquotationserializer import RequestQuotationSerializer
+from django.core import serializers
 
 class JSONResponse(HttpResponse):
     """
@@ -50,3 +51,14 @@ def quotation_detail(request, pk):
     elif request.method == 'DELETE':
         quotation.delete()
         return HttpResponse(status=204)
+
+
+@csrf_exempt
+def user_quotation(request, fk):
+    try:
+        quotation = RequestQuotation.objects.filter(fkUser_id=fk)
+    except RequestQuotation.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'GET':
+        serializer = RequestQuotationSerializer(quotation, many=True)
+        return JSONResponse(serializer.data)
