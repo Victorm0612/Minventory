@@ -1,12 +1,19 @@
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import get_user_model
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.usermodels import User
+from rest_framework.response import Response
 from api.serializers.userserializer import UserSerializer
+from django.views.decorators.csrf import csrf_protect, csrf_exempt, ensure_csrf_cookie
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework import exceptions
+from api.utils.authutils import generate_access_token, generate_refresh_token
 
 
 class JSONResponse(HttpResponse):
+
     """
     An HttpResponse that renders its content into JSON.
     """
@@ -16,7 +23,8 @@ class JSONResponse(HttpResponse):
         kwargs['content_type'] = 'application/json'
         super(JSONResponse, self).__init__(content, **kwargs)
 
-
+@api_view(['GET','POST'])
+@permission_classes([AllowAny])
 @csrf_exempt
 def user_list(request):
     if request.method == 'GET':
@@ -31,8 +39,9 @@ def user_list(request):
             return JSONResponse(serializer.data, status=201)
         return JSONResponse(serializer.errors, status=400)
 
-
-@csrf_exempt
+@api_view(['GET'])
+@permission_classes([AllowAny])
+@csrf_protect
 def user_detail(request, pk):
     try:
         user = User.objects.get(pk=pk)
@@ -51,3 +60,62 @@ def user_detail(request, pk):
     elif request.method == 'DELETE':
         user.delete()
         return HttpResponse(status=204)
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+@ensure_csrf_cookie
+def login_view(request):
+    User = get_user_model()
+    email = request.data.get('email')
+    password = request.data.get('password')
+    response = Response()
+    if (email is None) or (password is None):
+        raise exceptions.AuthenticationFailed(
+            'El email y el password son requeridos')
+    user = User.objects.filter(email=email).first()
+    if(user is None):
+        raise exceptions.AuthenticationFailed('Usuario no encontrado')
+    if (user.password != password):
+        raise exceptions.AuthenticationFailed('email y/o password incorrectos')
+    serialized_user = UserSerializer(user).data
+    access_token = generate_access_token(user)
+    refresh_token = generate_refresh_token(user)
+    response.set_cookie(key='refreshtoken', value=refresh_token, httponly=True)
+    response.data = {
+        'access_token': access_token,
+        'user': serialized_user,
+    }
+
+    return response
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+@csrf_protect
+def refresh_token_view(request):
+    '''
+    To obtain a new access_token this view expects 2 important things:
+        1. a cookie that contains a valid refresh_token
+        2. a header 'X-CSRFTOKEN' with a valid csrf token, client app can get it from cookies "csrftoken"
+    '''
+    User = get_user_model()
+    refresh_token = request.COOKIES.get('refreshtoken')
+    if refresh_token is None:
+        raise exceptions.AuthenticationFailed(
+            'Authentication credentials were not provided.')
+    try:
+        payload = jwt.decode(
+            refresh_token, settings.REFRESH_TOKEN_SECRET, algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        raise exceptions.AuthenticationFailed(
+            'expired refresh token, please login again.')
+
+    user = User.objects.filter(id=payload.get('user_id')).first()
+    if user is None:
+        raise exceptions.AuthenticationFailed('User not found')
+
+    if not user.is_active:
+        raise exceptions.AuthenticationFailed('user is inactive')
+
+
+    access_token = generate_access_token(user)
+    return Response({'access_token': access_token})
