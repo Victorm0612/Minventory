@@ -24,8 +24,8 @@ class JSONResponse(HttpResponse):
         super(JSONResponse, self).__init__(content, **kwargs)
 
 @api_view(['GET','POST'])
-@permission_classes([AllowAny])
-@csrf_exempt
+@permission_classes([IsAuthenticated])
+@csrf_protect
 def user_list(request):
     if request.method == 'GET':
         users = User.objects.all()
@@ -39,8 +39,8 @@ def user_list(request):
             return JSONResponse(serializer.data, status=201)
         return JSONResponse(serializer.errors, status=400)
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 @csrf_protect
 def user_detail(request, pk):
     try:
