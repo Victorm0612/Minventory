@@ -2,7 +2,7 @@
   <div id="nav-bar" class="mx-auto overflow-hidden">
     <v-app-bar color="#0277BD" dark fixed>
       <router-link to="/">
-        <v-toolbar-title>MINVENTORY</v-toolbar-title>
+        <v-toolbar-title id="title">MINVENTORY</v-toolbar-title>
       </router-link>
       <v-app-bar-nav-icon class="right-position" @click="drawer = true"></v-app-bar-nav-icon>
     </v-app-bar>
@@ -45,7 +45,7 @@ export default {
 </script>
 
 <style>
-#nav-bar a {
+#title{
   color: #ffffff;
   text-decoration: none;
 }
