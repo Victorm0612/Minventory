@@ -11,6 +11,14 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+# import environ
+
+# env = environ.Env(
+#     # set casting, default value
+#     DEBUG=(bool, False)
+# )
+# # reading .env file
+# environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,9 +84,21 @@ WSGI_APPLICATION = 'ProjectoDs1.wsgi.application'
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+CORS_ALLOW_CREDENTIALS = True
+
+AUTH_USER_MODEL = 'api.User'
+
+REFRESH_TOKEN_SECRET='minventory123'
+
 REST_FRAMEWORK = {
+    #'EXCEPTION_HANDLER': 'ProjectoDs1.api.utils.custom_exception_handler',
     'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
-    'EXCEPTION_HANDLER': 'ProjectoDs1.api.utils.custom_exception_handler'
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'api.authentication.SafeJWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
 }
 
 # Database
@@ -90,6 +110,17 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': env('DB_NAME'),
+#        'USER': env('DB_USER'),
+#        'PASSWORD': env('DB_PASSWORD'),
+#        'HOST': env('DB_HOST'),
+#        'PORT': env('DB_PORT'),
+#    }
+#}
 
 
 # Password validation

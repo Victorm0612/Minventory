@@ -5,6 +5,7 @@ node_modules
 
 # local env files
 .env.local
+.env
 .env.*.local
 
 # Log files
@@ -28,6 +29,7 @@ venv/
 ENV/
 .vscode
 api-env/
+postgres-data/
 drf/
 script.bat
 script.sh

@@ -3,7 +3,7 @@ from api.models.usermodels import User
 
 
 class RequestQuotation(models.Model):
-    RANGE_1 = "8:00 - 9:30"
+    RANGE_1 = "08:00 - 09:30"
     RANGE_2 = "10:00 - 11:30"
     RANGE_3 = "13:00 - 14:30"
     RANGE_4 = "15:00 - 16:30"
