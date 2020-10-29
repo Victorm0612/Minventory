@@ -4,7 +4,7 @@ from django.db import models
 from django.core.validators import RegexValidator
 
 
-class User(models.Model):
+class User(AbstractUser):
     TYPE_ADMIN = 1
     TYPE_CLIENT = 2
     TYPE_EMPLOYEE = 3
@@ -28,10 +28,6 @@ class User(models.Model):
     password = models.TextField(max_length=250)
     address = models.TextField(max_length=50)
     gender = models.CharField(max_length=19, choices=TYPE_GENDER)
-<<<<<<< HEAD
-    type = models.IntegerField(choices=TYPE_CHOICES)
-=======
     type = models.TextField(max_length=8, choices=TYPE_CHOICES)
     last_login = models.DateTimeField(auto_now_add=True)
   
->>>>>>> develop
