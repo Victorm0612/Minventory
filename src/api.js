@@ -10,7 +10,7 @@ function getUsers() {
 }
 
 function createUser(user) {
-    return axios.post('user/', {
+    return axios.post('register/', {
         name: user.getName(),
         last_name: user.getLastName(),
         document_number: user.getDocumentNumber(),
@@ -32,7 +32,7 @@ function createRequestQuotation(request_quotation) {
         approved: request_quotation.getApproved(),
         service_type: request_quotation.getServiceType(),
         description: request_quotation.getDescription(),
-        fkUser_int: request_quotation.getUser()
+        fkUser_id: request_quotation.getUser()
     })
     .then(response => response)
     .catch((error) => {
