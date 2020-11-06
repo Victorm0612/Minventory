@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Register from "../views/Register.vue";
 import ClientMain from "../views/ClientMain.vue";
 import Profile from "../views/Profile.vue";
+import AdminDashboard from "../views/AdminDashboard.vue";
 
 Vue.use(VueRouter);
 
@@ -41,6 +42,11 @@ const routes = [{
         path: "/profile",
         name: "Profile",
         component: Profile
+    },
+    {
+        path: "/admin-dashboard",
+        name: "AdminDashboard",
+        component: AdminDashboard
     }
 ];
 
