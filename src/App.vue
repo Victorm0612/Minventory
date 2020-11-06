@@ -2,12 +2,15 @@
   <v-app>
     <div id="app">
       <nav-bar id="navbar"></nav-bar>
+
       <v-layout row wrap>
         <v-flex d-flex>
           <admin-menu v-if="false || isAdmin"></admin-menu>
-          <router-view
-            class="container px-5 sm:px-20 py-20 flex justify-center"
-          />
+          <v-main>
+            <router-view
+              class="container px-5 sm:px-20 py-20 flex justify-center"
+            />
+          </v-main>
         </v-flex>
       </v-layout>
     </div>
