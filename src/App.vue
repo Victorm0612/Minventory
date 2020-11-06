@@ -4,7 +4,7 @@
       <nav-bar id="navbar"></nav-bar>
       <v-layout row wrap>
         <v-flex d-flex>
-          <admin-menu></admin-menu>
+          <admin-menu v-if="false || isAdmin"></admin-menu>
           <router-view
             class="container px-5 sm:px-20 py-20 flex justify-center"
           />
@@ -24,6 +24,17 @@ export default {
   components: {
     NavBar,
     AdminMenu
+  },
+  async mounted() {
+    await this.$store.dispatch("checkIfAdmin");
+  },
+  async updated() {
+    await this.$store.dispatch("checkIfAdmin");
+  },
+  computed: {
+    isAdmin() {
+      return this.$store.getters.showAdminMenu;
+    }
   }
 };
 </script>
