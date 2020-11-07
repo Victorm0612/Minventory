@@ -51,7 +51,7 @@
                       <v-btn
                         color="primary"
                         class="text-none px-2"
-                        @click="moveToPage('ClientMain')"
+                        @click="login"
                       >
                         Iniciar Sesión
                       </v-btn>
@@ -118,7 +118,21 @@ export default {
         }, 3000);
     }
   },
-  methods: {        
+  methods: {   
+    login(){
+      this.$store.dispatch('userLogin',{
+        email: this.email,
+        password: this.password
+      })
+      .then(res=>{
+        console.log(res)
+        this.moveToPage('ClientMain')
+      })
+      .catch(error =>{
+        console.log(error)
+        this.dialog=true;
+      })
+    },
     /*getUser(evt) {
 
       evt.preventDefault();

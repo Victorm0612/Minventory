@@ -1,21 +1,16 @@
 <template>
-  <div id="nav-bar" class="mx-auto overflow-hidden">
+  <div id="nav-bar" class="mx-auto overflow-hidden ">
     <v-app-bar color="#0277BD" dark fixed>
       <router-link to="/">
-        <v-toolbar-title id="title">MINVENTORY</v-toolbar-title>
+        <img width="90" height="90" alt="Vue logo" src="..\assets\VidrioVargas.png"/>
       </router-link>
-      <v-app-bar-nav-icon class="right-position" @click="drawer = true"></v-app-bar-nav-icon>
+      <v-spacer></v-spacer>
+      <v-btn outlined id="menu" v-if="!loggedIn" to="Login">Iniciar Sesión</v-btn>
+      <v-btn outlined id="menu" v-if="!loggedIn" to="Register">Registrarse</v-btn>
+      <v-btn outlined id="menu" v-if="loggedIn" to="Profile">Perfil</v-btn>
+      <v-btn outlined id="menu" v-if="loggedIn" to="Logout">Cerrar Sesión</v-btn>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" absolute temporary right>
-      <v-list nav-dense>
-        <v-list-item-group active-class="deep-purple--text text--accent-4">
-          <v-list-item v-for="link in links" :key="link.text" @click="moveToRoute(link.route)">
-            <v-list-item-icon><v-icon>{{link.icon}}</v-icon></v-list-item-icon>
-            <v-list-item-title class="text-capitalize">{{link.text}}</v-list-item-title>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-navigation-drawer>
+    
   </div>
 </template>
 
@@ -27,8 +22,9 @@ export default {
       drawer: false,
       links: [
         {icon: 'fas fa-home', text: 'Inicio', route:'Home'},
-        //{icon: 'fas fa-user-circle',text:'Perfil', route: 'Profile'},
-        {icon: 'fas fa-sign-in-alt', text: 'Iniciar Sesión', route:'Login'}
+        {icon: 'fas fa-user-circle',text:'Perfil', route: 'Profile'},
+        {icon: 'fas fa-sign-in-alt', text: 'Iniciar Sesión', route:'Login'},
+        {icon: 'fas fa-sign-out-alt', text: 'Cerrar Sesión', route:'Logout'}
       ]
     };
   },
@@ -40,7 +36,12 @@ export default {
         this.drawer = false;
       }
     }
-  }
+  },
+  computed: {
+    loggedIn(){
+      return this.$store.getters.loggedIn
+    }
+  },
 };
 </script>
 
@@ -49,8 +50,10 @@ export default {
   color: #ffffff;
   text-decoration: none;
 }
-.right-position {
+#menu{
+  color: #ffff;
   margin-left: auto;
-  margin-right: 0;
+  margin-right: 1rem;
+  text-transform: capitalize;
 }
 </style>
