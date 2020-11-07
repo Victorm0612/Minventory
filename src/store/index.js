@@ -6,11 +6,15 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     avatars: {},
-    showAdminMenu: false
+    showAdminMenu: false,
+    moduleTitle: "Dashboard"
   },
   getters: {
     showAdminMenu(state) {
       return state.showAdminMenu
+    },
+    moduleTitle(state) {
+      return state.moduleTitle
     }
   },
   mutations: {
@@ -19,13 +23,13 @@ export default new Vuex.Store({
     },
     setShowAdminMenu(state, value) {
       state.showAdminMenu = value
+    },
+    setModuleTitle(state, title) {
+      state.moduleTitle = title
     }
   },
   actions: {
-    fetchAvatars({
-      commit,
-      state
-    }) {
+    fetchAvatars({ commit, state }) {
       if (Object.keys(state.avatars).length) {
         return state.avatars
       }
@@ -42,9 +46,7 @@ export default new Vuex.Store({
 
       commit('setAvatars', avatars)
     },
-    checkIfAdmin({
-      commit
-    }) {
+    checkIfAdmin({commit}) {
       return (window.location.href.indexOf("admin-dashboard") > -1) ? commit('setShowAdminMenu', true) :
         commit('setShowAdminMenu', false);
     }

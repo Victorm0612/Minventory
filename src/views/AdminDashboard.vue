@@ -1,11 +1,22 @@
 <template>
   <div>
-    <h1>Admin dashboard</h1>
+    <h1>{{ moduleTitle }}</h1>
+    <profile-component v-if="moduleTitle == 'Account' "></profile-component>
   </div>
 </template>
 
 <script>
+import ProfileComponent from "@/components/ProfileComponent.vue";
+
 export default {
   name: "AdminDashboard",
+  components: {
+    ProfileComponent
+  },
+  computed: {
+    moduleTitle() {
+      return this.$store.state.moduleTitle;
+    }
+  }
 };
 </script>
