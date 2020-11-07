@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       items: [
-        { title: "Dashboard", icon: "fas fa-columns"},
+        { title: "Panel de control", icon: "fas fa-columns"},
         { title: "Cuenta", icon: "fas fa-user-circle"},
         { title: "Empleados", icon: "fas fa-users"},
         { title: "Gastos", icon: "fas fa-hand-holding-usd"},
