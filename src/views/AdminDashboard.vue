@@ -79,9 +79,9 @@ h1 {
 }
 
 .custom4cols {
-  width: 76.5%;
-  max-width: 76.5%;
-  flex-basis: 76.5%;
-  flex-wrap: unset;
+  width: 76.5% !important;
+  max-width: 76.5% !important;
+  flex-basis: 76.5% !important;
+  flex-wrap: unset !important;
 }
 </style>
