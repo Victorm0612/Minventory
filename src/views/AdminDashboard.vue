@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>{{ moduleTitle }}</h1>
-    <profile-component v-if="moduleTitle == 'Account' "></profile-component>
+    <profile-component v-if="moduleTitle == 'Cuenta' "></profile-component>
   </div>
 </template>
 
