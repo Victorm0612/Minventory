@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     avatars: {},
     showAdminMenu: false,
-    moduleTitle: "Dashboard"
+    moduleTitle: "Panel de control"
   },
   getters: {
     showAdminMenu(state) {
