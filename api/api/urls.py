@@ -31,4 +31,5 @@ urlpatterns = [
 
     url(r'^task/$', taskviews.task_list),
     url(r'^task/(?P<pk>[0-9]+)/$', taskviews.task_detail),
+    url(r'^task/employeetask/(?P<fk>[0-9]+)/$', taskviews.employee_task)
 ]

@@ -5,6 +5,7 @@ from rest_framework.parsers import JSONParser
 from api.models.taskmodels import Task
 from api.serializers.taskserializer import TaskSerializer
 
+
 class JSONResponse(HttpResponse):
     """
     An HttpResponse that renders its content into JSON.
@@ -50,3 +51,14 @@ def task_detail(request, pk):
     elif request.method == 'DELETE':
         task.delete()
         return HttpResponse(status=204)
+
+
+@csrf_exempt
+def employee_task(request, fk):
+    try:
+        task = Task.objects.filter(fkAssignment_worker=fk)
+    except Task.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'GET':
+        serializer = TaskSerializer(task, many=True)
+        return JSONResponse(serializer.data)
