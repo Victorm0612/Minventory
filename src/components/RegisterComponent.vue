@@ -128,7 +128,7 @@
                       </v-col>
                       <v-col cols="12">
                         <v-btn
-                          :disabled="false"
+                          :disabled="!valid"
                           depressed
                           class="text-none px-5"
                           color="primary"

@@ -14,10 +14,6 @@ function getUsers(id) {
 
 function createUser(user) {
     return axios.post('register/', {
-        headers: {
-            "Authorization": 'Token ' + store.getters.retrieveToken,
-        }
-    }, {
         name: user.getName(),
         last_name: user.getLastName(),
         document_number: user.getDocumentNumber(),
