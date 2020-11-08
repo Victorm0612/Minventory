@@ -4,7 +4,9 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.requestquotationmodels import RequestQuotation
 from api.serializers.requestquotationserializer import RequestQuotationSerializer
-from django.core import serializers
+from django.views.decorators.csrf import csrf_protect
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 class JSONResponse(HttpResponse):
     """
@@ -17,7 +19,9 @@ class JSONResponse(HttpResponse):
         super(JSONResponse, self).__init__(content, **kwargs)
 
 
-@csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+@csrf_protect
 def quotation_list(request):
     if request.method == 'GET':
         quotations = RequestQuotation.objects.all()
@@ -32,7 +36,9 @@ def quotation_list(request):
         return JSONResponse(serializer.errors, status=400)
 
 
-@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
+@csrf_protect
 def quotation_detail(request, pk):
     try:
         quotation = RequestQuotation.objects.get(pk=pk)
@@ -53,7 +59,9 @@ def quotation_detail(request, pk):
         return HttpResponse(status=204)
 
 
-@csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@csrf_protect
 def user_quotation(request, fk):
     try:
         quotation = RequestQuotation.objects.filter(fkUser_id=fk)
