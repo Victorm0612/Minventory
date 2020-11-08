@@ -9,6 +9,8 @@ export default new Vuex.Store({
         avatars: {},
         token: localStorage.getItem('access_token') || null,
         id_user: localStorage.getItem('id_user') || null,
+        showAdminMenu: false,
+        moduleTitle: "Panel de control"
     },
     getters: {
         loggedIn(state) {
@@ -19,6 +21,12 @@ export default new Vuex.Store({
         },
         retrieveToken(state) {
             return state.token
+        },
+        showAdminMenu(state) {
+            return state.showAdminMenu
+        },
+        moduleTitle(state) {
+            return state.moduleTitle
         }
     },
     mutations: {
@@ -31,6 +39,12 @@ export default new Vuex.Store({
         destroyToken(state) {
             state.token = null
             state.id_user = null
+        },
+        setShowAdminMenu(state, value) {
+            state.showAdminMenu = value
+        },
+        setModuleTitle(state, title) {
+            state.moduleTitle = title
         },
         retrieveId(state, id) {
             state.id_user = id
@@ -65,7 +79,10 @@ export default new Vuex.Store({
                     })
             })
         },
-        fetchAvatars({ commit, state }) {
+        fetchAvatars({
+            commit,
+            state
+        }) {
             if (Object.keys(state.avatars).length) {
                 return state.avatars
             }
@@ -80,6 +97,12 @@ export default new Vuex.Store({
             })
 
             commit('setAvatars', avatars)
+        },
+        checkIfAdmin({
+            commit
+        }) {
+            return (window.location.href.indexOf("admin-dashboard") > -1) ? commit('setShowAdminMenu', true) :
+                commit('setShowAdminMenu', false);
         }
     },
     modules: {}
