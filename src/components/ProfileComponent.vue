@@ -162,7 +162,7 @@
                   <v-btn
                     v-if="editProfile"
                     color="primary"
-                    @click="editProfile = false"
+                    @click="saveChange"
                     :disabled="!valid"
                   >
                     Guardar Cambios
@@ -189,6 +189,8 @@
 
 <script>
 import AvatarPicker from "@/components/AvatarPicker.vue";
+import api from "@/api";
+import User from "@/classes/user";
 export default {
   name: "ProfileComponent",
   components: { AvatarPicker },
@@ -198,17 +200,17 @@ export default {
       loading: false,
       valid: true,
       form: {
-        firstName: "John",
-        lastName: "Doe",
-        email: "john@doe.com",
-        password: "aaaA23456#",
-        confirmPassword: "aaaA23456#",
-        mobile: 3014705281,
-        documentType: "Cédula de Ciudadania",
-        documentNumber: 123456789,
-        address: "some address",
-        gender: "Masculino",
-        avatar: "MALE_CAUCASIAN_BLACK_BEARD"
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        mobile: 0,
+        documentType: "",
+        documentNumber: 0,
+        address: "",
+        gender: "",
+        avatar: "DEFAULT"
       },
       formBeforeEdit: {},
       showAvatarPicker: false,
@@ -226,6 +228,23 @@ export default {
   },
   created() {
     this.formBeforeEdit = Object.assign({}, this.form);
+  },
+  mounted(){
+    return api
+      .getUsers(this.$store.getters.retrieveId)
+      .then(res=>{
+        console.log("se supone que se hizo.")
+        this.form.firstName= res.data.name
+        this.form.lastName= res.data.last_name
+        this.form.email= res.data.email
+        this.form.password= res.data.password
+        this.form.confirmPassword= res.data.password
+        this.form.mobile= res.data.phone
+        this.form.documentType= res.data.type
+        this.form.documentNumber= res.data.document_number
+        this.form.address= res.data.address
+        this.form.gender= res.data.gender
+      })
   },
   computed: {
     passwordConfirmationRule() {
@@ -275,7 +294,30 @@ export default {
     },
     selectAvatar(avatar) {
       this.form.avatar = avatar;
+    },
+    saveChange(evt){
+      evt.preventDefault();
+      let user = new User(
+        this.form.firstName,
+        this.form.lastName,
+        this.form.documentNumber,
+        this.form.mobile,
+        this.form.email,
+        this.form.password,
+        this.form.address,
+        this.form.gender,
+      );
+      return api
+        .updateUser(user)
+        .then(res => {
+          console.log("post response: " + res.data);
+          this.editProfile = false
+        })
+        .catch((e) => {
+          console.log(e)
+        });
     }
+    
   }
 };
 </script>

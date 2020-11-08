@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import axios from "axios"
+import api from "@/api";
 export default {
   name: "NavBar",
   data() {
@@ -63,8 +63,8 @@ export default {
   },
     updated(){
       if(this.$store.getters.loggedIn){
-        axios.defaults.headers.common['Authorization'] = 'Token '+ this.$store.getters.retrieveToken
-        axios.get('user/'+this.$store.getters.retrieveId)
+        return api
+        .getUsers(this.$store.getters.retrieveId)
         .then(res=>{
           this.name=res.data.name
         })
