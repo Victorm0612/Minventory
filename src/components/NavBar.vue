@@ -1,34 +1,54 @@
 <template>
-  <div id="nav-bar" class="mx-auto overflow-hidden">
+  <div id="nav-bar" class="mx-auto overflow-hidden ">
     <v-app-bar color="#0277BD" dark fixed>
       <router-link to="/">
-        <v-toolbar-title id="title">MINVENTORY</v-toolbar-title>
+        <img width="90" height="90" alt="Vue logo" :src="require('@/assets/VidrioVargas.png')"/>
       </router-link>
-      <v-app-bar-nav-icon class="right-position" @click="drawer = true"></v-app-bar-nav-icon>
+      <v-spacer></v-spacer>
+      <v-btn outlined id="menu" v-if="!loggedIn" to="Login">Iniciar Sesión</v-btn>
+      <v-btn outlined id="menu" v-if="!loggedIn" to="Register">Registrarse</v-btn>
+      <v-menu  v-if="loggedIn" :nudge-top="-5" transition="slide-y-transition" offset-y center> 
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn 
+            v-ripple="{ class: 'transparent--text' }" 
+            icon
+            id="userMenu" 
+            style="margin-right: 3rem; text-transform: capitalize;"
+            v-bind="attrs"
+            v-on="on">
+            <v-avatar size="46" class="mr-1">
+              <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John">
+            </v-avatar>
+            <span>{{name}}</span>
+            <v-icon right>
+              fas fa-angle-down
+            </v-icon>
+          </v-btn>
+        </template>
+        <v-list nav-dense>
+          <v-list-item-group active-class="deep-purple--text text--accent-4">
+            <v-list-item v-for="link in links" :key="link.text" @click="moveToRoute(link.route)">
+              <v-list-item-icon><v-icon>{{link.icon}}</v-icon></v-list-item-icon>
+              <v-list-item-title class="text-capitalize">{{link.text}}</v-list-item-title>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-menu>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" absolute temporary right>
-      <v-list nav-dense>
-        <v-list-item-group active-class="deep-purple--text text--accent-4">
-          <v-list-item v-for="link in links" :key="link.text" @click="moveToRoute(link.route)">
-            <v-list-item-icon><v-icon>{{link.icon}}</v-icon></v-list-item-icon>
-            <v-list-item-title class="text-capitalize">{{link.text}}</v-list-item-title>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-navigation-drawer>
   </div>
 </template>
 
 <script>
+import api from "@/api";
 export default {
   name: "NavBar",
   data() {
     return {
-      drawer: false,
+      name: "",
       links: [
         {icon: 'fas fa-home', text: 'Inicio', route:'Home'},
-        //{icon: 'fas fa-user-circle',text:'Perfil', route: 'Profile'},
-        {icon: 'fas fa-sign-in-alt', text: 'Iniciar Sesión', route:'Login'}
+        {icon: 'fas fa-user-circle',text:'Perfil', route: 'Profile'},
+        {icon: 'fas fa-sign-out-alt', text: 'Cerrar Sesión', route:'Logout'}
       ]
     };
   },
@@ -39,18 +59,33 @@ export default {
       } else {
         this.drawer = false;
       }
+    },
+  },
+    updated(){
+      if(this.$store.getters.loggedIn){
+        return api
+        .getUsers(this.$store.getters.retrieveId)
+        .then(res=>{
+          this.name=res.data.name
+        })
+      }
+    },
+  computed: {
+    loggedIn(){
+      return this.$store.getters.loggedIn
     }
-  }
+  },
 };
 </script>
 
 <style>
-#title{
-  color: #ffffff;
-  text-decoration: none;
-}
-.right-position {
+#menu{
+  color: #ffff;
   margin-left: auto;
-  margin-right: 0;
+  margin-right: 1rem;
+  text-transform: capitalize;
+}
+#userMenu::before {
+  background-color: transparent !important;
 }
 </style>

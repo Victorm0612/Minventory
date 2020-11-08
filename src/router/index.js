@@ -4,6 +4,10 @@ import Home from "../views/Home.vue";
 import Register from "../views/Register.vue";
 import ClientMain from "../views/ClientMain.vue";
 import Profile from "../views/Profile.vue";
+import Login from "../views/Login.vue";
+import Logout from "../views/Logout.vue";
+import About from "../views/About.vue";
+import store from "../store";
 import AdminDashboard from "../views/AdminDashboard.vue";
 
 Vue.use(VueRouter);
@@ -16,37 +20,51 @@ const routes = [{
     {
         path: "/register",
         name: "Register",
-        component: Register
+        component: Register,
+        meta: {
+            requiresVisitor: true,
+        }
     },
     {
         path: "/client-main",
         name: "ClientMain",
-        component: ClientMain
+        component: ClientMain,
+        meta: {
+            requiresAuth: true,
+        }
     },
     {
         path: "/about",
         name: "About",
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () =>
-            import ( /* webpackChunkName: "about" */ "../views/About.vue")
+        component: About
     },
     {
         path: "/login",
         name: "Login",
-        component: () =>
-            import ("../views/Login.vue")
+        component: Login,
+        meta: {
+            requiresVisitor: true,
+        }
     },
     {
         path: "/profile",
         name: "Profile",
-        component: Profile
+        component: Profile,
+        meta: {
+            requiresAuth: true,
+        }
+    },
+    {
+        path: "/logout",
+        name: "Logout",
+        component: Logout
+        
     },
     {
         path: "/admin-dashboard",
         name: "AdminDashboard",
         component: AdminDashboard
+        
     }
 ];
 
@@ -54,5 +72,27 @@ const router = new VueRouter({
     mode: 'history',
     routes
 });
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(route => route.meta.requiresAuth)) {
+        if (!store.getters.loggedIn) {
+            next({
+                name: 'Login',
+            })
+        } else {
+            next()
+        }
+    } else if (to.matched.some(record => record.meta.requiresVisitor)) {
+        if (store.getters.loggedIn) {
+            next({
+                name: 'Home'
+            })
+        } else {
+            next()
+        }
+    } else {
+        next()
+    }
+})
 
 export default router;
