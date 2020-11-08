@@ -5,15 +5,31 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    avatars: {}
+    avatars: {},
+    showAdminMenu: false,
+    moduleTitle: "Panel de control"
+  },
+  getters: {
+    showAdminMenu(state) {
+      return state.showAdminMenu
+    },
+    moduleTitle(state) {
+      return state.moduleTitle
+    }
   },
   mutations: {
-    setAvatars (state, avatars) {
+    setAvatars(state, avatars) {
       state.avatars = avatars
+    },
+    setShowAdminMenu(state, value) {
+      state.showAdminMenu = value
+    },
+    setModuleTitle(state, title) {
+      state.moduleTitle = title
     }
   },
   actions: {
-    fetchAvatars ({ commit, state }) {
+    fetchAvatars({ commit, state }) {
       if (Object.keys(state.avatars).length) {
         return state.avatars
       }
@@ -29,6 +45,10 @@ export default new Vuex.Store({
       })
 
       commit('setAvatars', avatars)
+    },
+    checkIfAdmin({commit}) {
+      return (window.location.href.indexOf("admin-dashboard") > -1) ? commit('setShowAdminMenu', true) :
+        commit('setShowAdminMenu', false);
     }
   },
   modules: {}
