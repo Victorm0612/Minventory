@@ -2,7 +2,7 @@
   <div id="nav-bar" class="mx-auto overflow-hidden ">
     <v-app-bar color="#0277BD" dark fixed>
       <router-link to="/">
-        <img width="90" height="90" alt="Vue logo" src="..\assets\VidrioVargas.png"/>
+        <img width="90" height="90" alt="Vue logo" :src="require('@/assets/VidrioVargas.png')"/>
       </router-link>
       <v-spacer></v-spacer>
       <v-btn outlined id="menu" v-if="!loggedIn" to="Login">Iniciar Sesión</v-btn>
