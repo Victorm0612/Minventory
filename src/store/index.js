@@ -7,11 +7,18 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         avatars: {},
-        token: localStorage.getItem('access_token') || null
+        token: localStorage.getItem('access_token') || null,
+        id_user: localStorage.getItem('id_user') || null,
     },
     getters: {
         loggedIn(state) {
             return state.token !== null
+        },
+        retrieveId(state) {
+            return state.id_user
+        },
+        retrieveToken(state) {
+            return state.token
         }
     },
     mutations: {
@@ -23,12 +30,17 @@ export default new Vuex.Store({
         },
         destroyToken(state) {
             state.token = null
+            state.id_user = null
+        },
+        retrieveId(state, id) {
+            state.id_user = id
         }
     },
     actions: {
         destroyToken(context) {
             if (context.getters.loggedIn) {
                 localStorage.removeItem('access_token')
+                localStorage.removeItem('id_user')
                 context.commit('destroyToken')
             }
         },
@@ -39,15 +51,16 @@ export default new Vuex.Store({
                         password: credentials.password,
                     })
                     .then(res => {
-                        console.log(res)
                         const token = res.data.access_token;
+                        const id_user = res.data.user.id;
                         localStorage.setItem('access_token', token)
+                        localStorage.setItem('id_user', id_user)
+                        context.commit('retrieveId', id_user)
                         context.commit('userLogin', token)
                         resolve(res)
 
                     })
                     .catch(err => {
-                        console.log(err)
                         reject(err)
                     })
             })
@@ -56,7 +69,6 @@ export default new Vuex.Store({
             if (Object.keys(state.avatars).length) {
                 return state.avatars
             }
-
             let avatars = {}
             let files = require.context('../assets/avatars', false, /\.png$/)
             files.keys().map((key) => {
