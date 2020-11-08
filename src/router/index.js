@@ -8,6 +8,7 @@ import Login from "../views/Login.vue";
 import Logout from "../views/Logout.vue";
 import About from "../views/About.vue";
 import store from "../store";
+import AdminDashboard from "../views/AdminDashboard.vue";
 
 Vue.use(VueRouter);
 
@@ -57,6 +58,13 @@ const routes = [{
         path: "/logout",
         name: "Logout",
         component: Logout
+        
+    },
+    {
+        path: "/admin-dashboard",
+        name: "AdminDashboard",
+        component: AdminDashboard
+        
     }
 ];
 
