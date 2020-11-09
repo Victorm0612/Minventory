@@ -113,7 +113,7 @@ def refresh_token_view(request):
         raise exceptions.AuthenticationFailed('No se encontro el usuario')
 
     if not user.is_active:
-        raise exceptions.AuthenticationFailed('El ususario esta incativo')
+        raise exceptions.AuthenticationFailed('El ususario esta inactivo')
 
 
     access_token = generate_access_token(user)
