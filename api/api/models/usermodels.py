@@ -13,9 +13,9 @@ class User(AbstractUser):
     MASCULINE = "masculino"
     DWTS = "prefiero_no_decirlo"
     OTHERG = "otro"
-    CC = "cedula_de_ciudadania"
-    CE = "cedula_de_extranjeria"
-    PSPT ="pasaporte"
+    CC = "cedula_de_ciudadania"	
+    CE = "cedula_de_extranjeria"	
+    PSPT ="pasaporte"	
     NIT ="nit"
     TYPE_GENDER = ((FEMALE, "Femenino"), (MASCULINE, "Masculino"), (DWTS, "Prefiero_no_decirlo"), (OTHERG, "Otro"))
     TYPE_DOCUMENT = ((CC,"Cedula_de_ciudadania"),(CE,"Cedula_de_extranjeria"),(PSPT,"Pasaporte"),(NIT,"NIT"))
@@ -37,4 +37,5 @@ class User(AbstractUser):
     gender = models.CharField(max_length=19, choices=TYPE_GENDER)
     type = models.TextField(max_length=8, choices=TYPE_CHOICES)
     last_login = models.DateTimeField(auto_now_add=True)
-  
+    actual_token = models.TextField(null=True)
+
