@@ -21,7 +21,6 @@ class JSONResponse(HttpResponse):
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def inventory_list(request):
     if request.method == 'GET':
         inventorys = Inventory.objects.all()
@@ -38,7 +37,6 @@ def inventory_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def inventory_detail(request, pk):
     try:
         inventory = Inventory.objects.get(pk=pk)

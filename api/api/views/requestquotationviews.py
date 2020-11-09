@@ -21,7 +21,6 @@ class JSONResponse(HttpResponse):
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def quotation_list(request):
     if request.method == 'GET':
         quotations = RequestQuotation.objects.all()
@@ -38,7 +37,6 @@ def quotation_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def quotation_detail(request, pk):
     try:
         quotation = RequestQuotation.objects.get(pk=pk)
@@ -61,7 +59,6 @@ def quotation_detail(request, pk):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def user_quotation(request, fk):
     try:
         quotation = RequestQuotation.objects.filter(fkUser_id=fk)

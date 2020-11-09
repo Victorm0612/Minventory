@@ -21,7 +21,6 @@ class JSONResponse(HttpResponse):
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def bill_list(request):
     if request.method == 'GET':
         bills = Bill.objects.all()
@@ -38,7 +37,6 @@ def bill_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def bill_detail(request, pk):
     try:
         bill = Bill.objects.get(pk=pk)
