@@ -1,4 +1,3 @@
-
 import jwt
 from rest_framework.authentication import BaseAuthentication
 from django.middleware.csrf import CsrfViewMiddleware
@@ -28,6 +27,9 @@ class SafeJWTAuthentication(BaseAuthentication):
             return None
         try:
             # header = 'Token xxxxxxxxxxxxxxxxxxxxxxxx'
+            user_t = User.objects.filter(actual_token=authorization_heaader.replace('Token ','')).first()
+            if user_t is None:
+                raise exceptions.AuthenticationFailed('Token is not correct')
             access_token = authorization_heaader.split(' ')[1]
             payload = jwt.decode(
                 access_token, settings.SECRET_KEY, algorithms=['HS256'])
@@ -44,18 +46,5 @@ class SafeJWTAuthentication(BaseAuthentication):
         if not user.is_active:
             raise exceptions.AuthenticationFailed('user is inactive')
 
-        self.enforce_csrf(request)
         return (user, None)
 
-    def enforce_csrf(self, request):
-        """
-        Enforce CSRF validation
-        """
-        check = CSRFCheck()
-        # populates request.META['CSRF_COOKIE'], which is used in process_view()
-        check.process_request(request)
-        reason = check.process_view(request, None, (), {})
-        print(reason)
-        if reason:
-            # CSRF failed, bail with explicit error message
-            raise exceptions.PermissionDenied('CSRF Failed: %s' % reason)
