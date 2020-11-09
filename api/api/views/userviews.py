@@ -121,3 +121,18 @@ def refresh_token_view(request):
     user.save()
 
     return Response({'access_token': access_token})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_view(request):
+    User = get_user_model()
+    user_id = request.data.get('id')
+    response = Response()
+    user = User.objects.get(pk=user_id)
+    if(user is None):
+        raise exceptions.AuthenticationFailed('Usuario no encontrado')
+    user.actual_token = ''
+    user.save()
+
+    return Response({'Status':'Sesion cerrada con exito.'})
+
