@@ -100,20 +100,20 @@ def refresh_token_view(request):
     refresh_token = request.COOKIES.get('refreshtoken')
     if refresh_token is None:
         raise exceptions.AuthenticationFailed(
-            'Las credenciales de autenticaci√≥n no fueron dadas.')
+            'Las credenciales de autenticacion no fueron dadas.')
     try:
         payload = jwt.decode(
             refresh_token, settings.REFRESH_TOKEN_SECRET, algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
         raise exceptions.AuthenticationFailed(
-            'El token expir√≥, por favor vuelve a iniciar sesi√≥n.')
+            'El token expiro, por favor vuelve a iniciar sesion.')
 
     user = User.objects.filter(id=payload.get('user_id')).first()
     if user is None:
-        raise exceptions.AuthenticationFailed('No se encontr√≥ el usuario')
+        raise exceptions.AuthenticationFailed('No se encontro el usuario')
 
     if not user.is_active:
-        raise exceptions.AuthenticationFailed('El ususario est√° incativo')
+        raise exceptions.AuthenticationFailed('El ususario esto incativo')
 
 
     access_token = generate_access_token(user)
