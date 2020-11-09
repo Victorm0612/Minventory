@@ -21,7 +21,6 @@ class JSONResponse(HttpResponse):
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def status_list(request):
     if request.method == 'GET':
         status = Status.objects.all()
@@ -38,7 +37,6 @@ def status_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def status_detail(request, pk):
     try:
         statu = Status.objects.get(pk=pk)

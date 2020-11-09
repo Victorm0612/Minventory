@@ -21,7 +21,6 @@ class JSONResponse(HttpResponse):
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def task_list(request):
     if request.method == 'GET':
         tasks = Task.objects.all()
@@ -38,7 +37,6 @@ def task_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def task_detail(request, pk):
     try:
         task = Task.objects.get(pk=pk)
@@ -61,7 +59,6 @@ def task_detail(request, pk):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def employee_task(request, fk):
     try:
         task = Task.objects.filter(fkAssignment_worker=fk)

@@ -21,7 +21,6 @@ class JSONResponse(HttpResponse):
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def element_list(request):
     if request.method == 'GET':
         elements = Element.objects.all()
@@ -38,7 +37,6 @@ def element_list(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def element_detail(request, pk):
     try:
         element = Element.objects.get(pk=pk)
