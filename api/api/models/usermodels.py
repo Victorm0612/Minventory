@@ -13,15 +13,22 @@ class User(AbstractUser):
     MASCULINE = "masculino"
     DWTS = "prefiero_no_decirlo"
     OTHERG = "otro"
+    CC = "cedula_de_ciudadania"	
+    CE = "cedula_de_extranjeria"	
+    PSPT ="pasaporte"	
+    NIT ="nit"
     TYPE_GENDER = ((FEMALE, "Femenino"), (MASCULINE, "Masculino"), (DWTS, "Prefiero_no_decirlo"), (OTHERG, "Otro"))
+    TYPE_DOCUMENT = ((CC,"Cedula_de_ciudadania"),(CE,"Cedula_de_extranjeria"),(PSPT,"Pasaporte"),(NIT,"NIT"))
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+    avatar = models.TextField(default="avatar_DEFAULT")
 
     OnlyLetters = RegexValidator(r'^[a-zA-Z ]+$', 'Only letters.')
 
     username = None
     name = models.TextField(max_length=50, validators=[OnlyLetters])
     last_name = models.TextField(max_length=50, validators=[OnlyLetters])
+    document_type = models.CharField(max_length=21, choices=TYPE_DOCUMENT)
     document_number = models.IntegerField(unique=True)
     phone = models.IntegerField(unique=True)
     email = models.EmailField(max_length=200, unique=True)
