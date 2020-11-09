@@ -11,7 +11,7 @@ class TaskSerializer(serializers.ModelSerializer):
         try:
             user = User.objects.get(email=idUsuario)
         except User.DoesNotExist:
-            raise serializers.ValidationError({"user_email": "Ese usuario no se encuentra en el sistema"})
+            raise serializers.ValidationError({"user_email": "El usuario no se encuentra en el sistema"})
 
         serializer = UserSerializer(user)
         datos = serializer.data
@@ -19,7 +19,7 @@ class TaskSerializer(serializers.ModelSerializer):
         tipoUsuario = datos.get('type')
 
         if tipoUsuario != 3:
-            raise serializers.ValidationError({"user_type": "Ese usuario no es empleado"})
+            raise serializers.ValidationError({"user_type": "El usuario no es empleado"})
 
         return data
 
