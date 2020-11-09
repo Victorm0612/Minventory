@@ -37,17 +37,15 @@ def create_user(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def user_list(request):
     if request.method == 'GET':
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return JSONResponse(serializer.data)
-    
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
-@csrf_protect
 def user_detail(request, pk):
     try:
         user = User.objects.get(pk=pk)
@@ -69,7 +67,6 @@ def user_detail(request, pk):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@ensure_csrf_cookie
 def login_view(request):
     User = get_user_model()
     email = request.data.get('email')
@@ -91,32 +88,36 @@ def login_view(request):
         'access_token': access_token,
         'user': serialized_user,
     }
+    user.actual_token = access_token
+    user.save()
 
     return response
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@csrf_protect
 def refresh_token_view(request):
     User = get_user_model()
     refresh_token = request.COOKIES.get('refreshtoken')
     if refresh_token is None:
         raise exceptions.AuthenticationFailed(
-            'Las credenciales de autenticación no fueron dadas.')
+            'Las credenciales de autenticaci√≥n no fueron dadas.')
     try:
         payload = jwt.decode(
             refresh_token, settings.REFRESH_TOKEN_SECRET, algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
         raise exceptions.AuthenticationFailed(
-            'El token expiró, por favor vuelve a iniciar sesión.')
+            'El token expir√≥, por favor vuelve a iniciar sesi√≥n.')
 
     user = User.objects.filter(id=payload.get('user_id')).first()
     if user is None:
-        raise exceptions.AuthenticationFailed('No se encontró el usuario')
+        raise exceptions.AuthenticationFailed('No se encontr√≥ el usuario')
 
     if not user.is_active:
-        raise exceptions.AuthenticationFailed('El ususario está incativo')
+        raise exceptions.AuthenticationFailed('El ususario est√° incativo')
 
 
     access_token = generate_access_token(user)
+    user.actual_token = access_token
+    user.save()
+
     return Response({'access_token': access_token})
