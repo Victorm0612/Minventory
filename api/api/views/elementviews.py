@@ -1,11 +1,13 @@
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.elementmodels import Element
 from api.serializers.elementserializer import ElementSerializer
+from django.views.decorators.csrf import csrf_protect, csrf_exempt, ensure_csrf_cookie
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
-# Trabajar a partir de aqui
+
 class JSONResponse(HttpResponse):
     """
     An HttpResponse that renders its content into JSON.
@@ -17,7 +19,9 @@ class JSONResponse(HttpResponse):
         super(JSONResponse, self).__init__(content, **kwargs)
 
 
-@csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+@csrf_protect
 def element_list(request):
     if request.method == 'GET':
         elements = Element.objects.all()
@@ -32,13 +36,13 @@ def element_list(request):
         return JSONResponse(serializer.errors, status=400)
 
 
-@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
+@csrf_protect
 def element_detail(request, pk):
     try:
         element = Element.objects.get(pk=pk)
-
     except Element.DoesNotExist:
-
         return HttpResponse(status=404)
     if request.method == 'GET':
         serializer = ElementSerializer(element)
@@ -53,4 +57,3 @@ def element_detail(request, pk):
     elif request.method == 'DELETE':
         element.delete()
         return HttpResponse(status=204)
-

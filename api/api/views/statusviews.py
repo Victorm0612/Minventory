@@ -4,6 +4,9 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.statusmodels import Status
 from api.serializers.statusserializer import StatusSerializer
+from django.views.decorators.csrf import csrf_protect
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 class JSONResponse(HttpResponse):
     """
@@ -16,7 +19,9 @@ class JSONResponse(HttpResponse):
         super(JSONResponse, self).__init__(content, **kwargs)
 
 
-@csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+@csrf_protect
 def status_list(request):
     if request.method == 'GET':
         status = Status.objects.all()
@@ -31,7 +36,9 @@ def status_list(request):
         return JSONResponse(serializer.errors, status=400)
 
 
-@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
+@csrf_protect
 def status_detail(request, pk):
     try:
         statu = Status.objects.get(pk=pk)
