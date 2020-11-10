@@ -17,9 +17,9 @@
             v-bind="attrs"
             v-on="on">
             <v-avatar size="46" class="mr-1">
-              <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John">
+              <img :src="require('@/assets/avatars/avatar_' + user.avatar + '.png')" alt="Avatar"/>
             </v-avatar>
-            <span>{{name}}</span>
+            <span>{{user.name}}</span>
             <v-icon right>
               fas fa-angle-down
             </v-icon>
@@ -44,7 +44,11 @@ export default {
   name: "NavBar",
   data() {
     return {
-      name: "",
+      user:{
+        avatar: "DEFAULT",
+        name: "",
+      },
+
       links: [
         {icon: 'fas fa-home', text: 'Inicio', route:'Home'},
         {icon: 'fas fa-user-circle',text:'Perfil', route: 'Profile'},
@@ -61,12 +65,13 @@ export default {
       }
     },
   },
-    updated(){
+    created(){
       if(this.$store.getters.loggedIn){
         return api
         .getUsers(this.$store.getters.retrieveId)
         .then(res=>{
-          this.name=res.data.name
+          this.user.name=res.data.name
+          this.user.avatar=res.data.avatar
         })
       }
     },

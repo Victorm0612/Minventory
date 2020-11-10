@@ -233,14 +233,14 @@ export default {
     return api
       .getUsers(this.$store.getters.retrieveId)
       .then(res=>{
-        console.log("se supone que se hizo.")
+        this.form.avatar=res.data.avatar
         this.form.firstName= res.data.name
         this.form.lastName= res.data.last_name
         this.form.email= res.data.email
         this.form.password= res.data.password
         this.form.confirmPassword= res.data.password
         this.form.mobile= res.data.phone
-        this.form.documentType= res.data.type
+        this.form.documentType= res.data.document_type
         this.form.documentNumber= res.data.document_number
         this.form.address= res.data.address
         this.form.gender= res.data.gender
@@ -298,23 +298,28 @@ export default {
     saveChange(evt){
       evt.preventDefault();
       let user = new User(
+        this.form.avatar,
         this.form.firstName,
         this.form.lastName,
+        this.form.documentType,
         this.form.documentNumber,
         this.form.mobile,
         this.form.email,
         this.form.password,
         this.form.address,
         this.form.gender,
+        2
       );
       return api
         .updateUser(user)
         .then(res => {
-          console.log("post response: " + res.data);
+          console.log("post response: " + res);
           this.editProfile = false
         })
-        .catch((e) => {
-          console.log(e)
+        .catch((error) => {
+            if (error.response.status == 403 && error.response.detail == 'access_token expired') {
+                console.log('Ya venció')
+            }
         });
     }
     

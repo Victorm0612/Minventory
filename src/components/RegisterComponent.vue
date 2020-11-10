@@ -254,18 +254,24 @@ export default {
         return true;
       }
     },
+    deleteAccents: function(word){
+      const accents = {'á':'a','é':'e','í':'i','ó':'o','ú':'u','Á':'A','É':'E','Í':'I','Ó':'O','Ú':'U'};
+      return word.split('').map( letter => accents[letter] || letter).join('').toString();	
+      },
     saveUser(evt) {
       evt.preventDefault();
       let user = new User(
+        null,
         this.firstname,
         this.lastname,
+        this.deleteAccents(this.docTypeValue).toLowerCase().replace(/ /g, "_"),
         this.documentnumber,
         this.mobile,
         this.email,
         this.password,
         this.address,
         this.gender.toLowerCase().replace(/ /g, "_"),
-        3
+        2
       );
       return api
         .createUser(user)

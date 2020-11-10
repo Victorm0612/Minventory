@@ -53,9 +53,23 @@ export default new Vuex.Store({
     actions: {
         destroyToken(context) {
             if (context.getters.loggedIn) {
-                localStorage.removeItem('access_token')
-                localStorage.removeItem('id_user')
-                context.commit('destroyToken')
+                return new Promise((resolve, reject) => {
+                    axios.post('logout/', { id: context.getters.retrieveId }, {
+                            headers: {
+                                "Authorization": 'Token ' + context.getters.retrieveToken,
+                            }
+                        })
+                        .then(res => {
+                            localStorage.removeItem('access_token')
+                            localStorage.removeItem('id_user')
+                            context.commit('destroyToken')
+                            resolve(res)
+
+                        })
+                        .catch(err => {
+                            reject(err)
+                        })
+                })
             }
         },
         userLogin(context, credentials) {

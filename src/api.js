@@ -16,6 +16,7 @@ function createUser(user) {
     return axios.post('register/', {
         name: user.getName(),
         last_name: user.getLastName(),
+        document_type: user.getDocumentType(),
         document_number: user.getDocumentNumber(),
         phone: user.getPhone(),
         email: user.getEmail(),
@@ -30,12 +31,10 @@ function createUser(user) {
 
 function updateUser(user) {
     return axios.put('user/' + store.getters.retrieveId + '/', {
-            headers: {
-                "Authorization": 'Token ' + store.getters.retrieveToken,
-            }
-        }, {
+            avatar: user.getAvatar(),
             name: user.getName(),
             last_name: user.getLastName(),
+            document_type: user.getDocumentType(),
             document_number: user.getDocumentNumber(),
             phone: user.getPhone(),
             email: user.getEmail(),
@@ -43,8 +42,17 @@ function updateUser(user) {
             address: user.getAddress(),
             gender: user.getGender(),
             type: user.getType()
+        }, {
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveToken,
+            }
         })
         .then(res => console.log(res))
+        .catch((error) => {
+            if (error.response.status == 403 && error.response.detail == 'access_token expired') {
+                this.$router.push({ name: 'Logout' });
+            }
+        })
 }
 
 function createRequestQuotation(request_quotation) {
