@@ -154,14 +154,14 @@
       </v-card>
     </v-dialog>
     <v-dialog v-model="alertDialog" width="300">
-          <v-alert
-            style="margin-bottom: 0;"
-            type="error"
-            transition="scale-transition"
-          >
-            {{ alertMessage }}
-          </v-alert>
-        </v-dialog>
+      <v-alert
+        style="margin-bottom: 0;"
+        type="error"
+        transition="scale-transition"
+      >
+        {{ alertMessage }}
+      </v-alert>
+    </v-dialog>
   </v-row>
 </template>
 
@@ -206,8 +206,37 @@ export default {
     events: [],
     rules: [value => !!value || "Este campo no puede estar vacio"],
     incompleteData: false,
-    request_quotation: {}
+    request_quotation: {},
+    quotations_dates: []
   }),
+  created() {
+    return api
+      .getQuotationsByID()
+      .then(res => {
+        this.quotations_dates = res.data;
+      })
+      .finally(() => {
+        this.quotations_dates.forEach(element => {
+          this.createStart = new Date(
+            `${element.scheduled_date}T${element.time_range.substring(0, 5)}:00`
+          );
+          this.createEvent = {};
+          this.createEvent = {
+            name: "Solicitud de cotización",
+            color: "cyan",
+            start: this.createStart,
+            end: this.createStart,
+            service_type: element.service_type,
+            description: element.description,
+            timed: true
+          };
+          this.events.push(this.createEvent);
+        });
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  },
   mounted() {
     this.$refs.calendar.checkChange();
   },
@@ -257,11 +286,13 @@ export default {
         this.newRequestQuotation();
         this.confirmDialog = false;
       }
-      
     },
     drawEvent() {
       this.createStart = new Date(
-        `${this.eventDate}T${this.availability[this.selection].substring(0, 5)}:00`
+        `${this.eventDate}T${this.availability[this.selection].substring(
+          0,
+          5
+        )}:00`
       );
       this.createEvent = {};
       this.createEvent = {
@@ -283,13 +314,16 @@ export default {
         false,
         this.cbServiceType,
         this.taDescription,
-        1
+        this.$store.getters.retrieveId
       );
       return api
         .createRequestQuotation(request_quotation)
         .then(resp =>
           resp.status == 400
-            ? (this.alertDialog = true) && (this.alertMessage = resp.data.scheduled_date_and_time_range[0]) && (this.confirmDialog = false)
+            ? (this.alertDialog = true) &&
+              (this.alertMessage =
+                resp.data.scheduled_date_and_time_range[0]) &&
+              (this.confirmDialog = false)
             : this.drawEvent()
         );
     },

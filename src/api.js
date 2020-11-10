@@ -55,6 +55,10 @@ function createRequestQuotation(request_quotation) {
             service_type: request_quotation.getServiceType(),
             description: request_quotation.getDescription(),
             fkUser_id: request_quotation.getUser()
+        }, {
+            headers: {
+                'Authorization': 'Token ' + store.getters.retrieveToken,
+            }
         })
         .then(response => response)
         .catch((error) => {
@@ -64,9 +68,22 @@ function createRequestQuotation(request_quotation) {
         })
 }
 
+function getQuotationsByID() {
+    return axios.get('quotation/user-quotation/' + store.getters.retrieveId, {
+        headers: {
+            "Authorization": 'Token ' + store.getters.retrieveToken,
+        }
+    })
+    .catch((error) => {
+        console.log("Error when getting users: " + error);
+    })
+}
+
+
 export default {
     getUsers,
     createUser,
     createRequestQuotation,
     updateUser,
+    getQuotationsByID,
 }
