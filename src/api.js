@@ -70,15 +70,35 @@ function createRequestQuotation(request_quotation) {
 
 function getQuotationsByID() {
     return axios.get('quotation/user-quotation/' + store.getters.retrieveId, {
-        headers: {
-            "Authorization": 'Token ' + store.getters.retrieveToken,
-        }
-    })
-    .catch((error) => {
-        console.log("Error when getting users: " + error);
-    })
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveToken,
+            }
+        })
+        .catch((error) => {
+            console.log("Error when getting users: " + error);
+        })
 }
 
+function updateQuotationByID(id, request_quotation, scheduled_date) {
+    return axios.put('quotation/' + id + '/', {
+            scheduled_date: scheduled_date,
+            time_range: request_quotation.getTimeRange(),
+            approved: request_quotation.getApproved(),
+            service_type: request_quotation.getServiceType(),
+            description: request_quotation.getDescription(),
+            fkUser_id: request_quotation.getUser()
+        }, {
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveToken,
+            }
+        })
+        .then(response => response)
+        .catch((error) => {
+            if (error.response) {
+                return error.response;
+            }
+        })
+}
 
 export default {
     getUsers,
@@ -86,4 +106,5 @@ export default {
     createRequestQuotation,
     updateUser,
     getQuotationsByID,
+    updateQuotationByID,
 }

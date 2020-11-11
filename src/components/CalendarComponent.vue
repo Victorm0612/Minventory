@@ -36,7 +36,7 @@
             <v-toolbar :color="selectedEvent.color" dark>
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-btn icon class="right-position">
+              <v-btn icon class="right-position" @click="editQuotation">
                 <v-icon>far fa-edit</v-icon>
               </v-btn>
             </v-toolbar>
@@ -49,6 +49,8 @@
               <span>Descripción: {{ selectedEvent.description }}</span>
               <br />
               <span>Fecha: {{ selectedEvent.start }}</span>
+              <br />
+              <span>Rango de tiempo: {{ selectedEvent.time_range }}</span>
               <br />
             </v-card-text>
             <v-card-actions>
@@ -66,7 +68,7 @@
     </v-col>
     <v-dialog v-model="quotationDialog" max-width="500px">
       <v-card>
-        <v-card-title>Solicitud de cotización</v-card-title>
+        <v-card-title>{{ dialogTitle }}</v-card-title>
         <v-card-text>
           <v-select
             v-model="cbServiceType"
@@ -141,7 +143,7 @@
             color="primary"
             text
             @click="confirmQuotation"
-            >Confirmar</v-btn
+            >{{ confirmBtnTitle }}</v-btn
           >
           <v-btn
             class="right-position"
@@ -175,10 +177,13 @@ export default {
     alertMessage: "",
     focus: "",
     type: "month",
+    dialogTitle: "",
+    confirmBtnTitle: "",
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
     eventCanceled: false,
+    eventId: 0,
     eventDate: "",
     createEvent: null,
     createStart: null,
@@ -210,32 +215,7 @@ export default {
     quotations_dates: []
   }),
   created() {
-    return api
-      .getQuotationsByID()
-      .then(res => {
-        this.quotations_dates = res.data;
-      })
-      .finally(() => {
-        this.quotations_dates.forEach(element => {
-          this.createStart = new Date(
-            `${element.scheduled_date}T${element.time_range.substring(0, 5)}:00`
-          );
-          this.createEvent = {};
-          this.createEvent = {
-            name: "Solicitud de cotización",
-            color: "cyan",
-            start: this.createStart,
-            end: this.createStart,
-            service_type: element.service_type,
-            description: element.description,
-            timed: true
-          };
-          this.events.push(this.createEvent);
-        });
-      })
-      .catch(e => {
-        console.log(e);
-      });
+    this.getQuotationsByID();
   },
   mounted() {
     this.$refs.calendar.checkChange();
@@ -270,6 +250,8 @@ export default {
     },
     newEvent({ date }) {
       this.eventCanceled = false;
+      this.dialogTitle = "Solicitud de Cotización";
+      this.confirmBtnTitle = "Confirmar";
       this.quotationDialog = true;
       this.eventDate = date;
     },
@@ -296,12 +278,15 @@ export default {
       );
       this.createEvent = {};
       this.createEvent = {
+        id: this.eventId,
         name: "Solicitud de cotización",
         color: "cyan",
+        scheduled_date: this.eventDate,
         start: this.createStart,
         end: this.createStart,
         service_type: this.cbServiceType,
         description: this.taDescription,
+        time_range: this.availability[this.selection],
         timed: true
       };
       this.events.push(this.createEvent);
@@ -316,16 +301,36 @@ export default {
         this.taDescription,
         this.$store.getters.retrieveId
       );
-      return api
-        .createRequestQuotation(request_quotation)
-        .then(resp =>
-          resp.status == 400
-            ? (this.alertDialog = true) &&
-              (this.alertMessage =
-                resp.data.scheduled_date_and_time_range[0]) &&
-              (this.confirmDialog = false)
-            : this.drawEvent()
-        );
+      if (this.confirmBtnTitle == "Confirmar") {
+        return api.createRequestQuotation(request_quotation).then(resp => {
+          if (resp.status == 400) {
+            this.alertDialog = true;
+            this.alertMessage = resp.data.scheduled_date_and_time_range[0];
+            this.confirmDialog = false;
+          } else {
+            this.eventId = resp.data.id;
+            this.drawEvent();
+          }
+        });
+      } else if (this.confirmBtnTitle == "Guardar") {
+        return api
+          .updateQuotationByID(
+            this.selectedEvent.id,
+            request_quotation,
+            this.selectedEvent.scheduled_date
+          )
+          .then(resp => {
+            if (resp.status == 400) {
+              this.alertDialog = true;
+              this.alertMessage = resp.data;
+              this.confirmDialog = false;
+            } else {
+              this.events = [];
+              this.getQuotationsByID();
+              this.closeQuotation();
+            }
+          });
+      }
     },
     validateData() {
       if (this.cbServiceType != "" && this.taDescription != "") {
@@ -333,6 +338,50 @@ export default {
       } else {
         this.incompleteData = true;
       }
+    },
+    editQuotation() {
+      this.eventCanceled = false;
+      this.selectedOpen = false;
+      this.dialogTitle = "Editar Solicitud de Cotización";
+      this.confirmBtnTitle = "Guardar";
+      this.cbServiceType = this.selectedEvent.service_type;
+      this.taDescription = this.selectedEvent.description;
+      this.selection = this.availability.indexOf(this.selectedEvent.time_range);
+      this.quotationDialog = true;
+    },
+    getQuotationsByID() {
+      return api
+        .getQuotationsByID()
+        .then(res => {
+          this.quotations_dates = res.data;
+        })
+        .finally(() => {
+          this.quotations_dates.forEach(element => {
+            this.createStart = new Date(
+              `${element.scheduled_date}T${element.time_range.substring(
+                0,
+                5
+              )}:00`
+            );
+            this.createEvent = {};
+            this.createEvent = {
+              id: element.id,
+              name: "Solicitud de cotización",
+              color: "cyan",
+              scheduled_date: element.scheduled_date,
+              start: this.createStart,
+              end: this.createStart,
+              service_type: element.service_type,
+              description: element.description,
+              time_range: element.time_range,
+              timed: true
+            };
+            this.events.push(this.createEvent);
+          });
+        })
+        .catch(e => {
+          console.log(e);
+        });
     }
   }
 };
