@@ -5,7 +5,7 @@ import store from "./store";
 function getUsers(id) {
     return axios.get('user/' + id, {
             headers: {
-                "Authorization": 'Token ' + store.getters.retrieveToken,
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
             }
         })
         .catch((error) => {
@@ -31,7 +31,7 @@ function createUser(user) {
 }
 
 function updateUser(user) {
-    return axios.put('user/' + store.getters.retrieveId + '/', {
+    return axios.put('user/' + store.getters.retrieveUser.id_user + '/', {
             avatar: user.getAvatar(),
             name: user.getName(),
             last_name: user.getLastName(),
@@ -45,7 +45,7 @@ function updateUser(user) {
             type: user.getType()
         }, {
             headers: {
-                "Authorization": 'Token ' + store.getters.retrieveToken,
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
             }
         })
         .catch((error) => {
@@ -61,6 +61,10 @@ function createRequestQuotation(request_quotation) {
             service_type: request_quotation.getServiceType(),
             description: request_quotation.getDescription(),
             fkUser_id: request_quotation.getUser()
+        }, {
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
+            }
         })
         .then(response => response)
         .catch((error) => {
@@ -70,9 +74,21 @@ function createRequestQuotation(request_quotation) {
         })
 }
 
+function getQuotationsByID() {
+    return axios.get('quotation/user-quotation/' + store.getters.retrieveUser.id_user, {
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .catch((error) => {
+            console.log("Error when getting users: " + error);
+        })
+}
+
 export default {
     getUsers,
     createUser,
     createRequestQuotation,
     updateUser,
+    getQuotationsByID,
 }

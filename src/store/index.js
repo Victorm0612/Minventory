@@ -7,21 +7,19 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         avatars: {},
-        token: localStorage.getItem('access_token') || null,
-        id_user: localStorage.getItem('id_user') || null,
         showAdminMenu: false,
         moduleTitle: "Panel de control",
-        user: JSON.parse(localStorage.getItem('user')) || null,
+        user: JSON.parse(localStorage.getItem('user')) || {
+            id_user: null,
+            token: null,
+            avatar: null,
+            name: null,
+            type_user: null
+        },
     },
     getters: {
         loggedIn(state) {
-            return state.token !== null
-        },
-        retrieveId(state) {
-            return state.id_user
-        },
-        retrieveToken(state) {
-            return state.token
+            return state.user.token !== null
         },
         showAdminMenu(state) {
             return state.showAdminMenu
@@ -37,22 +35,20 @@ export default new Vuex.Store({
         setAvatars(state, avatars) {
             state.avatars = avatars
         },
-        userLogin(state, token) {
-            state.token = token
-        },
         destroyToken(state) {
-            state.token = null
-            state.id_user = null
-            state.user = {}
+            state.user = {
+                id_user: null,
+                token: null,
+                avatar: null,
+                name: null,
+                type_user: null
+            }
         },
         setShowAdminMenu(state, value) {
             state.showAdminMenu = value
         },
         setModuleTitle(state, title) {
             state.moduleTitle = title
-        },
-        retrieveId(state, id) {
-            state.id_user = id
         },
         assignDataUser(state, user) {
             localStorage.setItem('user', JSON.stringify(user))
@@ -63,14 +59,12 @@ export default new Vuex.Store({
         destroyToken(context) {
             if (context.getters.loggedIn) {
                 return new Promise((resolve, reject) => {
-                    axios.post('logout/', { id: context.getters.retrieveId }, {
+                    axios.post('logout/', { id: context.getters.retrieveUser.id_user }, {
                             headers: {
-                                "Authorization": 'Token ' + context.getters.retrieveToken,
+                                "Authorization": 'Token ' + context.getters.retrieveUser.token,
                             }
                         })
                         .then(res => {
-                            localStorage.removeItem('access_token')
-                            localStorage.removeItem('id_user')
                             localStorage.removeItem('user')
                             context.commit('destroyToken')
                             resolve(res)
@@ -89,20 +83,15 @@ export default new Vuex.Store({
                         password: credentials.password,
                     })
                     .then(res => {
-                        const token = res.data.access_token;
-                        const id_user = res.data.user.id;
                         const user = {
+                            id_user: res.data.user.id,
+                            token: res.data.access_token,
                             avatar: res.data.user.avatar,
                             name: res.data.user.name,
                             type_user: res.data.user.type
                         }
-                        localStorage.setItem('access_token', token)
-                        localStorage.setItem('id_user', id_user)
-                        context.commit('retrieveId', id_user)
-                        context.commit('userLogin', token)
                         context.commit('assignDataUser', user)
                         resolve(res)
-
                     })
                     .catch(err => {
                         reject(err)

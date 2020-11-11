@@ -252,17 +252,21 @@ export default {
     }
   },
   methods: {
-    changeTypeDocument(word){
+    deleteAccents: function(word){
       const accents = {'á':'a','é':'e','í':'i','ó':'o','ú':'u','Á':'A','É':'E','Í':'I','Ó':'O','Ú':'U'};
+      return word.split('').map( letter => accents[letter] || letter).join('').toString();	
+      },
+
+    changeTypeDocument(type){
       for(let i of this.docType){
-        if(i.toLowerCase().replace(/ /g, "_").split('').map( letter => accents[letter] || letter).join('').toString() === word){
+        if(this.deleteAccents(i).toLowerCase().replace(/ /g, "_") === type){
           return i
         }
       }
     },
     initialData: function(){
     return api
-      .getUsers(this.$store.getters.retrieveId)
+      .getUsers(this.$store.getters.retrieveUser.id_user)
       .then(res=>{
         this.form.avatar=res.data.avatar
         this.form.firstName= res.data.name
@@ -318,21 +322,24 @@ export default {
         this.form.avatar,
         this.form.firstName,
         this.form.lastName,
-        this.form.documentType,
+        this.deleteAccents(this.form.documentType).toLowerCase().replace(/ /g, "_"),
         this.form.documentNumber,
         this.form.mobile,
         this.form.email,
         this.form.password,
         this.form.address,
         this.form.gender,
-        2
+        this.$store.getters.retrieveUser.type_user
       );
       return api
         .updateUser(user)
         .then(() => {
           this.$store.commit('assignDataUser',{
+            id_user: this.$store.getters.retrieveUser.id_user,
+            token: this.$store.getters.retrieveUser.token,
             avatar: this.form.avatar,
             name: this.form.firstName,
+            type_user: this.$store.getters.retrieveUser.type_user,
           })
           this.editProfile = false
           })
