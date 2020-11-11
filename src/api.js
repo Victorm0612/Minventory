@@ -74,8 +74,11 @@ function getQuotationsByID() {
                 "Authorization": 'Token ' + store.getters.retrieveToken,
             }
         })
+        .then(response => response)
         .catch((error) => {
-            console.log("Error when getting users: " + error);
+            if (error.response) {
+                return error.response;
+            }
         })
 }
 

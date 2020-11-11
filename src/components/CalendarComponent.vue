@@ -340,20 +340,37 @@ export default {
       }
     },
     editQuotation() {
-      this.eventCanceled = false;
-      this.selectedOpen = false;
-      this.dialogTitle = "Editar Solicitud de Cotización";
-      this.confirmBtnTitle = "Guardar";
-      this.cbServiceType = this.selectedEvent.service_type;
-      this.taDescription = this.selectedEvent.description;
-      this.selection = this.availability.indexOf(this.selectedEvent.time_range);
-      this.quotationDialog = true;
+      let now = new Date();
+      let nowPlus2 = now.setDate(now.getDate() + 2);
+      let validDate = new Date(nowPlus2);
+
+      if (this.selectedEvent.start >= validDate) {
+        this.eventCanceled = false;
+        this.selectedOpen = false;
+        this.dialogTitle = "Editar Solicitud de Cotización";
+        this.confirmBtnTitle = "Guardar";
+        this.cbServiceType = this.selectedEvent.service_type;
+        this.taDescription = this.selectedEvent.description;
+        this.selection = this.availability.indexOf(
+          this.selectedEvent.time_range
+        );
+        this.quotationDialog = true;
+      } else {
+        this.alertDialog = true;
+        this.alertMessage =
+          "Error al editar la cita. Solo se puede editar las citas con dos(2) o más días de anticipación";
+      }
     },
     getQuotationsByID() {
       return api
         .getQuotationsByID()
         .then(res => {
-          this.quotations_dates = res.data;
+          if (res.status != 200) {
+            this.alertDialog = true;
+            this.alertMessage = "Error al obtener citas: " + res.data.detail;
+          } else {
+            this.quotations_dates = res.data;
+          }
         })
         .finally(() => {
           this.quotations_dates.forEach(element => {
