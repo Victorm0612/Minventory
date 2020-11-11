@@ -5,8 +5,8 @@
         <img width="90" height="90" alt="Vue logo" :src="require('@/assets/VidrioVargas.png')"/>
       </router-link>
       <v-spacer></v-spacer>
-      <v-btn outlined id="menu" v-if="!loggedIn" to="Login">Iniciar Sesión</v-btn>
-      <v-btn outlined id="menu" v-if="!loggedIn" to="Register">Registrarse</v-btn>
+      <v-btn outlined id="menu" v-if="!loggedIn" to="/login">Iniciar Sesión</v-btn>
+      <v-btn outlined id="menu" v-if="!loggedIn" to="/register">Registrarse</v-btn>
       <v-menu  v-if="loggedIn" :nudge-right="35" left :nudge-top="-5" transition="slide-y-transition" offset-y center> 
         <template v-slot:activator="{ on, attrs }">
           <v-btn 
