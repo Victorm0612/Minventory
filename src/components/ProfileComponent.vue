@@ -199,6 +199,12 @@ export default {
       show: false,
       loading: false,
       valid: true,
+      docType: [
+        "Cédula de ciudadanía",
+        "Cédula de extranjería",
+        "Pasaporte",
+        "NIT"
+        ],
       form: {
         firstName: "",
         lastName: "",
@@ -230,21 +236,7 @@ export default {
     this.formBeforeEdit = Object.assign({}, this.form);
   },
   mounted(){
-    return api
-      .getUsers(this.$store.getters.retrieveId)
-      .then(res=>{
-        console.log("se supone que se hizo.")
-        this.form.firstName= res.data.name
-        this.form.lastName= res.data.last_name
-        this.form.email= res.data.email
-        this.form.password= res.data.password
-        this.form.confirmPassword= res.data.password
-        this.form.mobile= res.data.phone
-        this.form.documentType= res.data.type
-        this.form.documentNumber= res.data.document_number
-        this.form.address= res.data.address
-        this.form.gender= res.data.gender
-      })
+    this.initialData()
   },
   computed: {
     passwordConfirmationRule() {
@@ -260,8 +252,37 @@ export default {
     }
   },
   methods: {
+    deleteAccents: function(word){
+      const accents = {'á':'a','é':'e','í':'i','ó':'o','ú':'u','Á':'A','É':'E','Í':'I','Ó':'O','Ú':'U'};
+      return word.split('').map( letter => accents[letter] || letter).join('').toString();	
+      },
+
+    changeTypeDocument(type){
+      for(let i of this.docType){
+        if(this.deleteAccents(i).toLowerCase().replace(/ /g, "_") === type){
+          return i
+        }
+      }
+    },
+    initialData: function(){
+    return api
+      .getUsers(this.$store.getters.retrieveUser.id_user)
+      .then(res=>{
+        this.form.avatar=res.data.avatar
+        this.form.firstName= res.data.name
+        this.form.lastName= res.data.last_name
+        this.form.email= res.data.email
+        this.form.password= res.data.password
+        this.form.confirmPassword= res.data.password
+        this.form.mobile= res.data.phone
+        this.form.documentType= this.changeTypeDocument(res.data.document_type)
+        this.form.documentNumber= res.data.document_number
+        this.form.address= res.data.address
+        this.form.gender= res.data.gender
+      })
+    },
     cancelChanges: function() {
-      Object.assign(this.form, this.formBeforeEdit);
+      this.initialData()
       this.editProfile = false;
     },
     isNumber: function(evt) {
@@ -298,24 +319,33 @@ export default {
     saveChange(evt){
       evt.preventDefault();
       let user = new User(
+        this.form.avatar,
         this.form.firstName,
         this.form.lastName,
+        this.deleteAccents(this.form.documentType).toLowerCase().replace(/ /g, "_"),
         this.form.documentNumber,
         this.form.mobile,
         this.form.email,
         this.form.password,
         this.form.address,
         this.form.gender,
+        this.$store.getters.retrieveUser.type_user
       );
       return api
         .updateUser(user)
-        .then(res => {
-          console.log("post response: " + res.data);
+        .then(() => {
+          this.$store.commit('assignDataUser',{
+            id_user: this.$store.getters.retrieveUser.id_user,
+            token: this.$store.getters.retrieveUser.token,
+            avatar: this.form.avatar,
+            name: this.form.firstName,
+            type_user: this.$store.getters.retrieveUser.type_user,
+          })
           this.editProfile = false
-        })
-        .catch((e) => {
-          console.log(e)
-        });
+          })
+        .catch((error) => {
+          console.log(error);
+              });
     }
     
   }

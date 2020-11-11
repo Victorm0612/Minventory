@@ -1,14 +1,15 @@
 import axios from 'axios';
 import store from "./store";
 
+
 function getUsers(id) {
     return axios.get('user/' + id, {
             headers: {
-                "Authorization": 'Token ' + store.getters.retrieveToken,
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
             }
         })
         .catch((error) => {
-            console.log("Error when getting users: " + error);
+            console.log("Error while get user: " + error)
         })
 }
 
@@ -16,6 +17,7 @@ function createUser(user) {
     return axios.post('register/', {
         name: user.getName(),
         last_name: user.getLastName(),
+        document_type: user.getDocumentType(),
         document_number: user.getDocumentNumber(),
         phone: user.getPhone(),
         email: user.getEmail(),
@@ -29,13 +31,11 @@ function createUser(user) {
 }
 
 function updateUser(user) {
-    return axios.put('user/' + store.getters.retrieveId + '/', {
-            headers: {
-                "Authorization": 'Token ' + store.getters.retrieveToken,
-            }
-        }, {
+    return axios.put('user/' + store.getters.retrieveUser.id_user + '/', {
+            avatar: user.getAvatar(),
             name: user.getName(),
             last_name: user.getLastName(),
+            document_type: user.getDocumentType(),
             document_number: user.getDocumentNumber(),
             phone: user.getPhone(),
             email: user.getEmail(),
@@ -43,8 +43,14 @@ function updateUser(user) {
             address: user.getAddress(),
             gender: user.getGender(),
             type: user.getType()
+        }, {
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
+            }
         })
-        .then(res => console.log(res))
+        .catch((error) => {
+            console.log("Error while update user: " + error)
+        })
 }
 
 function createRequestQuotation(request_quotation) {
@@ -57,7 +63,7 @@ function createRequestQuotation(request_quotation) {
             fkUser_id: request_quotation.getUser()
         }, {
             headers: {
-                'Authorization': 'Token ' + store.getters.retrieveToken,
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
             }
         })
         .then(response => response)
@@ -69,16 +75,15 @@ function createRequestQuotation(request_quotation) {
 }
 
 function getQuotationsByID() {
-    return axios.get('quotation/user-quotation/' + store.getters.retrieveId, {
-        headers: {
-            "Authorization": 'Token ' + store.getters.retrieveToken,
-        }
-    })
-    .catch((error) => {
-        console.log("Error when getting users: " + error);
-    })
+    return axios.get('quotation/user-quotation/' + store.getters.retrieveUser.id_user, {
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .catch((error) => {
+            console.log("Error when getting users: " + error);
+        })
 }
-
 
 export default {
     getUsers,

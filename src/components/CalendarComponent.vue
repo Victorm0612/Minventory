@@ -258,14 +258,12 @@ export default {
           this.selectedOpen = true;
         }, 10);
       };
-
       if (this.selectedOpen) {
         this.selectedOpen = false;
         setTimeout(open, 10);
       } else {
         open();
       }
-
       nativeEvent.stopPropagation();
     },
     newEvent({ date }) {
@@ -289,11 +287,7 @@ export default {
     },
     drawEvent() {
       this.createStart = new Date(
-        `${this.eventDate}T${this.availability[this.selection].substring(
-          0,
-          5
-        )}:00`
-      );
+        `${this.eventDate}T${this.availability[this.selection].substring(0,5)}:00`);
       this.createEvent = {};
       this.createEvent = {
         name: "Solicitud de cotización",
@@ -314,7 +308,7 @@ export default {
         false,
         this.cbServiceType,
         this.taDescription,
-        this.$store.getters.retrieveId
+        this.$store.getters.retrieveUser.id_user
       );
       return api
         .createRequestQuotation(request_quotation)
