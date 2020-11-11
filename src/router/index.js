@@ -58,13 +58,17 @@ const routes = [{
         path: "/logout",
         name: "Logout",
         component: Logout
-        
+
     },
     {
         path: "/admin-dashboard",
         name: "AdminDashboard",
-        component: AdminDashboard
-        
+        component: AdminDashboard,
+        meta: {
+            requiresAuth: true,
+            is_admin: true
+        }
+
     }
 ];
 
@@ -80,7 +84,17 @@ router.beforeEach((to, from, next) => {
                 name: 'Login',
             })
         } else {
-            next()
+            if (to.matched.some(route => route.meta.is_admin)) {
+                if (store.getters.retrieveUser.type_user == 1 || store.getters.retrieveUser.type_user == 3) {
+                    next()
+                } else {
+                    next({
+                        name: 'Home'
+                    })
+                }
+            } else {
+                next()
+            }
         }
     } else if (to.matched.some(record => record.meta.requiresVisitor)) {
         if (store.getters.loggedIn) {

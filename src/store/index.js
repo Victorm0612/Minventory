@@ -93,7 +93,8 @@ export default new Vuex.Store({
                         const id_user = res.data.user.id;
                         const user = {
                             avatar: res.data.user.avatar,
-                            name: res.data.user.name
+                            name: res.data.user.name,
+                            type_user: res.data.user.type
                         }
                         localStorage.setItem('access_token', token)
                         localStorage.setItem('id_user', id_user)
