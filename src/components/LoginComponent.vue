@@ -85,7 +85,6 @@
 </template>
 
 <script>
-//import axios from "axios";
 export default {
   name: "LoginComponent",
   data() {
@@ -124,8 +123,7 @@ export default {
         email: this.email,
         password: this.password
       })
-      .then(res=>{
-        console.log(res)
+      .then(()=>{
         this.moveToPage('ClientMain')
       })
       .catch(error =>{
@@ -133,22 +131,6 @@ export default {
         this.dialog=true;
       })
     },
-    /*getUser(evt) {
-
-      evt.preventDefault();
-      for (let user of this.users) {
-        if (user.email == this.email && user.password == this.password) {
-          this.dialog = false;
-          this.load = !this.load;
-          setTimeout(() => {
-            this.$router.push({ name: "ClientMain" });
-          }, 3000);
-          break;
-        } else {
-          this.dialog = true;
-        }
-      } 
-    },*/
     moveToPage: function(route) {
       this.load = !this.load;
       setTimeout(() => {this.$router.push({ name: route });}, 3000);

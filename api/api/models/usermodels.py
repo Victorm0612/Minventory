@@ -21,7 +21,7 @@ class User(AbstractUser):
     TYPE_DOCUMENT = ((CC,"Cedula_de_ciudadania"),(CE,"Cedula_de_extranjeria"),(PSPT,"Pasaporte"),(NIT,"NIT"))
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-    avatar = models.TextField(default="avatar_DEFAULT")
+    avatar = models.TextField(default="DEFAULT")
 
     OnlyLetters = RegexValidator(r'^[a-zA-Z ]+$', 'Only letters.')
 
