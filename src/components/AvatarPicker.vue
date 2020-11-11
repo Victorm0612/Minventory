@@ -18,7 +18,7 @@
           <v-card tile flat class="d-flex">
             <v-card-text class="d-flex">
               <v-avatar
-                size="96"
+                size="86"
                 @click="selectAvatar(avatar)"
                 class="avatar-picker-avatar"
                 :class="{ current: avatar.id === currentAvatar }"
@@ -70,5 +70,6 @@ export default {
 <style scoped>
 .block-x-overflow{
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 </style>>

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import store from "./store";
 
+
 function getUsers(id) {
     return axios.get('user/' + id, {
             headers: {
@@ -8,7 +9,11 @@ function getUsers(id) {
             }
         })
         .catch((error) => {
-            console.log("Error when getting users: " + error);
+            if (error.response.status === 403 && error.response.data.detail === 'access_token expired') {
+                store.dispatch('destroyToken')
+            } else {
+                console.log('parece otra cosa')
+            }
         })
 }
 
@@ -49,8 +54,10 @@ function updateUser(user) {
         })
         .then(res => console.log(res))
         .catch((error) => {
-            if (error.response.status == 403 && error.response.detail == 'access_token expired') {
-                this.$router.push({ name: 'Logout' });
+            if (error.response.status === 403 && error.response.data.detail === 'access_token expired') {
+                store.dispatch('destroyToken')
+            } else {
+                console.log('parece otra cosa')
             }
         })
 }

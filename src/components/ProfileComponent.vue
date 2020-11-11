@@ -230,21 +230,7 @@ export default {
     this.formBeforeEdit = Object.assign({}, this.form);
   },
   mounted(){
-    return api
-      .getUsers(this.$store.getters.retrieveId)
-      .then(res=>{
-        this.form.avatar=res.data.avatar
-        this.form.firstName= res.data.name
-        this.form.lastName= res.data.last_name
-        this.form.email= res.data.email
-        this.form.password= res.data.password
-        this.form.confirmPassword= res.data.password
-        this.form.mobile= res.data.phone
-        this.form.documentType= res.data.document_type
-        this.form.documentNumber= res.data.document_number
-        this.form.address= res.data.address
-        this.form.gender= res.data.gender
-      })
+    this.initialData()
   },
   computed: {
     passwordConfirmationRule() {
@@ -260,8 +246,25 @@ export default {
     }
   },
   methods: {
+    initialData: function(){
+    return api
+      .getUsers(this.$store.getters.retrieveId)
+      .then(res=>{
+        this.form.avatar=res.data.avatar
+        this.form.firstName= res.data.name
+        this.form.lastName= res.data.last_name
+        this.form.email= res.data.email
+        this.form.password= res.data.password
+        this.form.confirmPassword= res.data.password
+        this.form.mobile= res.data.phone
+        this.form.documentType= res.data.document_type
+        this.form.documentNumber= res.data.document_number
+        this.form.address= res.data.address
+        this.form.gender= res.data.gender
+      })
+    },
     cancelChanges: function() {
-      Object.assign(this.form, this.formBeforeEdit);
+      this.initialData()
       this.editProfile = false;
     },
     isNumber: function(evt) {
@@ -314,13 +317,15 @@ export default {
         .updateUser(user)
         .then(res => {
           console.log("post response: " + res);
+          this.$store.commit('assignDataUser',{
+            avatar: this.form.avatar,
+            name: this.form.firstName,
+          })
           this.editProfile = false
-        })
+          })
         .catch((error) => {
-            if (error.response.status == 403 && error.response.detail == 'access_token expired') {
-                console.log('Ya venció')
-            }
-        });
+          console.log(error);
+              });
     }
     
   }

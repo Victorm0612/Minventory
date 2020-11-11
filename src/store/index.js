@@ -10,7 +10,8 @@ export default new Vuex.Store({
         token: localStorage.getItem('access_token') || null,
         id_user: localStorage.getItem('id_user') || null,
         showAdminMenu: false,
-        moduleTitle: "Panel de control"
+        moduleTitle: "Panel de control",
+        user: {}
     },
     getters: {
         loggedIn(state) {
@@ -27,6 +28,9 @@ export default new Vuex.Store({
         },
         moduleTitle(state) {
             return state.moduleTitle
+        },
+        retrieveUser(state) {
+            return state.user
         }
     },
     mutations: {
@@ -39,6 +43,7 @@ export default new Vuex.Store({
         destroyToken(state) {
             state.token = null
             state.id_user = null
+            state.user = {}
         },
         setShowAdminMenu(state, value) {
             state.showAdminMenu = value
@@ -48,6 +53,9 @@ export default new Vuex.Store({
         },
         retrieveId(state, id) {
             state.id_user = id
+        },
+        assignDataUser(state, user) {
+            state.user = user
         }
     },
     actions: {
@@ -62,12 +70,19 @@ export default new Vuex.Store({
                         .then(res => {
                             localStorage.removeItem('access_token')
                             localStorage.removeItem('id_user')
+                            localStorage.removeItem('user')
                             context.commit('destroyToken')
                             resolve(res)
 
                         })
-                        .catch(err => {
-                            reject(err)
+                        .catch((error) => {
+                            if (error.response.status === 403 && error.response.data.detail === 'access_token expired') {
+                                localStorage.removeItem('access_token')
+                                localStorage.removeItem('id_user')
+                                localStorage.removeItem('user')
+                            } else {
+                                reject(error)
+                            }
                         })
                 })
             }
@@ -81,10 +96,16 @@ export default new Vuex.Store({
                     .then(res => {
                         const token = res.data.access_token;
                         const id_user = res.data.user.id;
+                        const user = {
+                            avatar: res.data.user.avatar,
+                            name: res.data.user.name
+                        }
                         localStorage.setItem('access_token', token)
                         localStorage.setItem('id_user', id_user)
+                        localStorage.setItem('user', user)
                         context.commit('retrieveId', id_user)
                         context.commit('userLogin', token)
+                        context.commit('assignDataUser', user)
                         resolve(res)
 
                     })

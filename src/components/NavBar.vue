@@ -17,9 +17,9 @@
             v-bind="attrs"
             v-on="on">
             <v-avatar size="46" class="mr-1">
-              <img :src="require('@/assets/avatars/avatar_' + user.avatar + '.png')" alt="Avatar"/>
+              <img :src="require('@/assets/avatars/avatar_' + retrieveAvatar + '.png')" alt="Avatar"/>
             </v-avatar>
-            <span>{{user.name}}</span>
+            <span>{{retrieveName}}</span>
             <v-icon right>
               fas fa-angle-down
             </v-icon>
@@ -39,16 +39,10 @@
 </template>
 
 <script>
-import api from "@/api";
 export default {
   name: "NavBar",
   data() {
     return {
-      user:{
-        avatar: "DEFAULT",
-        name: "",
-      },
-
       links: [
         {icon: 'fas fa-home', text: 'Inicio', route:'Home'},
         {icon: 'fas fa-user-circle',text:'Perfil', route: 'Profile'},
@@ -65,20 +59,16 @@ export default {
       }
     },
   },
-    created(){
-      if(this.$store.getters.loggedIn){
-        return api
-        .getUsers(this.$store.getters.retrieveId)
-        .then(res=>{
-          this.user.name=res.data.name
-          this.user.avatar=res.data.avatar
-        })
-      }
-    },
   computed: {
     loggedIn(){
       return this.$store.getters.loggedIn
-    }
+    },
+    retrieveAvatar(){
+      return this.$store.state.user.avatar
+    },
+    retrieveName(){
+      return  this.$store.state.user.name
+    },
   },
 };
 </script>
