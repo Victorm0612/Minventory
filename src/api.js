@@ -9,11 +9,7 @@ function getUsers(id) {
             }
         })
         .catch((error) => {
-            if (error.response.status === 403 && error.response.data.detail === 'access_token expired') {
-                store.dispatch('destroyToken')
-            } else {
-                console.log('parece otra cosa')
-            }
+            console.log("Error while get user: " + error)
         })
 }
 
@@ -53,11 +49,7 @@ function updateUser(user) {
             }
         })
         .catch((error) => {
-            if (error.response.status === 403 && error.response.data.detail === 'access_token expired') {
-                store.dispatch('destroyToken')
-            } else {
-                console.log('parece otra cosa')
-            }
+            console.log("Error while update user: " + error)
         })
 }
 

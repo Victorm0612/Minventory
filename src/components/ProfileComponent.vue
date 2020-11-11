@@ -199,6 +199,12 @@ export default {
       show: false,
       loading: false,
       valid: true,
+      docType: [
+        "Cédula de ciudadanía",
+        "Cédula de extranjería",
+        "Pasaporte",
+        "NIT"
+        ],
       form: {
         firstName: "",
         lastName: "",
@@ -246,6 +252,14 @@ export default {
     }
   },
   methods: {
+    changeTypeDocument(word){
+      const accents = {'á':'a','é':'e','í':'i','ó':'o','ú':'u','Á':'A','É':'E','Í':'I','Ó':'O','Ú':'U'};
+      for(let i of this.docType){
+        if(i.toLowerCase().replace(/ /g, "_").split('').map( letter => accents[letter] || letter).join('').toString() === word){
+          return i
+        }
+      }
+    },
     initialData: function(){
     return api
       .getUsers(this.$store.getters.retrieveId)
@@ -257,7 +271,7 @@ export default {
         this.form.password= res.data.password
         this.form.confirmPassword= res.data.password
         this.form.mobile= res.data.phone
-        this.form.documentType= res.data.document_type
+        this.form.documentType= this.changeTypeDocument(res.data.document_type)
         this.form.documentNumber= res.data.document_number
         this.form.address= res.data.address
         this.form.gender= res.data.gender

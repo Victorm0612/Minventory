@@ -39,13 +39,14 @@
 </template>
 
 <script>
+import VueJwtDecode from "vue-jwt-decode";
 export default {
   name: "NavBar",
   data() {
     return {
       links: [
         {icon: 'fas fa-home', text: 'Inicio', route:'Home'},
-        {icon: 'far fa-calendar-alt', text: 'Cotizar Cita', route: 'ClientMain'},
+        {icon: 'far fa-calendar-alt', text: 'Agendar Cita', route: 'ClientMain'},
         {icon: 'fas fa-user-circle',text:'Perfil', route: 'Profile'},
         {icon: 'fas fa-sign-out-alt', text: 'Cerrar Sesión', route:'Logout'}
       ]
@@ -59,6 +60,20 @@ export default {
         this.drawer = false;
       }
     },
+    timeToExp(){
+      if(this.loggedIn){
+        let exp = new Date(VueJwtDecode.decode(this.$store.getters.retrieveToken).exp * 1000);
+        let actual = new Date()
+        let totalTime = exp.getTime() - actual.getTime()
+        setTimeout(() => {this.$router.push({ name: 'Logout' });}, totalTime);
+      }
+    },
+  },
+  created() {
+    this.timeToExp()
+  },
+  updated(){
+    this.timeToExp()
   },
   computed: {
     loggedIn(){

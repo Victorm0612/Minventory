@@ -77,13 +77,7 @@ export default new Vuex.Store({
 
                         })
                         .catch((error) => {
-                            if (error.response.status === 403 && error.response.data.detail === 'access_token expired') {
-                                localStorage.removeItem('access_token')
-                                localStorage.removeItem('id_user')
-                                localStorage.removeItem('user')
-                            } else {
-                                reject(error)
-                            }
+                            reject(error)
                         })
                 })
             }
