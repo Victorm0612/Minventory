@@ -52,7 +52,6 @@ function updateUser(user) {
                 "Authorization": 'Token ' + store.getters.retrieveToken,
             }
         })
-        .then(res => console.log(res))
         .catch((error) => {
             if (error.response.status === 403 && error.response.data.detail === 'access_token expired') {
                 store.dispatch('destroyToken')

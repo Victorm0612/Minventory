@@ -11,7 +11,7 @@ export default new Vuex.Store({
         id_user: localStorage.getItem('id_user') || null,
         showAdminMenu: false,
         moduleTitle: "Panel de control",
-        user: {}
+        user: JSON.parse(localStorage.getItem('user')) || null,
     },
     getters: {
         loggedIn(state) {
@@ -55,6 +55,7 @@ export default new Vuex.Store({
             state.id_user = id
         },
         assignDataUser(state, user) {
+            localStorage.setItem('user', JSON.stringify(user))
             state.user = user
         }
     },
@@ -102,7 +103,6 @@ export default new Vuex.Store({
                         }
                         localStorage.setItem('access_token', token)
                         localStorage.setItem('id_user', id_user)
-                        localStorage.setItem('user', user)
                         context.commit('retrieveId', id_user)
                         context.commit('userLogin', token)
                         context.commit('assignDataUser', user)

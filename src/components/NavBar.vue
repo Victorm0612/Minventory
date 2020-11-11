@@ -45,6 +45,7 @@ export default {
     return {
       links: [
         {icon: 'fas fa-home', text: 'Inicio', route:'Home'},
+        {icon: 'far fa-calendar-alt', text: 'Cotizar Cita', route: 'ClientMain'},
         {icon: 'fas fa-user-circle',text:'Perfil', route: 'Profile'},
         {icon: 'fas fa-sign-out-alt', text: 'Cerrar Sesión', route:'Logout'}
       ]

@@ -315,8 +315,7 @@ export default {
       );
       return api
         .updateUser(user)
-        .then(res => {
-          console.log("post response: " + res);
+        .then(() => {
           this.$store.commit('assignDataUser',{
             avatar: this.form.avatar,
             name: this.form.firstName,
