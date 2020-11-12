@@ -109,6 +109,20 @@ function updateQuotationByID(id, request_quotation, scheduled_date) {
         })
 }
 
+function deleteQuotationByID(id) {
+    return axios.delete('quotation/' + id + '/', {
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch((error) => {
+            if (error.response) {
+                return error.response;
+            }
+        })
+}
+
 export default {
     getUsers,
     createUser,
@@ -116,4 +130,5 @@ export default {
     updateUser,
     getQuotationsByID,
     updateQuotationByID,
+    deleteQuotationByID,
 }
