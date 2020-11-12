@@ -123,6 +123,20 @@ function deleteQuotationByID(id) {
         })
 }
 
+function getTaskEmployee(id) {
+    return axios.get('task/employee-task/' + id, {
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch((error) => {
+            if (error.response) {
+                return error.response;
+            }
+        })
+}
+
 export default {
     getUsers,
     createUser,
@@ -131,4 +145,5 @@ export default {
     getQuotationsByID,
     updateQuotationByID,
     deleteQuotationByID,
+    getTaskEmployee
 }
