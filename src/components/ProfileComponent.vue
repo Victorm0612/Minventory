@@ -151,7 +151,7 @@
                     </v-btn>
                   </v-col>
                   <v-col cols="12" md="4">
-                    <v-btn color="primary">
+                    <v-btn color="primary" to="/client-main">
                       Ver mis citas
                     </v-btn>
                   </v-col>
