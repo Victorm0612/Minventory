@@ -250,8 +250,6 @@ export default {
       nativeEvent.stopPropagation();
     },
     newEvent({ date }) {
-      console.log("date: "+ date)
-      console.log("new Date() "+ new Date().toISOString().substr(0, 10))
       if (date >= new Date().toISOString().substr(0, 10)) {
         this.eventCanceled = false;
         this.dialogTitle = "Solicitud de Cotización";
