@@ -39,6 +39,9 @@
               <v-btn icon class="right-position" @click="editQuotation">
                 <v-icon>far fa-edit</v-icon>
               </v-btn>
+              <v-btn icon class="right-position" @click="deleteQuotation">
+                <v-icon>far fa-trash-alt</v-icon>
+              </v-btn>
             </v-toolbar>
             <v-card-text>
               <span>Detalles de la solicitud</span>
@@ -269,7 +272,11 @@ export default {
     },
     drawEvent() {
       this.createStart = new Date(
-        `${this.eventDate}T${this.availability[this.selection].substring(0,5)}:00`);
+        `${this.eventDate}T${this.availability[this.selection].substring(
+          0,
+          5
+        )}:00`
+      );
       this.createEvent = {};
       this.createEvent = {
         id: this.eventId,
@@ -324,6 +331,18 @@ export default {
               this.closeQuotation();
             }
           });
+      } else if (this.confirmBtnTitle == "Eliminar") {
+        return api.deleteQuotationByID(this.selectedEvent.id).then(resp => {
+          if (resp.status != 204) {
+            this.alertDialog = true;
+            this.alertMessage = resp.data;
+            this.confirmDialog = false;
+          } else {
+            this.events = [];
+            this.getQuotationsByID();
+            this.closeQuotation();
+          }
+        });
       }
     },
     validateData() {
@@ -333,12 +352,15 @@ export default {
         this.incompleteData = true;
       }
     },
-    editQuotation() {
+    validateQuotation() {
       let now = new Date();
       let nowPlus2 = now.setDate(now.getDate() + 2);
       let validDate = new Date(nowPlus2);
 
-      if (this.selectedEvent.start >= validDate) {
+      return this.selectedEvent.start >= validDate ? true : false;
+    },
+    editQuotation() {
+      if (this.validateQuotation()) {
         this.eventCanceled = false;
         this.selectedOpen = false;
         this.dialogTitle = "Editar Solicitud de Cotización";
@@ -393,6 +415,22 @@ export default {
         .catch(e => {
           console.log(e);
         });
+    },
+    deleteQuotation() {
+      if (this.validateQuotation()) {
+        this.eventCanceled = false;
+        this.confirmBtnTitle = "Eliminar";
+        this.cbServiceType = this.selectedEvent.service_type;
+        this.taDescription = this.selectedEvent.description;
+        this.selection = this.availability.indexOf(
+          this.selectedEvent.time_range
+        );
+        this.confirmDialog = true;
+      } else {
+        this.alertDialog = true;
+        this.alertMessage =
+          "Error al eliminar la cita. Solo se puede eliminar las citas con dos(2) o más días de anticipación.";
+      }
     }
   }
 };
