@@ -160,7 +160,7 @@
     </v-dialog>
     <v-dialog v-model="alertDialog" width="300">
       <v-alert
-        style="margin-bottom: 0;"
+        style="margin-bottom: 0"
         type="error"
         transition="scale-transition"
       >
@@ -200,7 +200,7 @@ export default {
       { text: "Servicio 4" },
       { text: "Servicio 5" },
       { text: "Servicio 6" },
-      { text: "Servicio 7" }
+      { text: "Servicio 7" },
     ],
     taDescription: "",
     selection: 0,
@@ -209,13 +209,13 @@ export default {
       "10:00 - 11:30",
       "13:00 - 14:30",
       "15:00 - 16:30",
-      "17:00 - 18:30"
+      "17:00 - 18:30",
     ],
     events: [],
-    rules: [value => !!value || "Este campo no puede estar vacio"],
+    rules: [(value) => !!value || "Este campo no puede estar vacio"],
     incompleteData: false,
     request_quotation: {},
-    quotations_dates: []
+    quotations_dates: [],
   }),
   created() {
     this.getQuotationsByID();
@@ -250,11 +250,19 @@ export default {
       nativeEvent.stopPropagation();
     },
     newEvent({ date }) {
-      this.eventCanceled = false;
-      this.dialogTitle = "Solicitud de Cotización";
-      this.confirmBtnTitle = "Confirmar";
-      this.quotationDialog = true;
-      this.eventDate = date;
+      console.log("date: "+ date)
+      console.log("new Date() "+ new Date().toISOString().substr(0, 10))
+      if (date >= new Date().toISOString().substr(0, 10)) {
+        this.eventCanceled = false;
+        this.dialogTitle = "Solicitud de Cotización";
+        this.confirmBtnTitle = "Confirmar";
+        this.quotationDialog = true;
+        this.eventDate = date;
+      } else {
+        this.alertDialog = true;
+        this.alertMessage =
+          "Error: No se pueden crear citas en días pasados.";
+      }
     },
     closeQuotation() {
       this.cbServiceType = "";
@@ -288,7 +296,7 @@ export default {
         service_type: this.cbServiceType,
         description: this.taDescription,
         time_range: this.availability[this.selection],
-        timed: true
+        timed: true,
       };
       this.events.push(this.createEvent);
       this.closeQuotation();
@@ -303,7 +311,7 @@ export default {
         this.$store.getters.retrieveUser.id_user
       );
       if (this.confirmBtnTitle == "Confirmar") {
-        return api.createRequestQuotation(request_quotation).then(resp => {
+        return api.createRequestQuotation(request_quotation).then((resp) => {
           if (resp.status == 400) {
             this.alertDialog = true;
             this.alertMessage = resp.data.scheduled_date_and_time_range[0];
@@ -320,7 +328,7 @@ export default {
             request_quotation,
             this.selectedEvent.scheduled_date
           )
-          .then(resp => {
+          .then((resp) => {
             if (resp.status == 400) {
               this.alertDialog = true;
               this.alertMessage = resp.data;
@@ -332,7 +340,7 @@ export default {
             }
           });
       } else if (this.confirmBtnTitle == "Eliminar") {
-        return api.deleteQuotationByID(this.selectedEvent.id).then(resp => {
+        return api.deleteQuotationByID(this.selectedEvent.id).then((resp) => {
           if (resp.status != 204) {
             this.alertDialog = true;
             this.alertMessage = resp.data;
@@ -380,7 +388,7 @@ export default {
     getQuotationsByID() {
       return api
         .getQuotationsByID()
-        .then(res => {
+        .then((res) => {
           if (res.status != 200) {
             this.alertDialog = true;
             this.alertMessage = "Error al obtener citas: " + res.data.detail;
@@ -389,7 +397,7 @@ export default {
           }
         })
         .finally(() => {
-          this.quotations_dates.forEach(element => {
+          this.quotations_dates.forEach((element) => {
             this.createStart = new Date(
               `${element.scheduled_date}T${element.time_range.substring(
                 0,
@@ -407,12 +415,12 @@ export default {
               service_type: element.service_type,
               description: element.description,
               time_range: element.time_range,
-              timed: true
+              timed: true,
             };
             this.events.push(this.createEvent);
           });
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e);
         });
     },
@@ -431,7 +439,7 @@ export default {
         this.alertMessage =
           "Error al eliminar la cita. Solo se puede eliminar las citas con dos(2) o más días de anticipación.";
       }
-    }
-  }
+    },
+  },
 };
 </script>
