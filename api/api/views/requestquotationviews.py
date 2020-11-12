@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.requestquotationmodels import RequestQuotation
-from api.serializers.requestquotationserializer import RequestQuotationSerializer
+from api.serializers.requestquotationserializer import RequestQuotationSerializer,RequestQuotationPostSerializer,RequestQuotationPutSerializer
 from django.views.decorators.csrf import csrf_protect
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -28,7 +28,7 @@ def quotation_list(request):
         return JSONResponse(serializer.data)
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = RequestQuotationSerializer(data=data)
+        serializer = RequestQuotationPostSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JSONResponse(serializer.data, status=201)
@@ -47,7 +47,7 @@ def quotation_detail(request, pk):
         return JSONResponse(serializer.data)
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        serializer = RequestQuotationSerializer(quotation, data=data)
+        serializer = RequestQuotationPutSerializer(quotation, data=data)
         if serializer.is_valid():
             serializer.save()
             return JSONResponse(serializer.data)
