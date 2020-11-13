@@ -67,3 +67,14 @@ def user_quotation(request, fk):
     if request.method == 'GET':
         serializer = RequestQuotationSerializer(quotation, many=True)
         return JSONResponse(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def date_quotation(request, scheduled_date):
+    try:
+        quotation = RequestQuotation.objects.filter(scheduled_date=scheduled_date)
+    except RequestQuotation.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'GET':
+        serializer = RequestQuotationSerializer(quotation, many=True)
+        return JSONResponse(serializer.data)
