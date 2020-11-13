@@ -32,7 +32,7 @@ export default {
         { title: "Panel de control", icon: "fas fa-columns", requireType: [1,3]},
         { title: "Cuenta", icon: "fas fa-user-circle", requireType: [1,3]},
         { title: "Empleados", icon: "fas fa-users", requireType: [1,3]},
-        { title: "Tareas", icon:'fas fa-tasks', requireType: [3]},
+        { title: "Tareas", icon:'fas fa-tasks', requireType: [1,3]},
         { title: "Gastos", icon: "fas fa-hand-holding-usd", requireType: [1,3]},
         { title: "Facturación", icon: "fas fa-money-check-alt", requireType: [1,3]},
         { title: "Inventario", icon: "fas fa-boxes", requireType: [1,3]}

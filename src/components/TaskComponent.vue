@@ -31,7 +31,7 @@
                             Trabajador asignado:
                         </v-col>
                         <v-col>
-                            {{$store.state.user.name}}
+                            {{item.fkAssignment_worker}}
                         </v-col>
                     </v-row>
                     <v-row>
@@ -61,16 +61,31 @@ import api from "@/api";
         name: "TaskComponent",
         data(){
             return {
-                Task:[]
+                Task:[],
             }
         },
         created(){
             return api
-            .getTaskEmployee(this.$store.getters.retrieveUser.id_user)
+            .getTasks(this.isAdmin)
             .then(response=>{
                 this.Task = response.data
             })
-        }
+            .catch((error)=>{
+                console.log(error)
+            })
+        },
+        computed: {
+            isAdmin(){
+                if(this.$store.getters.retrieveUser.type_user == 3){
+                    return 'task/employee-task/'+this.$store.getters.retrieveUser.id_user
+                }
+                else{
+                    return 'task/'
+                }
+            }
+        },
+        methods: {
+        },
     }
 
 </script>
