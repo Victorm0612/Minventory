@@ -19,15 +19,3 @@ class RequestQuotationSerializer(serializers.ModelSerializer):
     class Meta:
         model = RequestQuotation
         fields = '__all__'
-
-
-class RequestQuotationPutSerializer(serializers.ModelSerializer):
-
-    def validate(self, data):
-
-        if data != None:
-            print(data)
-
-    class Meta:
-        model = RequestQuotation
-        fields = '__all__'

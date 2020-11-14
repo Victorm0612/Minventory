@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.requestquotationmodels import RequestQuotation
-from api.serializers.requestquotationserializer import RequestQuotationSerializer, RequestQuotationPutSerializer
+from api.serializers.requestquotationserializer import RequestQuotationSerializer
 from django.views.decorators.csrf import csrf_protect
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
