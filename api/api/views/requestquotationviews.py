@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.requestquotationmodels import RequestQuotation
-from api.serializers.requestquotationserializer import RequestQuotationSerializer
+from api.serializers.requestquotationserializer import RequestQuotationSerializer, RequestQuotationPutSerializer
 from django.views.decorators.csrf import csrf_protect
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -47,11 +47,17 @@ def quotation_detail(request, pk):
         return JSONResponse(serializer.data)
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        serializer = RequestQuotationSerializer(quotation, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JSONResponse(serializer.data)
-        return JSONResponse(serializer.errors, status=400)
+        ocupado = RequestQuotation.objects.filter(
+                scheduled_date=data['scheduled_date'], time_range=data['time_range']).exclude(pk=pk)
+        if ocupado:
+            return JSONResponse("Ese rango de hora en esa fecha está ocupado", status=400)
+        for key, value in data.items():
+            quotation.update_field(key, value)
+        try:
+            quotation.save(update_fields=data.keys())
+            return JSONResponse("La cotizacion se edito con exito!", status=200)
+        except Exception:
+            return JSONResponse("Error actualizando la cotizacion!", status=500)
     elif request.method == 'DELETE':
         quotation.delete()
         return HttpResponse(status=204)
