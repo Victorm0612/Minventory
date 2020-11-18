@@ -2,6 +2,7 @@
   <div>
     <h1>{{ moduleTitle }}</h1>
     <profile-component v-if="moduleTitle == 'Cuenta'"></profile-component>
+    <task-component v-if="moduleTitle == 'Tareas'"></task-component>
     <v-row>
       <v-col cols="12" md="4">
         <registrations-card-component
@@ -53,6 +54,7 @@ import RevenueCardComponent from "@/components/dashboard-components/RevenueCardC
 import CancelCardComponent from "@/components/dashboard-components/CancelCardComponent.vue";
 import TwitterCardComponent from "@/components/dashboard-components/TwitterCardComponent.vue";
 import InstagramCardComponent from "@/components/dashboard-components/InstagramCardComponent.vue";
+import TaskComponent from '../components/TaskComponent.vue';
 
 export default {
   name: "AdminDashboard",
@@ -64,7 +66,8 @@ export default {
     RevenueCardComponent,
     CancelCardComponent,
     TwitterCardComponent,
-    InstagramCardComponent
+    InstagramCardComponent,
+    TaskComponent,
   },
   computed: {
     moduleTitle() {

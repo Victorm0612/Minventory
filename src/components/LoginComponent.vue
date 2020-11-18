@@ -36,6 +36,7 @@
                       v-model="password"
                       :type="show ? 'text' : 'password'"
                       @click:append="show = !show"
+                      @keyup.enter="login"
                     >
                     </v-text-field>
                     <div class="d-flex">
@@ -124,7 +125,7 @@ export default {
         password: this.password
       })
       .then(()=>{
-        this.moveToPage('ClientMain')
+        this.moveToPage('Home')
       })
       .catch(error =>{
         console.log(error)

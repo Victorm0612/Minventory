@@ -31,6 +31,7 @@ const routes = [{
         component: ClientMain,
         meta: {
             requiresAuth: true,
+            is_client: true
         }
     },
     {
@@ -83,18 +84,24 @@ router.beforeEach((to, from, next) => {
             next({
                 name: 'Login',
             })
-        } else {
-            if (to.matched.some(route => route.meta.is_admin)) {
-                if (store.getters.retrieveUser.type_user == 1 || store.getters.retrieveUser.type_user == 3) {
-                    next()
-                } else {
-                    next({
-                        name: 'Home'
-                    })
-                }
-            } else {
+        } else if (to.matched.some(route => route.meta.is_client)) {
+            if (store.getters.retrieveUser.type_user == 2) {
                 next()
+            } else {
+                next({
+                    name: 'Home'
+                })
             }
+        } else if (to.matched.some(route => route.meta.is_admin)) {
+            if (store.getters.retrieveUser.type_user == 1 || store.getters.retrieveUser.type_user == 3) {
+                next()
+            } else {
+                next({
+                    name: 'Home'
+                })
+            }
+        } else {
+            next()
         }
     } else if (to.matched.some(record => record.meta.requiresVisitor)) {
         if (store.getters.loggedIn) {
