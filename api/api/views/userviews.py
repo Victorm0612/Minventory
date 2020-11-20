@@ -1,3 +1,5 @@
+import jwt
+from django.conf import settings
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 from rest_framework.renderers import JSONRenderer
@@ -115,6 +117,8 @@ def refresh_token_view(request):
     if not user.is_active:
         raise exceptions.AuthenticationFailed('El ususario esta inactivo')
 
+    if user.actual_token == '':
+        raise exceptions.AuthenticationFailed('El token no es valido, usuario no logueado')
 
     access_token = generate_access_token(user)
     user.actual_token = access_token
