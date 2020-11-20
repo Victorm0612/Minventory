@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^user/(?P<pk>[0-9]+)/$', userviews.user_detail),
     url(r'^login/$', userviews.login_view),
     url(r'^logout/$', userviews.logout_view),
+    url(r'^refresh_token/$', userviews.refresh_token_view),
     url(r'^register/$', userviews.create_user),
 
     url(r'^bill/$', billviews.bill_list),
@@ -26,7 +27,6 @@ urlpatterns = [
     url(r'^quotation/$', requestquotationviews.quotation_list),
     url(r'^quotation/(?P<pk>[0-9]+)/$', requestquotationviews.quotation_detail),
     url(r'^quotation/user-quotation/(?P<fk>[0-9]+)/$', requestquotationviews.user_quotation),
-    url(r'^quotation/date-quotation/(?P<scheduled_date>[-\w]+)/$', requestquotationviews.date_quotation),
 
     url(r'^status/$', statusviews.status_list),
     url(r'^status/(?P<pk>[0-9]+)/$', statusviews.status_detail),
