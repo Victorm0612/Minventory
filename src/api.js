@@ -13,6 +13,20 @@ function getUsers(id) {
         })
 }
 
+function getUsersByType(type) {
+    return axios.get('user/by-type/' + type, {
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch((error) => {
+            if (error.response) {
+                return error.response;
+            }
+        })
+}
+
 function createUser(user) {
     return axios.post('register/', {
         name: user.getName(),
@@ -25,8 +39,12 @@ function createUser(user) {
         address: user.getAddress(),
         gender: user.getGender(),
         type: user.getType()
-    }).catch((error) => {
-        console.log("Error while creating user: " + error);
+    })
+    .then(response => response)
+    .catch((error) => {
+        if (error.response) {
+            return error.response;
+        }
     })
 }
 
@@ -145,5 +163,6 @@ export default {
     getQuotationsByID,
     updateQuotationByID,
     deleteQuotationByID,
-    getTasks
+    getTasks,
+    getUsersByType
 }

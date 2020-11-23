@@ -35,6 +35,14 @@
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
+                        v-model="editedUser.last_name"
+                        label="Apellido"
+                        :rules="[rules.required]"
+                        @keypress="isLetter($event)"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
                         v-model="editedUser.email"
                         label="Correo Electrónico"
                         :rules="[rules.required, rules.emailRules]"
@@ -50,16 +58,16 @@
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-select
-                          label="Tipo de documento"
-                          v-model="editedUser.doc_type"
-                          :items="docType"
-                          :rules="[rules.required]"
-                        >
-                        </v-select>
+                        label="Tipo de documento"
+                        v-model="editedUser.document_type"
+                        :items="docType"
+                        :rules="[rules.required]"
+                      >
+                      </v-select>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="editedUser.doc_number"
+                        v-model="editedUser.document_number"
                         label="Número de documento"
                         :rules="[rules.required]"
                         @keypress="isNumber($event)"
@@ -74,11 +82,11 @@
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-select
-                          v-model="editedUser.gender"
-                          label="Género"
-                          :items="genderItems"
-                          :rules="[rules.required]"
-                        ></v-select>
+                        v-model="editedUser.gender"
+                        label="Género"
+                        :items="genderItems"
+                        :rules="[rules.required]"
+                      ></v-select>
                     </v-col>
                   </v-row>
                 </v-form>
@@ -90,7 +98,14 @@
               <v-btn color="blue darken-1" text @click="close">
                 Cancelar
               </v-btn>
-              <v-btn :disabled="!valid" color="blue darken-1" text @click="save"> Guardar </v-btn>
+              <v-btn
+                :disabled="!valid"
+                color="blue darken-1"
+                text
+                @click="save"
+              >
+                {{ btnTitle }}
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -112,6 +127,15 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
+      <v-dialog v-model="alertDialog" width="300">
+        <v-alert
+          style="margin-bottom: 0"
+          type="error"
+          transition="scale-transition"
+        >
+          {{ alertMessage }}
+        </v-alert>
+      </v-dialog>
     </template>
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)"> fas fa-edit </v-icon>
@@ -121,9 +145,17 @@
 </template>
 
 <script>
+import api from "@/api";
+import User from "@/classes/user";
+
+String.prototype.capitalize = function () {
+  return this.charAt(0).toUpperCase() + this.slice(1);
+};
 export default {
   name: "EmployeesComponent",
   data: () => ({
+    alertDialog: false,
+    alertMessage: "",
     valid: false,
     dialog: false,
     dialogDelete: false,
@@ -136,8 +168,12 @@ export default {
       { text: "Nombre", value: "name", sortable: false },
       { text: "Correo Electrónico", value: "email", sortable: false },
       { text: "Número de celular", value: "phone", sortable: false },
-      { text: "Tipo de documento", value: "doc_type", sortable: false },
-      { text: "Número de documento", value: "doc_number", sortable: false },
+      { text: "Tipo de documento", value: "document_type", sortable: false },
+      {
+        text: "Número de documento",
+        value: "document_number",
+        sortable: false,
+      },
       { text: "Dirección", value: "address", sortable: false },
       { text: "Género", value: "gender", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
@@ -147,28 +183,30 @@ export default {
     editedUser: {
       id: "",
       name: "",
+      last_name: "",
       email: "",
       phone: "",
-      doc_type: "",
-      doc_number: "",
+      document_type: "",
+      document_number: "",
       address: "",
       gender: "",
     },
     defaultUser: {
       id: "",
       name: "",
+      last_name: "",
       email: "",
       phone: "",
-      doc_type: "",
-      doc_number: "",
+      document_type: "",
+      document_number: "",
       address: "",
       gender: "",
     },
     docType: [
-      "Cédula de ciudadanía",
-      "Cédula de extranjería",
+      "Cedula de ciudadania",
+      "Cedula de extranjeria",
       "Pasaporte",
-      "NIT"
+      "NIT",
     ],
     genderItems: ["Femenino", "Masculino", "Prefiero no decirlo", "Otro"],
     rules: {
@@ -185,6 +223,9 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Nuevo Empleado" : "Editar Empleado";
+    },
+    btnTitle() {
+      return this.editedIndex === -1 ? "Crear" : "Guardar";
     },
   },
 
@@ -228,30 +269,21 @@ export default {
       }
     },
     initialize() {
-      this.users = [
-        {
-          id: 1,
-          name: "Ari",
-          email: "ari@ari.com",
-          phone: 21234343,
-          doc_type: "Cédula de ciudadanía",
-          doc_number: 354354,
-          address: "some address",
-          gender: "Femenino",
-        },
-        {
-          id: 2,
-          name: "Jessica",
-          email: "jessica@ejemplo.com",
-          phone: 434656456,
-          doc_type: "Cédula de ciudadanía",
-          doc_number: 3542343243354,
-          address: "this address",
-          gender: "Masculino",
-        },
-      ];
+      return api.getUsersByType(3).then((response) => {
+        if (response.status == 500) {
+          this.alertDialog = true;
+          this.alertMessage = response.data.message;
+        } else {
+          this.users = response.data;
+          this.users.forEach((element) => {
+            element.document_type = element.document_type
+              .replace(/_/g, " ")
+              .capitalize();
+            element.gender = element.gender.replace(/_/g, " ").capitalize();
+          });
+        }
+      });
     },
-
     editItem(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedUser = Object.assign({}, item);
@@ -286,13 +318,44 @@ export default {
     },
 
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.users[this.editedIndex], this.editedUser);
+      if (this.btnTitle == "Crear") {
+        let user = new User(
+          null,
+          this.editedUser.name,
+          this.editedUser.last_name,
+          this.editedUser.document_type.toLowerCase().replace(/ /g, "_"),
+          this.editedUser.document_number,
+          this.editedUser.phone,
+          this.editedUser.email,
+          "employee!123",
+          this.editedUser.address,
+          this.editedUser.gender.toLowerCase().replace(/ /g, "_"),
+          3
+        );
+        return api.createUser(user).then((response) => {
+          if (response.status == 201) {
+            this.users.push(this.editedUser);
+            this.close();
+          } else {
+            this.alertDialog = true;
+            this.alertMessage = response.data;
+          }
+        });
       } else {
-        this.users.push(this.editedUser);
+        if (this.editedIndex > -1) {
+          Object.assign(this.users[this.editedIndex], this.editedUser);
+        } else {
+          this.users.push(this.editedUser);
+        }
+        this.close();
       }
-      this.close();
     },
   },
 };
 </script>
+
+<style>
+.v-data-table {
+  max-width: 1080px !important;
+}
+</style>
