@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt, ensure_csrf_
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
+
 class JSONResponse(HttpResponse):
     """
     An HttpResponse that renders its content into JSON.
@@ -55,3 +56,15 @@ def bill_detail(request, pk):
     elif request.method == 'DELETE':
         bill.delete()
         return HttpResponse(status=204)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def bill_type(request, bill_type):
+    try:
+        quotation = Bill.objects.filter(bill_type=bill_type)
+    except Bill.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'GET':
+        serializer = BillSerializer(quotation, many=True)
+        return JSONResponse(serializer.data)
