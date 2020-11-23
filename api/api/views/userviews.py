@@ -140,3 +140,13 @@ def logout_view(request):
 
     return Response({'Status':'Sesion cerrada con exito.'})
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_users_by_type(request, type):
+    try:
+        users = User.objects.filter(type=type)
+    except User.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'GET':
+        serializer = UserSerializer(users, many=True)
+        return JSONResponse(serializer.data)
