@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_protect
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
+
 class JSONResponse(HttpResponse):
     """
     An HttpResponse that renders its content into JSON.
@@ -48,7 +49,7 @@ def quotation_detail(request, pk):
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
         ocupado = RequestQuotation.objects.filter(
-                scheduled_date=data['scheduled_date'], time_range=data['time_range']).exclude(pk=pk)
+            scheduled_date=data['scheduled_date'], time_range=data['time_range']).exclude(pk=pk)
         if ocupado:
             return JSONResponse("Ese rango de hora en esa fecha está ocupado", status=400)
         for key, value in data.items():
@@ -73,6 +74,7 @@ def user_quotation(request, fk):
     if request.method == 'GET':
         serializer = RequestQuotationSerializer(quotation, many=True)
         return JSONResponse(serializer.data)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
