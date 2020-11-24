@@ -52,7 +52,7 @@
                       <v-text-field
                         v-model="editedUser.phone"
                         label="Número de Celular"
-                        :rules="[rules.required, rules.mobileRules]"
+                        :rules="[rules.required, mobileRules]"
                         @keypress="isNumber($event)"
                       ></v-text-field>
                     </v-col>
@@ -182,25 +182,31 @@ export default {
     editedIndex: -1,
     editedUser: {
       id: "",
+      avatar: "",
       name: "",
       last_name: "",
       email: "",
+      password: "",
       phone: "",
       document_type: "",
       document_number: "",
       address: "",
       gender: "",
+      type: "",
     },
     defaultUser: {
       id: "",
+      avatar: "",
       name: "",
       last_name: "",
       email: "",
+      password: "",
       phone: "",
       document_type: "",
       document_number: "",
       address: "",
       gender: "",
+      type: "",
     },
     docType: [
       "Cedula de ciudadania",
@@ -215,9 +221,7 @@ export default {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
           value
         ) || "Ingresa un correo valido",
-      mobileRules: (value) =>
-        value.length == 10 || "El número de celular debe contener 10 dígitos",
-    },
+      },
   }),
 
   computed: {
@@ -227,6 +231,11 @@ export default {
     btnTitle() {
       return this.editedIndex === -1 ? "Crear" : "Guardar";
     },
+    mobileRules() {
+      return () =>
+        this.form.mobile.toString().length == 10 ||
+        "El número de celular debe contener 10 dígitos";
+    }
   },
 
   watch: {
@@ -341,13 +350,28 @@ export default {
             this.alertMessage = response.data;
           }
         });
-      } else {
-        if (this.editedIndex > -1) {
-          Object.assign(this.users[this.editedIndex], this.editedUser);
-        } else {
-          this.users.push(this.editedUser);
-        }
-        this.close();
+      } else if (this.btnTitle == "Guardar"){
+        let user = new User(
+          this.editedUser.avatar,
+          this.editedUser.name,
+          this.editedUser.last_name,
+          this.editedUser.document_type.toLowerCase().replace(/ /g, "_"),
+          this.editedUser.document_number,
+          this.editedUser.phone,
+          this.editedUser.email,
+          this.editedUser.password,
+          this.editedUser.address,
+          this.editedUser.gender.toLowerCase().replace(/ /g, "_"),
+          this.editedUser.type        );
+        return api.updateUser(this.editedUser.id, user).then((response) => {
+          if (response.status == 400) {
+            this.alertDialog = true;
+            this.alertMessage = response.data;
+          } else {
+            Object.assign(this.users[this.editedIndex], this.editedUser);
+            this.close();
+          }
+        });
       }
     },
   },

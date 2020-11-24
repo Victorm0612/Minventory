@@ -29,27 +29,27 @@ function getUsersByType(type) {
 
 function createUser(user) {
     return axios.post('register/', {
-        name: user.getName(),
-        last_name: user.getLastName(),
-        document_type: user.getDocumentType(),
-        document_number: user.getDocumentNumber(),
-        phone: user.getPhone(),
-        email: user.getEmail(),
-        password: user.getPassword(),
-        address: user.getAddress(),
-        gender: user.getGender(),
-        type: user.getType()
-    })
-    .then(response => response)
-    .catch((error) => {
-        if (error.response) {
-            return error.response;
-        }
-    })
+            name: user.getName(),
+            last_name: user.getLastName(),
+            document_type: user.getDocumentType(),
+            document_number: user.getDocumentNumber(),
+            phone: user.getPhone(),
+            email: user.getEmail(),
+            password: user.getPassword(),
+            address: user.getAddress(),
+            gender: user.getGender(),
+            type: user.getType()
+        })
+        .then(response => response)
+        .catch((error) => {
+            if (error.response) {
+                return error.response;
+            }
+        })
 }
 
-function updateUser(user) {
-    return axios.put('user/' + store.getters.retrieveUser.id_user + '/', {
+function updateUser(id, user) {
+    return axios.put('user/' + id + '/', {
             avatar: user.getAvatar(),
             name: user.getName(),
             last_name: user.getLastName(),
@@ -66,8 +66,11 @@ function updateUser(user) {
                 "Authorization": 'Token ' + store.getters.retrieveUser.token,
             }
         })
+        .then(response => response)
         .catch((error) => {
-            console.log("Error while update user: " + error)
+            if (error.response) {
+                return error.response;
+            }
         })
 }
 

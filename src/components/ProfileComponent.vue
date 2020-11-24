@@ -332,7 +332,7 @@ export default {
         this.$store.getters.retrieveUser.type_user
       );
       return api
-        .updateUser(user)
+        .updateUser(this.$store.getters.retrieveUser.id_user, user)
         .then(() => {
           this.$store.commit('assignDataUser',{
             id_user: this.$store.getters.retrieveUser.id_user,
