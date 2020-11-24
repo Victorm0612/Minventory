@@ -54,6 +54,7 @@
                         label="Número de Celular"
                         :rules="[rules.required, mobileRules]"
                         @keypress="isNumber($event)"
+                        required
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
@@ -221,7 +222,7 @@ export default {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
           value
         ) || "Ingresa un correo valido",
-      },
+    },
   }),
 
   computed: {
@@ -233,9 +234,9 @@ export default {
     },
     mobileRules() {
       return () =>
-        this.form.mobile.toString().length == 10 ||
+        this.editedUser.phone.toString().length == 10 ||
         "El número de celular debe contener 10 dígitos";
-    }
+    },
   },
 
   watch: {
@@ -306,8 +307,15 @@ export default {
     },
 
     deleteItemConfirm() {
-      this.users.splice(this.editedIndex, 1);
-      this.closeDelete();
+      return api.deleteUser(this.editedUser.id).then((response) => {
+        if (response.status == 400 || response.data.status == 500) {
+          this.alertDialog = true;
+          this.alertMessage = response.data.message;
+        } else {
+          this.users.splice(this.editedIndex, 1);
+          this.closeDelete();
+        }
+      });
     },
 
     close() {
@@ -350,7 +358,7 @@ export default {
             this.alertMessage = response.data;
           }
         });
-      } else if (this.btnTitle == "Guardar"){
+      } else if (this.btnTitle == "Guardar") {
         let user = new User(
           this.editedUser.avatar,
           this.editedUser.name,
@@ -362,7 +370,8 @@ export default {
           this.editedUser.password,
           this.editedUser.address,
           this.editedUser.gender.toLowerCase().replace(/ /g, "_"),
-          this.editedUser.type        );
+          this.editedUser.type
+        );
         return api.updateUser(this.editedUser.id, user).then((response) => {
           if (response.status == 400) {
             this.alertDialog = true;
