@@ -351,7 +351,8 @@ export default {
         );
         return api.createUser(user).then((response) => {
           if (response.status == 201) {
-            this.users.push(this.editedUser);
+            this.users = [];
+            this.initialize();
             this.close();
           } else {
             this.alertDialog = true;
