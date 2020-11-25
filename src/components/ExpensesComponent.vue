@@ -2,6 +2,7 @@
   <v-data-table
     :headers="headers"
     :items="bills"
+    :search="search"
     sort-by="calories"
     class="elevation-1"
   >
@@ -9,6 +10,14 @@
       <v-toolbar flat>
         <v-toolbar-title>Gastos</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          append-icon="fas fa-search"
+          label="Buscar..."
+          single-line
+          hide-details
+        ></v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
@@ -111,6 +120,7 @@ export default {
     valid: false,
     dialog: false,
     dialogDelete: false,
+    search: '',
     headers: [
       {
         text: "ID",
@@ -254,7 +264,7 @@ export default {
         });
       } else if (this.btnTitle == "Guardar") {
         let bill = new Bill(
-         "egreso",
+          "egreso",
           this.editedBill.total_price,
           this.editedBill.description,
           null
