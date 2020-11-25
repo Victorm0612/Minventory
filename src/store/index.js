@@ -56,6 +56,29 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        RefreshToken(context) {
+            return new Promise((resolve, reject) => {
+                axios.post('refresh-token/', {
+                        headers: {
+                            "Authorization": 'Token ' + context.getters.retrieveUser.token,
+                        }
+                    })
+                    .then(response => {
+                        const user = {
+                            id_user: context.getters.retrieveUser.id_user,
+                            token: response.data.access_token,
+                            avatar: context.getters.retrieveUser.avatar,
+                            name: context.getters.retrieveUser.name,
+                            type_user: context.getters.retrieveUser.type_user
+                        }
+                        context.commit('assignDataUser', user)
+                        resolve(response)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+            })
+        },
         destroyToken(context) {
             if (context.getters.loggedIn) {
                 return new Promise((resolve, reject) => {
