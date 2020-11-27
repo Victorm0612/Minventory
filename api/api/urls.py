@@ -18,7 +18,7 @@ urlpatterns = [
 
     url(r'^bill/$', billviews.bill_list),
     url(r'^bill/(?P<pk>[0-9]+)/$', billviews.bill_detail),
-    url(r'^bill/(?P<bill_type>[-\w]+)/$', billviews.bill_type),
+    url(r'^bill/by-type/(?P<bill_type>[-\w]+)/$', billviews.bill_type),
 
     url(r'^element/$', elementviews.element_list),
     url(r'^element/(?P<pk>[0-9]+)/$', elementviews.element_detail),

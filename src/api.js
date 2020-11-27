@@ -172,6 +172,70 @@ function getTasks(uri) {
         })
 }
 
+function getBillByType(type) {
+    return axios.get('bill/by-type/' + type, {
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch((error) => {
+            if (error.response) {
+                return error.response;
+            }
+        })
+}
+
+function createExpense(bill) {
+    return axios.post('bill/', {
+            bill_type: bill.getBillType(),
+            total_price: bill.getTotalPrice(),
+            description: bill.getDescription()
+        }, {
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch((error) => {
+            if (error.response) {
+                return error.response;
+            }
+        })
+}
+
+function updateBillByID(id, bill) {
+    return axios.put('bill/' + id + '/', {
+            bill_type: bill.getBillType(),
+            total_price: bill.getTotalPrice(),
+            description: bill.getDescription()
+        }, {
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch((error) => {
+            if (error.response) {
+                return error.response;
+            }
+        })
+}
+
+function deleteBillByID(id) {
+    return axios.delete('bill/' + id + '/', {
+            headers: {
+                "Authorization": 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch((error) => {
+            if (error.response) {
+                return error.response;
+            }
+        })
+}
+
 export default {
     getUsers,
     createUser,
@@ -182,5 +246,9 @@ export default {
     deleteQuotationByID,
     getTasks,
     getUsersByType,
-    deleteUser
+    deleteUser,
+    getBillByType,
+    createExpense,
+    updateBillByID,
+    deleteBillByID
 }
