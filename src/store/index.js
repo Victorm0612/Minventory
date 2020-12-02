@@ -59,6 +59,8 @@ export default new Vuex.Store({
         RefreshToken(context) {
             return new Promise((resolve, reject) => {
                 axios.post('refresh-token/', {
+                        id: context.getters.retrieveUser.id_user
+                    }, {
                         headers: {
                             "Authorization": 'Token ' + context.getters.retrieveUser.token,
                         }
@@ -82,7 +84,9 @@ export default new Vuex.Store({
         destroyToken(context) {
             if (context.getters.loggedIn) {
                 return new Promise((resolve, reject) => {
-                    axios.post('logout/', { id: context.getters.retrieveUser.id_user }, {
+                    axios.post('logout/', {
+                            id: context.getters.retrieveUser.id_user
+                        }, {
                             headers: {
                                 "Authorization": 'Token ' + context.getters.retrieveUser.token,
                             }
