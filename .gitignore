@@ -2,6 +2,7 @@
 node_modules
 /dist
 /src/dist
+/tests/unit/dist
 
 
 # local env files
