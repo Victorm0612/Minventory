@@ -4,6 +4,8 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.billmodels import Bill
 from api.serializers.billserializer import BillSerializer
+from api.models.taskmodels import Task
+from api.serializers.taskserializer import TaskSerializer
 from django.views.decorators.csrf import csrf_protect, csrf_exempt, ensure_csrf_cookie
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -30,9 +32,17 @@ def bill_list(request):
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = BillSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JSONResponse(serializer.data, status=201)
+        task = data.get('fkTask')
+        print(task)
+        try:
+            finished = Task.objects.get(pk=task, fkTask_status=6)
+            if finished:
+                if serializer.is_valid():
+                    serializer.save()
+                    return JSONResponse(serializer.data)
+                return JSONResponse(serializer.errors, status=400)
+        except Task.DoesNotExist:
+            return JSONResponse("Esa tarea está en curso, por favor pasarla a estado Finalizado")
         return JSONResponse(serializer.errors, status=400)
 
 
@@ -49,6 +59,7 @@ def bill_detail(request, pk):
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
         serializer = BillSerializer(bill, data=data)
+
         if serializer.is_valid():
             serializer.save()
             return JSONResponse(serializer.data)
