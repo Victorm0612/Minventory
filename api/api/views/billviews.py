@@ -44,7 +44,7 @@ def bill_list(request):
             try:
                 finished = Task.objects.get(pk=task, fkTask_status=6)
             except Task.DoesNotExist:
-                return JSONResponse(serializer.errors, status=400)
+                return JSONResponse("no se encontró una tarea con ese id", status=400)
             
             if finished:
                 if serializer.is_valid():
