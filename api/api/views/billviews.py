@@ -48,8 +48,9 @@ def bill_list(request):
                         serializer.save()
                         return JSONResponse(serializer.data)
                     return JSONResponse(serializer.errors, status=400)
-            except Task.DoesNotExist:
                 return JSONResponse("Esa tarea está en curso, por favor pasarla a estado Finalizado", status=400)
+            except Task.DoesNotExist:
+                return JSONResponse(serializer.errors, status=400)
         elif type == "egreso":
             if serializer.is_valid():
                 serializer.save()
