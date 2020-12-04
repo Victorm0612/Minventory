@@ -30,9 +30,117 @@ class JSONResponse(HttpResponse):
 @permission_classes([IsAuthenticated])
 def bill_list(request):
     if request.method == 'GET':
-        bills = Bill.objects.all()
-        serializer = BillSerializer(bills, many=True)
-        return JSONResponse(serializer.data)
+        egress = Bill.objects.filter(bill_type="egreso")
+        ingress = Bill.objects.filter(bill_type="ingreso")
+
+        if egress and ingress:
+            final_list = []
+            egress_serializer = BillSerializer(egress, many=True)
+
+            for i in range(0, egress.count()):
+                egress_index = egress_serializer.data[i]
+
+                egress_list = {
+                    "id": egress_index['id'],
+                    "bill_date": egress_index['bill_date'],
+                    "bill_type": egress_index['bill_type'],
+                    "total_price": egress_index['total_price'],
+                    "description": egress_index['description']
+                }
+                final_list.append(egress_list)
+
+            ingress_serializer = BillSerializer(ingress, many=True)
+
+            for i in range(0, ingress.count()):
+                bill_index = ingress_serializer.data[i]
+                task = Task.objects.get(pk=bill_index['fkTask'])
+                task_serializer = TaskSerializer(task)
+                request_quotation = RequestQuotation.objects.get(pk=task_serializer.data['fkRequestquotation'])
+                quotation_serializer = RequestQuotationSerializer(request_quotation)
+                user = User.objects.get(pk=quotation_serializer.data['fkUser_id'])
+                user_serializer = UserSerializer(user)
+
+                taskBill_list = {
+                    "id": bill_index['id'],
+                    "bill_date": bill_index['bill_date'],
+                    "bill_type": bill_index['bill_type'],
+                    "total_price": bill_index['total_price'],
+                    "description": bill_index['description'],
+                    "task_id": bill_index['fkTask'],
+                    "approved_date": task_serializer.data['approved_date'],
+                    "realization_date": task_serializer.data['realization_date'],
+                    "assignment_worker_id": task_serializer.data['fkAssignment_worker'],
+                    "task_status_id": task_serializer.data['fkTask_status'],
+                    "user_id": user_serializer.data['id'],
+                    "name": user_serializer.data['name'],
+                    "last_name": user_serializer.data['last_name'],
+                    "document_type": user_serializer.data['document_type'],
+                    "document_number": user_serializer.data['document_number'],
+                    "phone": user_serializer.data['phone'],
+                    "email": user_serializer.data['email'],
+                }
+                final_list.append(taskBill_list)
+
+            return JSONResponse(final_list)
+
+        elif egress.count() == 0:
+
+            ingress_list = []
+
+            ingress_serializer = BillSerializer(ingress, many=True)
+            for i in range(0, ingress.count()):
+                bill_index = ingress_serializer.data[i]
+                task = Task.objects.get(pk=bill_index['fkTask'])
+                task_serializer = TaskSerializer(task)
+                request_quotation = RequestQuotation.objects.get(pk=task_serializer.data['fkRequestquotation'])
+                quotation_serializer = RequestQuotationSerializer(request_quotation)
+                user = User.objects.get(pk=quotation_serializer.data['fkUser_id'])
+                user_serializer = UserSerializer(user)
+
+                taskBill_list = {
+                    "id": bill_index['id'],
+                    "bill_date": bill_index['bill_date'],
+                    "bill_type": bill_index['bill_type'],
+                    "total_price": bill_index['total_price'],
+                    "description": bill_index['description'],
+                    "task_id": bill_index['fkTask'],
+                    "approved_date": task_serializer.data['approved_date'],
+                    "realization_date": task_serializer.data['realization_date'],
+                    "assignment_worker_id": task_serializer.data['fkAssignment_worker'],
+                    "task_status_id": task_serializer.data['fkTask_status'],
+                    "user_id": user_serializer.data['id'],
+                    "name": user_serializer.data['name'],
+                    "last_name": user_serializer.data['last_name'],
+                    "document_type": user_serializer.data['document_type'],
+                    "document_number": user_serializer.data['document_number'],
+                    "phone": user_serializer.data['phone'],
+                    "email": user_serializer.data['email'],
+                }
+                ingress_list.append(taskBill_list)
+
+            return JSONResponse(ingress_list)
+
+        elif ingress.count() == 0:
+            egress = []
+
+            egress_serializer = BillSerializer(egress, many=True)
+
+            for i in range(0, egress.count()):
+                egress_index = egress_serializer.data[i]
+
+                egress_list = {
+                    "id": egress_index['id'],
+                    "bill_date": egress_index['bill_date'],
+                    "bill_type": egress_index['bill_type'],
+                    "total_price": egress_index['total_price'],
+                    "description": egress_index['description']
+                }
+                egress.append(egress_list)
+
+            return JSONResponse(egress)
+
+        elif egress.count() == 0 and ingress.count() == 0:
+            return JSONResponse("No hay facturas", status=400)
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
@@ -44,8 +152,8 @@ def bill_list(request):
             try:
                 finished = Task.objects.get(pk=task, fkTask_status=6)
             except Task.DoesNotExist:
-                return JSONResponse("no se encontró una tarea con ese id", status=400)
-            
+                return JSONResponse("No se encontró una tarea con ese id", status=400)
+
             if finished:
                 if serializer.is_valid():
                     serializer.save()
@@ -122,13 +230,26 @@ def bill_type(request, bill_type):
         return HttpResponse(status=404)
 
     if request.method == 'GET' and bill_type == "egreso":
+        egress = []
         serializer = BillSerializer(bills, many=True)
-        return JSONResponse(serializer.data)
+        for i in range(0, bills.count()):
+            egress_index = serializer.data[i]
+
+            egress_list = {
+                "id": egress_index['id'],
+                "bill_date": egress_index['bill_date'],
+                "bill_type": egress_index['bill_type'],
+                "total_price": egress_index['total_price'],
+                "description": egress_index['description']
+            }
+            egress.append(egress_list)
+
+        return JSONResponse(egress)
 
     if request.method == 'GET' and bill_type == "ingreso":
         serializer = BillSerializer(bills, many=True)
 
-        egress_list = []
+        ingress_list = []
 
         for i in range(0, bills.count()):
             bill_index = serializer.data[i]
@@ -158,7 +279,6 @@ def bill_type(request, bill_type):
                 "phone": user_serializer.data['phone'],
                 "email": user_serializer.data['email'],
             }
-            egress_list.append(taskBill_list)
+            ingress_list.append(taskBill_list)
 
-
-        return JSONResponse(egress_list)
+        return JSONResponse(ingress_list)
