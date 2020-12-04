@@ -43,14 +43,16 @@ def bill_list(request):
         if type == "ingreso":
             try:
                 finished = Task.objects.get(pk=task, fkTask_status=6)
-                if finished:
-                    if serializer.is_valid():
-                        serializer.save()
-                        return JSONResponse(serializer.data)
-                    return JSONResponse(serializer.errors, status=400)
-                return JSONResponse("Esa tarea está en curso, por favor pasarla a estado Finalizado", status=400)
             except Task.DoesNotExist:
                 return JSONResponse(serializer.errors, status=400)
+            
+            if finished:
+                if serializer.is_valid():
+                    serializer.save()
+                    return JSONResponse(serializer.data)
+                return JSONResponse(serializer.errors, status=400)
+            return JSONResponse("Esa tarea está en curso, por favor pasarla a estado Finalizado", status=400)
+
         elif type == "egreso":
             if serializer.is_valid():
                 serializer.save()
