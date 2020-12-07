@@ -6,6 +6,8 @@ from api.serializers.taskserializer import TaskSerializer
 from django.views.decorators.csrf import csrf_protect, csrf_exempt, ensure_csrf_cookie
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from api.models.requestquotationmodels import RequestQuotation
+from api.serializers.requestquotationserializer import RequestQuotationSerializer
 
 
 class JSONResponse(HttpResponse):
@@ -67,3 +69,16 @@ def employee_task(request, fk):
     if request.method == 'GET':
         serializer = TaskSerializer(task, many=True)
         return JSONResponse(serializer.data)
+
+def autoTask(request):
+    quotation = RequestQuotation.objects.get(pk=request)
+    serializer = RequestQuotationSerializer(quotation)
+    task={
+        "fkRequestquotation": serializer['id']
+    }
+
+    task_serializer = TaskSerializer(task)
+    if task_serializer.is_valid():
+        task_serializer.save()
+    return JSONResponse(serializer.errors, status=404)
+

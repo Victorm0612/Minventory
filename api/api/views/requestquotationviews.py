@@ -4,9 +4,13 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.requestquotationmodels import RequestQuotation
 from api.serializers.requestquotationserializer import RequestQuotationSerializer
+from api.models.taskmodels import Task
+from api.serializers.taskserializer import TaskSerializer
+from api.views import taskviews
 from django.views.decorators.csrf import csrf_protect
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
+import json
 
 
 class JSONResponse(HttpResponse):
@@ -48,6 +52,7 @@ def quotation_detail(request, pk):
         return JSONResponse(serializer.data)
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
+        statustype = data.get('fkTask_status')
         ocupado = RequestQuotation.objects.filter(
             scheduled_date=data['scheduled_date'], time_range=data['time_range']).exclude(pk=pk)
         if ocupado:
@@ -55,10 +60,24 @@ def quotation_detail(request, pk):
         for key, value in data.items():
             quotation.update_field(key, value)
         try:
+            if statustype == 5:
+
+                task = {
+                    "approved_date": "2020-12-07 09:43:15",
+                    "realization_date": "2020-11-10 12:30:00",
+                    "fkAssignment_worker": 1,
+                    "fkTask_status": 1,
+                    "fkRequestquotation": str(pk)
+                }
+                task_serializer = TaskSerializer(data=task)
+
+                if task_serializer.is_valid():
+                    task_serializer.save()
             quotation.save(update_fields=data.keys())
             return JSONResponse("La cotizacion se edito con exito!", status=200)
         except Exception:
             return JSONResponse("Error actualizando la cotizacion!", status=500)
+
     elif request.method == 'DELETE':
         quotation.delete()
         return HttpResponse(status=204)
