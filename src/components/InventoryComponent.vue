@@ -2,6 +2,8 @@
   <v-data-table
     :headers="headers"
     :items="elements"
+    :search="search"
+    :custom-filter="filterOnlyCapsText"
     class="elevation-1"
   >
     <template v-slot:top>
@@ -14,6 +16,14 @@
           inset
           vertical
         ></v-divider>
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          append-icon="fas fa-search"
+          label="Buscar..."
+          single-line
+          hide-details
+        ></v-text-field>
         <v-spacer></v-spacer>
         <v-dialog
           v-model="dialog"
@@ -77,6 +87,7 @@
                     <v-text-field
                       v-model="editedItem.price"
                       label="Precio"
+                      @keypress="isNumber()"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -143,6 +154,15 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <v-dialog v-model="dialogError" max-width="500px">
+          <v-alert
+            style="margin-bottom: 0; text-align: start;"
+            type="error"
+            transition="scale-transition"
+          >
+            Por favor, revise los datos ingresados e inténtelo nuevamente.
+          </v-alert>
+        </v-dialog>
       </v-toolbar>
     </template>
     <template v-slot:[`item.actions`]="{ item }">
@@ -168,9 +188,10 @@ import api from '@/api';
 import Element from "@/classes/element";
   export default {
     data: () => ({
+      search: '',
       dialog: false,
       dialogDelete: false,
-    //id, name, description, price, reseller, element_stock, fkInventory_id, fkTask_id
+      dialogError: false,
       headers: [
         {
           text: '#',
@@ -230,6 +251,28 @@ import Element from "@/classes/element";
     },
 
     methods: {
+    filterOnlyCapsText(value, search) {
+      return (
+        value != null &&
+        search != null &&
+        typeof value === "string" &&
+        value.toString().toLocaleUpperCase().indexOf(search.toUpperCase()) !==
+          -1
+      );
+    },
+    isNumber: function (evt) {
+      evt = evt ? evt : window.event;
+      var charCode = evt.which ? evt.which : evt.keyCode;
+      if (
+        charCode > 31 &&
+        (charCode < 48 || charCode > 57) &&
+        charCode !== 46
+      ) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
+    },
       initialize () {
         return api
             .getElement()
@@ -263,8 +306,8 @@ import Element from "@/classes/element";
             this.elements.splice(this.editedIndex, 1)
             this.closeDelete()
         })
-        .catch(error=>{
-            console.log(error)
+        .catch(()=>{
+            this.dialogError=true;
         })
       },
 
@@ -301,8 +344,8 @@ import Element from "@/classes/element";
                 Object.assign(this.elements[this.editedIndex], this.editedItem)
                 this.close()
             })
-            .catch(error=>{
-                console.log(error)
+            .catch(()=>{
+                this.dialogError=true;
             })
         } else {
             return api
@@ -311,8 +354,8 @@ import Element from "@/classes/element";
                 this.elements.push(this.editedItem)
                 this.close()
             })
-            .catch(error=>{
-                console.log(error)
+            .catch(()=>{
+                this.dialogError=true;
             })
         }     
       },
