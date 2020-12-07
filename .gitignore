@@ -2,6 +2,7 @@
 node_modules
 /dist
 /src/dist
+/src/store/dist
 /tests/unit/dist
 
 

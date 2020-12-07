@@ -96,21 +96,11 @@ def login_view(request):
     return response
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def refresh_token_view(request):
     User = get_user_model()
-    refresh_token = request.COOKIES.get('refreshtoken')
-    if refresh_token is None:
-        raise exceptions.AuthenticationFailed(
-            'Las credenciales de autenticacion no fueron dadas.')
-    try:
-        payload = jwt.decode(
-            refresh_token, settings.REFRESH_TOKEN_SECRET, algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise exceptions.AuthenticationFailed(
-            'El token expiro, por favor vuelve a iniciar sesion.')
-
-    user = User.objects.filter(id=payload.get('user_id')).first()
+    user_id = request.data.get('id')
+    user = User.objects.get(pk=user_id)
     if user is None:
         raise exceptions.AuthenticationFailed('No se encontro el usuario')
 
