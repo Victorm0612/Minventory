@@ -190,7 +190,8 @@ function createExpense(bill) {
     return axios.post('bill/', {
             bill_type: bill.getBillType(),
             total_price: bill.getTotalPrice(),
-            description: bill.getDescription()
+            description: bill.getDescription(),
+            fkTask: bill.getFkTask()
         }, {
             headers: {
                 "Authorization": 'Token ' + store.getters.retrieveUser.token,

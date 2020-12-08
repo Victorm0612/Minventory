@@ -36,6 +36,29 @@
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field
+                        v-model="editedBill.bill_date"
+                        label="Fecha"
+                        :disabled="true"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedBill.bill_type"
+                        label="Tipo de factura"
+                        :disabled="true"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedBill.task_id"
+                        label="ID de la tarea"
+                        :rules="[rules.required]"
+                        @keypress="isNumber($event)"
+                        :disabled="editedIndex != -1"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
                         v-model="editedBill.total_price"
                         label="Total"
                         :rules="[rules.required]"
@@ -224,7 +247,6 @@ export default {
       task_id: "",
       task_status_id: "",
     },
-    billType: ["Egreso"],
     rules: {
       required: (value) => !!value || "Este campo no puede estar vacio",
     },
@@ -232,7 +254,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Nuevo Gasto" : "Editar Gasto";
+      return this.editedIndex === -1 ? "Nueva Factura" : "Editar Factura";
     },
     btnTitle() {
       return this.editedIndex === -1 ? "Crear" : "Guardar";
@@ -328,13 +350,13 @@ export default {
     save() {
       if (this.btnTitle == "Crear") {
         let bill = new Bill(
-          "egreso",
+          "ingreso",
           this.editedBill.total_price,
           this.editedBill.description,
-          null
+          this.editedBill.task_id
         );
         return api.createExpense(bill).then((response) => {
-          if (response.status == 201) {
+          if (response.status == 200) {
             this.bills = [];
             this.initialize();
             this.close();
@@ -345,10 +367,10 @@ export default {
         });
       } else if (this.btnTitle == "Guardar") {
         let bill = new Bill(
-          "egreso",
+          "ingreso",
           this.editedBill.total_price,
           this.editedBill.description,
-          null
+          this.editedBill.task_id
         );
         return api.updateBillByID(this.editedBill.id, bill).then((response) => {
           if (response.status == 400) {
