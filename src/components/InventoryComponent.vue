@@ -351,8 +351,9 @@ import Element from "@/classes/element";
             return api
             .createElement(element)
             .then(()=>{
-                this.elements.push(this.editedItem)
-                this.close()
+                this.elements = [];
+                this.initialize();
+                this.close();
             })
             .catch(()=>{
                 this.dialogError=true;
