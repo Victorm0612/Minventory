@@ -7,9 +7,7 @@
         <v-flex d-flex>
           <admin-menu v-if="false || isAdmin"></admin-menu>
           <v-main>
-            <router-view
-              class="container px-5 sm:px-20 py-20 flex justify-center"
-            />
+            <router-view/> <!-- class="container px-5 sm:px-20 py-20 flex justify-center"  -->
           </v-main>
         </v-flex>
       </v-layout>
@@ -50,7 +48,8 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-#navbar {
+/*#navbar {
   margin-bottom: 5rem;
-}
+}*/
+
 </style>
