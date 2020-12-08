@@ -5,6 +5,7 @@
     <task-component v-if="moduleTitle == 'Tareas'"></task-component>
     <employees-component v-if="moduleTitle == 'Empleados'"></employees-component>
     <expenses-component v-if="moduleTitle == 'Gastos'"></expenses-component>
+    <billing-component v-if="moduleTitle == 'Facturación'"></billing-component>
     <v-row>
       <v-col cols="12" md="4">
         <registrations-card-component
@@ -59,6 +60,7 @@ import InstagramCardComponent from "@/components/dashboard-components/InstagramC
 import TaskComponent from '@/components/TaskComponent.vue';
 import EmployeesComponent from '@/components/EmployeesComponent.vue';
 import ExpensesComponent from '@/components/ExpensesComponent.vue';
+import BillingComponent from '@/components/BillingComponent.vue';
 
 export default {
   name: "AdminDashboard",
@@ -74,6 +76,7 @@ export default {
     TaskComponent,
     EmployeesComponent,
     ExpensesComponent,
+    BillingComponent
   },
   computed: {
     moduleTitle() {

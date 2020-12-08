@@ -67,9 +67,9 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 .block-x-overflow{
   overflow-x: hidden;
   overflow-y: hidden;
 }
-</style>>
+</style>
