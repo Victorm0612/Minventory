@@ -172,6 +172,66 @@ function getTasks(uri) {
         })
 }
 
+function getElement() {
+    return axios.get('element/', {
+            headers: {
+                Authorization: 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch(error => {
+            console.log('Error with get Elements, error is: ', error);
+        })
+}
+
+function createElement(element) {
+    return axios.post('element/', {
+        name: element.getName(),
+        description: element.getDescription(),
+        price: element.getPrice(),
+        reseller: element.getReseller(),
+        element_stock: element.getStock(),
+        fkInventory_id: element.getFkInventory(),
+        fkTask_id: element.getFkTask(),
+    }, {
+        headers: {
+            Authorization: 'Token ' + store.getters.retrieveUser.token,
+        }
+    })
+}
+
+function updateElement(element, id) {
+    return axios.put('element/' + id + '/', {
+            name: element.getName(),
+            description: element.getDescription(),
+            price: element.getPrice(),
+            reseller: element.getReseller(),
+            element_stock: element.getStock(),
+            fkInventory_id: element.getFkInventory(),
+            fkTask_id: element.getFkTask(),
+        }, {
+            headers: {
+                Authorization: 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch(error => {
+            console.log('Error with update Element. The error is: ' + error)
+        })
+}
+
+function deleteElement(id) {
+    return axios.delete('element/' + id, {
+            headers: {
+                Authorization: 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch(error => {
+            console.log(error)
+        })
+}
+
 function getBillByType(type) {
     return axios.get('bill/by-type/' + type, {
             headers: {
@@ -246,6 +306,10 @@ export default {
     updateQuotationByID,
     deleteQuotationByID,
     getTasks,
+    getElement,
+    createElement,
+    updateElement,
+    deleteElement,
     getUsersByType,
     deleteUser,
     getBillByType,

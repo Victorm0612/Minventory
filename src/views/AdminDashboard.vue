@@ -6,6 +6,7 @@
     <employees-component v-if="moduleTitle == 'Empleados'"></employees-component>
     <expenses-component v-if="moduleTitle == 'Gastos'"></expenses-component>
     <billing-component v-if="moduleTitle == 'Facturación'"></billing-component>
+    <inventory-component v-if="moduleTitle == 'Inventario'"></inventory-component>
     <v-row>
       <v-col cols="12" md="4">
         <registrations-card-component
@@ -61,6 +62,7 @@ import TaskComponent from '@/components/TaskComponent.vue';
 import EmployeesComponent from '@/components/EmployeesComponent.vue';
 import ExpensesComponent from '@/components/ExpensesComponent.vue';
 import BillingComponent from '@/components/BillingComponent.vue';
+import InventoryComponent from '../components/InventoryComponent.vue';
 
 export default {
   name: "AdminDashboard",
@@ -76,7 +78,8 @@ export default {
     TaskComponent,
     EmployeesComponent,
     ExpensesComponent,
-    BillingComponent
+    BillingComponent,
+    InventoryComponent,
   },
   computed: {
     moduleTitle() {
