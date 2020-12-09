@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <div id="app" :style="'background-image:url('+require('@/assets/'+imageBackground.msg)+'); height:'+imageBackground.height+';'">
+    <div id="app" :style="'background-image:'+imageBackground.gradient+',url('+require('@/assets/'+imageBackground.msg)+'); height:'+imageBackground.height+';'">
       <nav-bar id="navbar"></nav-bar>
       <v-layout v-if="!isAdmin" row wrap>
         <v-flex d-flex>
@@ -80,22 +80,26 @@ export default {
       return this.$store.state.moduleTitle;
     },
     imageBackground(){
-      let image={msg: '',height:''};
+      let image={msg: '',height:'',gradient: ''};
       if(this.moduleTitle === 'Login'){
         image.msg='login.jpg';
         image.height='100vh';
+        image.gradient='linear-gradient(to left, rgba(13,8,84,.2), rgba(48,142,126,.24), rgba(73,164,246,.7))';
       }
       else if(this.moduleTitle === 'Register'){
         image.msg='Register.jpg';
         image.height='';
+        image.gradient='linear-gradient(to left, rgba(13,9,69,.5), rgba(22,19,19,.6), rgba(26,119,204,.3))';
       }
       else if(this.moduleTitle === 'Home'){
         image.msg='worker.jpg';
         image.height='';
+        image.gradient='';
       }
       else{
         image.msg='worker.jpg';
         image.height='';
+        image.gradient='linear-gradient(to top right, rgba(2,0,36,.1), rgba(9,9,121,.2), rgba(0,212,255,.5))';
       }
       return image;
     }
@@ -111,6 +115,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   background-size: cover;
+  
 }
 #navbar {
   margin-bottom: 3rem;

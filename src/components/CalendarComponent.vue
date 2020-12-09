@@ -76,7 +76,7 @@
           <v-select
             v-model="cbServiceType"
             :items="serviceType"
-            label="Tipo de servicio"
+            label="Tipo de servicio (Diseño, fabricación, montaje)"
             item-value="text"
             :rules="rules"
           ></v-select>
@@ -194,13 +194,22 @@ export default {
     confirmDialog: false,
     cbServiceType: "",
     serviceType: [
-      { text: "Servicio 1" },
-      { text: "Servicio 2" },
-      { text: "Servicio 3" },
-      { text: "Servicio 4" },
-      { text: "Servicio 5" },
-      { text: "Servicio 6" },
-      { text: "Servicio 7" },
+      {text:"Acero inoxidable"},
+      {text:"Acrílicos"},
+      {text:"Angeos"},
+      {text:"Barandas"},
+      {text:"Divisiones de baño"},
+      {text:"Enmarcaciones"},
+      {text:"Espejos"},
+      {text:"Estructuras metálicas"},
+      {text:"Fachadas en vidrio templado"},
+      {text:"Pasamanos"},
+      {text:"Policarbonato"},
+      {text:"Puertas electrónicas"},
+      {text:"Puertas"},
+      {text:"Venta de accesorios y repuestos"},
+      {text:"Ventanas"},
+      {text:"Vidrios"},
     ],
     taDescription: "",
     selection: 0,
