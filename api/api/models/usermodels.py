@@ -1,4 +1,3 @@
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import RegexValidator
@@ -38,4 +37,3 @@ class User(AbstractUser):
     type = models.TextField(max_length=8, choices=TYPE_CHOICES)
     last_login = models.DateTimeField(auto_now_add=True)
     actual_token = models.TextField(null=True)
-

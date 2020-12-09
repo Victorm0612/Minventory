@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^logout/$', userviews.logout_view),
     url(r'^refresh-token/$', userviews.refresh_token_view),
     url(r'^register/$', userviews.create_user),
+    url(r'^employee/$', userviews.create_employee),
 
     url(r'^bill/$', billviews.bill_list),
     url(r'^bill/(?P<pk>[0-9]+)/$', billviews.bill_detail),

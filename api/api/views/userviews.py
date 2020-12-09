@@ -12,7 +12,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import exceptions
 from api.utils.authutils import generate_access_token, generate_refresh_token
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 class JSONResponse(HttpResponse):
 
@@ -31,8 +32,10 @@ class JSONResponse(HttpResponse):
 def create_user(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
+        usertype = data.get('type')
         serializer = UserSerializer(data=data)
-        if serializer.is_valid():
+
+        if serializer.is_valid() and usertype != 3:
             serializer.save()
             return JSONResponse(serializer.data, status=201)
         return JSONResponse(serializer.errors, status=400)
@@ -66,7 +69,6 @@ def user_detail(request, pk):
     elif request.method == 'DELETE':
         user.delete()
         return HttpResponse(status=204)
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_view(request):
@@ -74,6 +76,11 @@ def login_view(request):
     email = request.data.get('email')
     password = request.data.get('password')
     response = Response()
+    useri = User.objects.filter(email=email).first()
+    type_user = UserSerializer(useri).data
+    global savetype
+    savetype = type_user.get('type')
+
     if (email is None) or (password is None):
         raise exceptions.AuthenticationFailed(
             'El email y el password son requeridos')
@@ -83,6 +90,7 @@ def login_view(request):
     if (user.password != password):
         raise exceptions.AuthenticationFailed('Email y/o password incorrectos')
     serialized_user = UserSerializer(user).data
+
     access_token = generate_access_token(user)
     refresh_token = generate_refresh_token(user)
     response.set_cookie(key='refreshtoken', value=refresh_token, httponly=True)
@@ -92,8 +100,15 @@ def login_view(request):
     }
     user.actual_token = access_token
     user.save()
+    print(savetype)
+
 
     return response
+
+def print_type():
+    print(savetype)
+    if savetype == 3:
+        print("hola")
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -140,3 +155,20 @@ def get_users_by_type(request, type):
     if request.method == 'GET':
         serializer = UserSerializer(users, many=True)
         return JSONResponse(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_employee(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        userType = data.get('type')
+        serializer = UserSerializer(data=data)
+        is_adm = savetype
+        if is_adm == 1:
+            adm = 1
+        print(adm)
+
+        if serializer.is_valid() and userType == 3 and is_adm == 1:
+            serializer.save()
+            return JSONResponse(serializer.data, status=201)
+        return JSONResponse(serializer.errors, status=400)
