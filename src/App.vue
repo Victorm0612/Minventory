@@ -24,6 +24,7 @@
             </v-col>
         </v-row>
       </v-container>
+      <div style="height:100px"></div>
       <v-footer v-if="!isAdmin" absolute dark padless>
         <v-card class="flex" flat tile>
           <v-card-title class="teal">
@@ -94,7 +95,7 @@ export default {
       }
       else{
         image.msg='worker.jpg';
-        image.height='100vh';
+        image.height='';
       }
       return image;
     }
