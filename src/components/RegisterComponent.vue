@@ -130,8 +130,8 @@
                         <v-btn
                           :disabled="!valid"
                           depressed
-                          class="text-none px-5"
-                          color="primary"
+                          class="white--text text-none px-5"
+                          color="black"
                           elevation="10"
                           @click="saveUser"
                           >Registrarte

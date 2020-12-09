@@ -6,10 +6,10 @@
     v-model="show"
   >
     <v-card class="block-x-overflow">
-      <v-toolbar dark color="primary">
+      <v-toolbar dark color="black">
         <v-toolbar-title>Select an Avatar</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn class="right-position" color="primary" @click="show = false">
+        <v-btn class="black--text text-none right-position" color="white" @click="show = false">
           Cerrar
         </v-btn>
       </v-toolbar>
@@ -18,7 +18,7 @@
           <v-card tile flat class="d-flex">
             <v-card-text class="d-flex">
               <v-avatar
-                size="86"
+                size="80"
                 @click="selectAvatar(avatar)"
                 class="avatar-picker-avatar"
                 :class="{ current: avatar.id === currentAvatar }"

@@ -101,16 +101,16 @@
         </v-card-text>
         <v-card-actions>
           <v-btn
-            class="right-position"
-            color="primary"
-            text
+            class="text-none white--text right-position"
+            color="deep-purple"
+            depresed
             @click="validateData"
             >Confirmar</v-btn
           >
           <v-btn
-            class="right-position"
-            color="primary"
-            text
+            class="text-none white--text right-position"
+            color="deep-purple"
+            depresed
             @click="closeQuotation"
             >Cerrar</v-btn
           >
