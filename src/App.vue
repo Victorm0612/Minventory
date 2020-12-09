@@ -12,7 +12,7 @@
           </v-main>
         </v-flex>
       </v-layout>
-      <v-footer dark padless>
+      <v-footer v-if="!isAdmin" absolute dark padless>
         <v-card class="flex" flat tile>
           <v-card-title class="teal">
             <strong class="subheading"
@@ -80,7 +80,7 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-/*#navbar {
-  margin-bottom: 5rem;
-}*/
+#navbar {
+  margin-bottom: 3rem;
+}
 </style>
