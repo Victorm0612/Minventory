@@ -4,6 +4,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from api.models.requestquotationmodels import RequestQuotation
 from api.serializers.requestquotationserializer import RequestQuotationSerializer
+from api.serializers.taskserializer import TaskSerializer
 from django.views.decorators.csrf import csrf_protect
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -31,7 +32,16 @@ def quotation_list(request):
         data = JSONParser().parse(request)
         serializer = RequestQuotationSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
+            created_quotation = serializer.save()
+            task_data = {
+                'realization_date': data['scheduled_date'] + ' ' + data['time_range'][0:5] + ':00',
+                'type_task': 'request_quotation',
+                'fkTask_status': 1,
+                'fkRequestquotation': created_quotation.pk
+            }
+            task_serializer = TaskSerializer(data=task_data)
+            if task_serializer.is_valid():
+                task_serializer.save()
             return JSONResponse(serializer.data, status=201)
         return JSONResponse(serializer.errors, status=400)
 
