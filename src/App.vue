@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <div id="app">
+    <div id="app" :style="'background-image:url('+require('@/assets/'+imageBackground.msg)+'); height:'+imageBackground.height+';'">
       <nav-bar id="navbar"></nav-bar>
 
       <v-layout row wrap>
@@ -12,6 +12,7 @@
           </v-main>
         </v-flex>
       </v-layout>
+      <div style="height:100px;"></div>
       <v-footer v-if="!isAdmin" absolute dark padless>
         <v-card class="flex" flat tile>
           <v-card-title class="teal">
@@ -68,6 +69,25 @@ export default {
     isAdmin() {
       return this.$store.getters.showAdminMenu;
     },
+    moduleTitle() {
+      return this.$store.state.moduleTitle;
+    },
+    imageBackground(){
+      let image={msg: '',height:''};
+      if(this.moduleTitle === 'Login'){
+        image.msg='login.jpg';
+        image.height='100vh';
+      }
+      else if(this.moduleTitle === 'Register'){
+        image.msg='Register.jpg';
+        image.height='';
+      }
+      else{
+        image.msg='worker.jpg';
+        image.height='';
+      }
+      return image;
+    }
   },
 };
 </script>
@@ -79,6 +99,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  background-size: cover;
 }
 #navbar {
   margin-bottom: 3rem;

@@ -1,5 +1,5 @@
 <template>
-  <v-container id="login" class="fill-height" fluid>
+  <v-container class="fill-height" fluid>
     <v-row class="d-flex" align="center" justify="center">
       <v-col cols="12" sm="8" md="6">
         <v-card class="elevation-12 __b-20">
@@ -118,7 +118,10 @@ export default {
         }, 3000);
     }
   },
-  methods: {   
+  created() {
+    this.$store.commit('setModuleTitle', 'Login');
+  },
+  methods: {  
     login(){
       this.$store.dispatch('userLogin',{
         email: this.email,
@@ -139,10 +142,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-#login{
-  background-image: url('../assets/login.jpg');
-  background-size: cover;
-}
-</style>

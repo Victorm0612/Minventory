@@ -1,8 +1,8 @@
 <template>
-  <v-container class="fill-height" fluid>
+  <v-container id="register" class="mb-10 fill-height" fluid>
     <v-row class="d-flex" align="center" justify="center">
       <v-col cols="12" sm="8" md="6">
-        <v-card class="elevation-12 __b-20 pa-4">
+        <v-card class="mb-10 elevation-12 __b-20 pa-4">
           <v-card-text>
             <v-container fluid>
               <v-row>
@@ -212,6 +212,9 @@ export default {
         "*Mínimo 8 caracteres. *Mínimo una letra minúscula. *Mínimo una letra mayúscula. *Mínimo un número. *Mínimo un caracter especial[!@#%&*]."
     }
   }),
+  created() {
+    this.$store.commit('setModuleTitle', 'Register');
+  },
   watch: {
     overlay(val) {
       val &&
