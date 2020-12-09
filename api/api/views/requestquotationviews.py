@@ -41,7 +41,7 @@ def quotation_list(request):
             }
             task_serializer = TaskSerializer(data=task_data)
             if task_serializer.is_valid():
-                created_task = task_serializer.save()
+                task_serializer.save()
             return JSONResponse(serializer.data, status=201)
         return JSONResponse(serializer.errors, status=400)
 
