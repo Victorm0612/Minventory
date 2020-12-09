@@ -1,8 +1,11 @@
 <template>
-  <div id="nav-bar" class="mx-auto overflow-hidden ">
-    <v-app-bar color="transparent" flat dark fixed>
+  <div id="nav-bar" class="mx-auto overflow-hidden">
+    <v-app-bar
+    color="dark" 
+    dark 
+    fixed>
       <router-link to="/">
-        <img class="mt-5" width="90" height="90" alt="Vue logo" :src="require('@/assets/VidrioVargas.png')"/>
+        <img width="90" height="90" alt="Vue logo" :src="require('@/assets/VidrioVargas.png')"/>
       </router-link>
       <v-spacer></v-spacer>
       <v-btn outlined id="menu" v-if="!loggedIn" to="/login">Iniciar Sesión</v-btn>

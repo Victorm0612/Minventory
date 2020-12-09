@@ -7,10 +7,32 @@
         <v-flex d-flex>
           <admin-menu v-if="false || isAdmin"></admin-menu>
           <v-main>
-            <router-view/> <!-- class="container px-5 sm:px-20 py-20 flex justify-center"  -->
+            <router-view />
+            <!-- class="container px-5 sm:px-20 py-20 flex justify-center"  -->
           </v-main>
         </v-flex>
       </v-layout>
+      <v-footer dark padless>
+        <v-card class="flex" flat tile>
+          <v-card-title class="teal">
+            <strong class="subheading"
+              >¡Conectate con nosotros!</strong
+            >
+
+            <v-spacer></v-spacer>
+
+            <v-btn v-for="icon in icons" :key="icon" class="mx-4" dark icon>
+              <v-icon size="24px">
+                {{ icon }}
+              </v-icon>
+            </v-btn>
+          </v-card-title>
+
+          <v-card-text class="py-2 white--text text-center">
+            {{ new Date().getFullYear() }} — <strong>Vidrios Vargas</strong>
+          </v-card-text>
+        </v-card>
+      </v-footer>
     </div>
   </v-app>
 </template>
@@ -24,7 +46,17 @@ export default {
   name: "App",
   components: {
     NavBar,
-    AdminMenu
+    AdminMenu,
+  },
+  data() {
+    return {
+      icons: [
+        "fab fa-facebook",
+        "fab fa-twitter",
+        "fab fa-linkedin-in",
+        "fab fa-instagram",
+      ],
+    };
   },
   async mounted() {
     await this.$store.dispatch("checkIfAdmin");
@@ -35,8 +67,8 @@ export default {
   computed: {
     isAdmin() {
       return this.$store.getters.showAdminMenu;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -51,5 +83,4 @@ export default {
 /*#navbar {
   margin-bottom: 5rem;
 }*/
-
 </style>
