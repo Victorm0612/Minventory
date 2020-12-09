@@ -2,33 +2,39 @@
   <v-app>
     <div id="app" :style="'background-image:url('+require('@/assets/'+imageBackground.msg)+'); height:'+imageBackground.height+';'">
       <nav-bar id="navbar"></nav-bar>
-
-      <v-layout row wrap>
+      <v-layout v-if="!isAdmin" row wrap>
         <v-flex d-flex>
           <admin-menu v-if="false || isAdmin"></admin-menu>
           <v-main>
             <router-view />
-            <!-- class="container px-5 sm:px-20 py-20 flex justify-center"  -->
           </v-main>
         </v-flex>
       </v-layout>
-      <div style="height:100px;"></div>
+      <v-container v-if="isAdmin" class="fill-height" style="background-color:white;" fluid>
+        <v-row align="center" justify="center">
+            <v-col>
+              <v-layout row wrap>
+                <v-flex d-flex>
+                  <admin-menu v-if="false || isAdmin"></admin-menu>
+                  <v-main>
+                    <router-view class="container px-5 sm:px-20 py-20 flex justify-center" />
+                  </v-main>
+                </v-flex>
+              </v-layout>
+            </v-col>
+        </v-row>
+      </v-container>
       <v-footer v-if="!isAdmin" absolute dark padless>
         <v-card class="flex" flat tile>
           <v-card-title class="teal">
-            <strong class="subheading"
-              >¡Conectate con nosotros!</strong
-            >
-
+            <strong class="subheading">¡Conectate con nosotros!</strong>
             <v-spacer></v-spacer>
-
             <v-btn v-for="icon in icons" :key="icon" class="mx-4" dark icon>
               <v-icon size="24px">
                 {{ icon }}
               </v-icon>
             </v-btn>
           </v-card-title>
-
           <v-card-text class="py-2 white--text text-center">
             {{ new Date().getFullYear() }} — <strong>Vidrios Vargas</strong>
           </v-card-text>
@@ -82,9 +88,13 @@ export default {
         image.msg='Register.jpg';
         image.height='';
       }
-      else{
+      else if(this.moduleTitle === 'Home'){
         image.msg='worker.jpg';
         image.height='';
+      }
+      else{
+        image.msg='worker.jpg';
+        image.height='100vh';
       }
       return image;
     }

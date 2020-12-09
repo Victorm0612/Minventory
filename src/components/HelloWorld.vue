@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="background-color: white;">
     <v-img
       class="fill-height mb-5"
       height="800"
@@ -198,6 +198,9 @@ export default {
         },
       ],
     };
+  },
+  created() {
+    this.$store.commit('setModuleTitle','Home');
   },
   methods: {
     gotoSelectedVendor() {

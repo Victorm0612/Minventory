@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="background-color: white;">
     <h1>{{ moduleTitle }}</h1>
     <profile-component v-if="moduleTitle == 'Cuenta'"></profile-component>
     <task-component v-if="moduleTitle == 'Tareas'"></task-component>

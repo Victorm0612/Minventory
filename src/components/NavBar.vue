@@ -60,6 +60,7 @@ export default {
     moveToRoute: function(route) {
       if (this.$router.currentRoute.name !== route) {
         this.$router.push({ name: route });
+        this.$store.commit('setModuleTitle','Panel de control')
       } else {
         this.drawer = false;
       }
