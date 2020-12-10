@@ -121,14 +121,14 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
-                color="blue darken-1"
+                class="text-none" color="black"
                 text
                 @click="close"
               >
                 Cancelar
               </v-btn>
               <v-btn
-                color="blue darken-1"
+                class="text-none" color="black"
                 text
                 @click="save"
               >
@@ -142,8 +142,8 @@
             <v-card-title class="headline">¿Está seguro que desea eliminarlo?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+              <v-btn class="text-none" color="black" text @click="closeDelete">Cancelar</v-btn>
+              <v-btn class="text-none" color="black" text @click="deleteItemConfirm">OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>

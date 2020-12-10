@@ -2,7 +2,7 @@
   <v-card height="400" width="256">
     <v-navigation-drawer
       class="drawer"
-      color="#0277BD"
+      color="dark"
       dark
       permanent
       fixed
