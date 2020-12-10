@@ -142,6 +142,7 @@
           <br />
         </v-card-text>
         <v-card-actions>
+          <v-spacer></v-spacer>
           <v-btn
             class="text-none right-position"
             color="dark"
