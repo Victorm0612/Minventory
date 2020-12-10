@@ -21,7 +21,7 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+            <v-btn color="black" dark class="text-none mb-2" v-bind="attrs" v-on="on">
               Nueva Factura
             </v-btn>
           </template>
@@ -79,12 +79,13 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">
+              <v-btn class="text-none" color="black" text @click="close">
                 Cancelar
               </v-btn>
               <v-btn
+                class="text-none"
                 :disabled="!valid"
-                color="blue darken-1"
+                color="black"
                 text
                 @click="save"
               >
@@ -146,10 +147,10 @@
             >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete"
+              <v-btn class="text-none" color="black" text @click="closeDelete"
                 >Cancelar</v-btn
               >
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+              <v-btn class="text-none" color="black" text @click="deleteItemConfirm"
                 >Eliminar</v-btn
               >
               <v-spacer></v-spacer>
@@ -172,7 +173,7 @@
       <v-icon small @click="deleteItem(item)"> fas fa-trash-alt </v-icon>
     </template>
     <template v-slot:[`item.view_more`]="{ item }">
-      <v-btn x-small @click="viewMore(item)">Ver más</v-btn>
+      <v-btn class="text-none" x-small @click="viewMore(item)">Ver más</v-btn>
     </template>
   </v-data-table>
 </template>
@@ -205,7 +206,7 @@ export default {
       { text: "Descripción", value: "description", sortable: false },
       { text: "Total", value: "total_price" },
       { text: "Detalles", value: "view_more", sortable: false },
-      { text: "Actions", value: "actions", sortable: false },
+      { text: "Acciones", value: "actions", sortable: false },
     ],
     bills: [],
     editedIndex: -1,

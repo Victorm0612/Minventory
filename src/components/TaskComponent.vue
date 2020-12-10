@@ -26,9 +26,9 @@
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               v-if="!isWorker"
-              color="primary"
+              color="black"
               dark
-              class="mb-2"
+              class="mb-2 text-none"
               v-bind="attrs"
               v-on="on"
             >
@@ -102,12 +102,12 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">
+              <v-btn color="black" class="text-none" text @click="close">
                 Cancelar
               </v-btn>
               <v-btn
                 :disabled="!valid"
-                color="blue darken-1"
+                color="black" class="text-none"
                 text
                 @click="save"
               >
@@ -123,10 +123,10 @@
             >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete"
+              <v-btn color="black" class="text-none" text @click="closeDelete"
                 >Cancelar</v-btn
               >
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+              <v-btn color="black" class="text-none" text @click="deleteItemConfirm"
                 >Eliminar</v-btn
               >
               <v-spacer></v-spacer>

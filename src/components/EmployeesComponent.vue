@@ -12,7 +12,7 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+            <v-btn color="black" dark class="text-none mb-2" v-bind="attrs" v-on="on">
               Nuevo Empleado
             </v-btn>
           </template>
@@ -96,12 +96,13 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">
+              <v-btn class="text-none" color="black" text @click="close">
                 Cancelar
               </v-btn>
               <v-btn
+                class="text-none"
                 :disabled="!valid"
-                color="blue darken-1"
+                color="black"
                 text
                 @click="save"
               >
@@ -117,10 +118,10 @@
             >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete"
+              <v-btn color="black" class="text-none" text @click="closeDelete"
                 >Cancelar</v-btn
               >
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+              <v-btn color="black" class="text-none" text @click="deleteItemConfirm"
                 >Eliminar</v-btn
               >
               <v-spacer></v-spacer>
@@ -177,7 +178,7 @@ export default {
       },
       { text: "Dirección", value: "address", sortable: false },
       { text: "Género", value: "gender", sortable: false },
-      { text: "Actions", value: "actions", sortable: false },
+      { text: "Acciones", value: "actions", sortable: false },
     ],
     users: [],
     editedIndex: -1,
