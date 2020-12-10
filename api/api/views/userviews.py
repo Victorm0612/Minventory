@@ -15,6 +15,8 @@ from api.utils.authutils import generate_access_token, generate_refresh_token
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
+savetype = 0
+
 class JSONResponse(HttpResponse):
 
     """
@@ -100,9 +102,6 @@ def login_view(request):
     }
     user.actual_token = access_token
     user.save()
-    print(savetype)
-
-
     return response
 
 def print_type():
@@ -164,11 +163,9 @@ def create_employee(request):
         userType = data.get('type')
         serializer = UserSerializer(data=data)
         is_adm = savetype
-        if is_adm == 1:
-            adm = 1
-        print(adm)
 
         if serializer.is_valid() and userType == 3 and is_adm == 1:
             serializer.save()
             return JSONResponse(serializer.data, status=201)
-        return JSONResponse(serializer.errors, status=400)
+        return JSONResponse({"Creating_employee": "Usted no es un usuario admin, "
+                                              "no puede crear un empleado"},status=400)
