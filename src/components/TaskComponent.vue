@@ -3,7 +3,10 @@
     :headers="headers"
     :items="tasks"
     :search="search"
-    sort-by="calories"
+    :single-expand="singleExpand"
+    :expanded.sync="expanded"
+    show-expand
+    sort-by="id"
     class="elevation-1"
   >
     <template v-slot:top>
@@ -21,7 +24,14 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-if="!isWorker" color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+            <v-btn
+              v-if="!isWorker"
+              color="primary"
+              dark
+              class="mb-2"
+              v-bind="attrs"
+              v-on="on"
+            >
               Nueva Tarea
             </v-btn>
           </template>
@@ -92,8 +102,15 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Cancelar </v-btn>
-              <v-btn :disabled="!valid" color="blue darken-1" text @click="save">
+              <v-btn color="blue darken-1" text @click="close">
+                Cancelar
+              </v-btn>
+              <v-btn
+                :disabled="!valid"
+                color="blue darken-1"
+                text
+                @click="save"
+              >
                 {{ btnTitle }}
               </v-btn>
             </v-card-actions>
@@ -106,7 +123,9 @@
             >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
+              <v-btn color="blue darken-1" text @click="closeDelete"
+                >Cancelar</v-btn
+              >
               <v-btn color="blue darken-1" text @click="deleteItemConfirm"
                 >Eliminar</v-btn
               >
@@ -116,7 +135,11 @@
         </v-dialog>
       </v-toolbar>
       <v-dialog v-model="alertDialog" width="300">
-        <v-alert style="margin-bottom: 0" type="error" transition="scale-transition">
+        <v-alert
+          style="margin-bottom: 0"
+          type="error"
+          transition="scale-transition"
+        >
           {{ alertMessage }}
         </v-alert>
       </v-dialog>
@@ -130,9 +153,51 @@
       >
         fas fa-edit
       </v-icon>
-      <v-icon small @click="deleteItem(item)" :disabled="!isAdmin('getTypeUser')">
+      <v-icon
+        small
+        @click="deleteItem(item)"
+        :disabled="!isAdmin('getTypeUser')"
+      >
         fas fa-trash-alt
       </v-icon>
+    </template>
+    <template v-slot:expanded-item="{ item, headers }">
+      <td valign="middle" align="center" :colspan="headers.length">
+        <table cellspacing="10">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Fecha de solicitud</th>
+              <th>Fecha de agenda</th>
+              <th>Horario</th>
+              <th>Servicio</th>
+              <th>Id del cliente</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td valign="middle" align="center">
+                {{ item.requestQuotation.id }}
+              </td>
+              <td valign="middle" align="center">
+                {{ item.requestQuotation.request_date }}
+              </td>
+              <td valign="middle" align="center">
+                {{ item.requestQuotation.scheduled_date }}
+              </td>
+              <td valign="middle" align="center">
+                {{ item.requestQuotation.time_range }}
+              </td>
+              <td valign="middle" align="center">
+                {{ item.requestQuotation.service_type }}
+              </td>
+              <td valign="middle" align="center">
+                {{ item.requestQuotation.fkUser_id }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
     </template>
   </v-data-table>
 </template>
@@ -152,8 +217,18 @@ export default {
     valid: false,
     dialog: false,
     dialogDelete: false,
+    expanded: [],
+    singleExpand: false,
     search: "",
-    listStatus: ["CREADA","ASIGNADA","EN REVISIÓN - TÉCNICO","EN REVISIÓN - CLIENTE","ACEPTADA","FINALIZADA","CANCELADA"],
+    listStatus: [
+      "CREADA",
+      "ASIGNADA",
+      "EN REVISIÓN - TÉCNICO",
+      "EN REVISIÓN - CLIENTE",
+      "ACEPTADA",
+      "FINALIZADA",
+      "CANCELADA",
+    ],
     headers: [
       { text: "ID", align: "start", sortable: false, value: "id" },
       { text: "Fecha de aprovación", value: "approved_date" },
@@ -163,6 +238,7 @@ export default {
       { text: "ID Cotización", value: "fkRequestquotation" },
       { text: "Estado", value: "fkTask_status" },
       { text: "Acciones", value: "actions", sortable: false },
+      { text: "", value: "data-table-expand" },
     ],
     tasks: [],
     editedIndex: -1,
@@ -172,6 +248,14 @@ export default {
       realization_date: "",
       fkAssignment_worker: "",
       fkRequestquotation: "",
+      requestQuotation: {
+        id: '',
+        request_date: '',
+        scheduled_date: '',
+        time_range: '',
+        service_type: '',
+        fkUser_id: '',
+      },
       fkTask_status: "",
       type_task: "",
     },
@@ -181,18 +265,26 @@ export default {
       realization_date: "",
       fkAssignment_worker: "",
       fkRequestquotation: "",
+      requestQuotation: {
+        id: '',
+        request_date: '',
+        scheduled_date: '',
+        time_range: '',
+        service_type: '',
+        fkUser_id: '',
+      },
       fkTask_status: "",
       type_task: "",
     },
-    taskType: ["request_quotation", "job_execution"],
+    taskType: ["Solicitud de cotización", "Trabajo en ejecución"],
     rules: {
       required: (value) => !!value || "Este campo no puede estar vacio",
     },
   }),
 
   computed: {
-    isWorker(){
-      return this.$store.getters.retrieveUser.type_user === 3 ? true : false
+    isWorker() {
+      return this.$store.getters.retrieveUser.type_user === 3 ? true : false;
     },
     formTitle() {
       return this.editedIndex === -1 ? "Nueva Tarea" : "Editar Tarea";
@@ -214,12 +306,15 @@ export default {
   created() {
     this.initialize();
   },
-
   methods: {
     isNumber: function (evt) {
       evt = evt ? evt : window.event;
       var charCode = evt.which ? evt.which : evt.keyCode;
-      if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+      if (
+        charCode > 31 &&
+        (charCode < 48 || charCode > 57) &&
+        charCode !== 46
+      ) {
         evt.preventDefault();
       } else {
         return true;
@@ -229,10 +324,46 @@ export default {
       return api
         .getTasks(this.isAdmin("request"))
         .then((response) => {
-          this.tasks = response.data;
+          for (let task of response.data){
+            this.tasks.push({
+              id: task.id,
+              approved_date: task.approved_date,
+              realization_date: task.realization_date,
+              Assignment_worker: task.fkAssignment_worker,
+              fkRequestquotation: task.fkRequestquotation,
+              fkTask_status: task.fkTask_status,
+              type_task: task.type_task,
+              requestQuotation: {
+                id: '',
+                request_date: '',
+                scheduled_date: '',
+                time_range: '',
+                service_type: '',
+                fkUser_id: '',
+              },
+            })
+          }
+          for (let task of this.tasks) {
+            task.fkTask_status = this.listStatus[task.fkTask_status];
+            task.type_task === "request_quotation"
+              ? (task.type_task = "Solicitud de cotización")
+              : (task.type_task = "Trabajo en ejecución");
+            this.assignRequest(task);
+          }
         })
         .catch((error) => {
           console.log(error);
+        });
+    },
+    assignRequest(task) {
+      return api
+        .getQuotationsByIDs(task.fkRequestquotation)
+        .then((response) => {
+          task.requestQuotation = response.data;
+        })
+        .catch((error) => {
+          this.alertDialog = true;
+          this.alertMessage = error;
         });
     },
     editItem(item) {
@@ -282,8 +413,10 @@ export default {
           this.editedTask.realization_date,
           this.editedTask.fkAssignment_worker,
           this.editedTask.fkRequestquotation,
-          this.listStatus.indexOf(this.editedTask.fkTask_status)+1,
-          this.editedTask.type_task
+          this.listStatus.indexOf(this.editedTask.fkTask_status) + 1,
+          this.editedTask.type_task === "Solicitud de cotización"
+            ? "request_quotation"
+            : "job_execution"
         );
         return api.createTask(task).then((response) => {
           if (response.status == 201) {
@@ -296,14 +429,15 @@ export default {
           }
         });
       } else if (this.btnTitle == "Guardar") {
-
         let task = new Task(
           null,
           this.editedTask.realization_date,
           this.editedTask.fkAssignment_worker,
           this.editedTask.fkRequestquotation,
-          this.listStatus.indexOf(this.editedTask.fkTask_status)+1,
-          this.editedTask.type_task
+          this.listStatus.indexOf(this.editedTask.fkTask_status) + 1,
+          this.editedTask.type_task === "Solicitud de cotización"
+            ? "request_quotation"
+            : "job_execution"
         );
         return api.updateTask(task, this.editedTask.id).then((response) => {
           if (response.status == 400) {
@@ -319,7 +453,9 @@ export default {
     isAdmin(forWhat) {
       if (forWhat === "request") {
         if (this.$store.getters.retrieveUser.type_user == 3) {
-          return "task/employee-task/" + this.$store.getters.retrieveUser.id_user;
+          return (
+            "task/employee-task/" + this.$store.getters.retrieveUser.id_user
+          );
         } else {
           return "task/";
         }
