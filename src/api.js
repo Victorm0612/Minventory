@@ -109,6 +109,20 @@ function createRequestQuotation(request_quotation) {
         })
 }
 
+function getQuotationsByIDs(id) {
+    return axios.get('quotation/' + id, {
+            headers: {
+                Authorization: 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch(error => {
+            if (error.response) {
+                return error.response;
+            }
+        })
+}
+
 function getQuotationsByID() {
     return axios.get('quotation/user-quotation/' + store.getters.retrieveUser.id_user, {
             headers: {
@@ -169,6 +183,50 @@ function getTasks(uri) {
             if (error.response) {
                 return error.response;
             }
+        })
+}
+
+function createTask(task) {
+    return axios.post('task/', {
+        realization_date: task.getRealizationDate(),
+        type_task: task.getTypeTask(),
+        fkAssignment_worker: task.getAssignmentWorker(),
+        fkTask_status: task.getFkTaskStatus(),
+        fkRequestquotation: task.getFkRequestQuotation(),
+    }, {
+        headers: {
+            Authorization: 'Token ' + store.getters.retrieveUser.token,
+        }
+    })
+}
+
+function updateTask(task, id) {
+    return axios.put('task/' + id + '/', {
+            realization_date: task.getRealizationDate(),
+            type_task: task.getTypeTask(),
+            fkAssignment_worker: task.getAssignmentWorker(),
+            fkTask_status: task.getFkTaskStatus(),
+            fkRequestquotation: task.getFkRequestQuotation(),
+        }, {
+            headers: {
+                Authorization: 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch(error => {
+            console.log('Error while updating the task: ' + error)
+        })
+}
+
+function deleteTask(id) {
+    return axios.delete('task/' + id, {
+            headers: {
+                Authorization: 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch(error => {
+            console.log(error)
         })
 }
 
@@ -303,9 +361,13 @@ export default {
     createRequestQuotation,
     updateUser,
     getQuotationsByID,
+    getQuotationsByIDs,
     updateQuotationByID,
     deleteQuotationByID,
     getTasks,
+    createTask,
+    updateTask,
+    deleteTask,
     getElement,
     createElement,
     updateElement,
