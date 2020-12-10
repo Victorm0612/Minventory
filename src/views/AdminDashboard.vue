@@ -2,6 +2,7 @@
   <div style="background-color: white;">
     <h1>{{ moduleTitle }}</h1>
     <profile-component v-if="moduleTitle == 'Cuenta'"></profile-component>
+    <request-quotation-component v-if="moduleTitle == 'Cotizaciones'"></request-quotation-component>
     <task-component v-if="moduleTitle == 'Tareas'"></task-component>
     <employees-component v-if="moduleTitle == 'Empleados'"></employees-component>
     <expenses-component v-if="moduleTitle == 'Gastos'"></expenses-component>
@@ -63,6 +64,7 @@ import EmployeesComponent from '@/components/EmployeesComponent.vue';
 import ExpensesComponent from '@/components/ExpensesComponent.vue';
 import BillingComponent from '@/components/BillingComponent.vue';
 import InventoryComponent from '../components/InventoryComponent.vue';
+import RequestQuotationComponent from '@/components/RequestQuotationComponent.vue';
 
 export default {
   name: "AdminDashboard",
@@ -80,6 +82,7 @@ export default {
     ExpensesComponent,
     BillingComponent,
     InventoryComponent,
+    RequestQuotationComponent,
   },
   computed: {
     moduleTitle() {
