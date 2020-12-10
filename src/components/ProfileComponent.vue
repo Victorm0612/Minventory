@@ -18,7 +18,7 @@
                   />
                 </v-avatar>
               </v-flex>
-              <v-btn v-if="editProfile" @click="openAvatarPicker"
+              <v-btn class="text-none" v-if="editProfile" @click="openAvatarPicker"
                 >Cambiar Avatar</v-btn
               >
               <v-row class="justify-center">
@@ -141,9 +141,10 @@
             <v-card-actions class="justify-center">
               <v-container v-if="!editProfile">
                 <v-row class="justify-center">
-                  <v-col cols="12" md="4">
+                  <v-col cols="12" :md="isClient ? 4 : 12">
                     <v-btn
-                      color="primary"
+                      color="black"
+                      class="text-none white--text"
                       :loading="loading"
                       @click="editProfile = true"
                     >
@@ -151,7 +152,8 @@
                     </v-btn>
                   </v-col>
                   <v-col cols="12" md="4">
-                    <v-btn color="primary" to="/client-main">
+                    <v-btn v-if="isClient" color="black"
+                    class="text-none white--text" to="/client-main">
                       Ver mis citas
                     </v-btn>
                   </v-col>
@@ -161,7 +163,8 @@
                 <v-col cols="12" md="4">
                   <v-btn
                     v-if="editProfile"
-                    color="primary"
+                    color="black"
+                    class="text-none white--text"
                     @click="saveChange"
                     :disabled="!valid"
                   >
@@ -169,7 +172,7 @@
                   </v-btn>
                 </v-col>
                 <v-col cols="12" md="4" @click="cancelChanges">
-                  <v-btn v-if="editProfile" color="primary">
+                  <v-btn v-if="editProfile" class="text-none white--text" color="black">
                     Cancelar
                   </v-btn>
                 </v-col>
@@ -239,6 +242,9 @@ export default {
     this.initialData()
   },
   computed: {
+    isClient(){
+      return this.$store.getters.retrieveUser.type_user == 2 ? true : false
+    },
     passwordConfirmationRule() {
       return (
         this.form.password === this.form.confirmPassword ||

@@ -41,8 +41,8 @@
                     </v-text-field>
                     <div class="d-flex">
                       <v-btn
-                        text
-                        color="primary"
+                        outlined
+                        color="black"
                         class="text-none px-2 __btn-login-text"
                         @click="moveToPage('Register')"
                       >
@@ -50,8 +50,8 @@
                       </v-btn>
                       <v-spacer />
                       <v-btn
-                        color="primary"
-                        class="text-none px-2"
+                        color="black"
+                        class="text-none white--text px-2"
                         @click="login"
                       >
                         Iniciar Sesión
@@ -118,7 +118,10 @@ export default {
         }, 3000);
     }
   },
-  methods: {   
+  created() {
+    this.$store.commit('setModuleTitle', 'Login');
+  },
+  methods: {  
     login(){
       this.$store.dispatch('userLogin',{
         email: this.email,

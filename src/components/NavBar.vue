@@ -1,6 +1,9 @@
 <template>
-  <div id="nav-bar" class="mx-auto overflow-hidden ">
-    <v-app-bar color="#0277BD" dark fixed>
+  <div id="nav-bar" class="mx-auto overflow-hidden">
+    <v-app-bar
+    color="dark" 
+    dark 
+    fixed>
       <router-link to="/">
         <img width="90" height="90" alt="Vue logo" :src="require('@/assets/VidrioVargas.png')"/>
       </router-link>
@@ -57,6 +60,7 @@ export default {
     moveToRoute: function(route) {
       if (this.$router.currentRoute.name !== route) {
         this.$router.push({ name: route });
+        this.$store.commit('setModuleTitle','Panel de control')
       } else {
         this.drawer = false;
       }
