@@ -109,6 +109,20 @@ function createRequestQuotation(request_quotation) {
         })
 }
 
+function getQuotations() {
+    return axios.get('quotation/', {
+            headers: {
+                Authorization: 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch(error => {
+            if (error.response) {
+                return error.response;
+            }
+        })
+}
+
 function getQuotationsByIDs(id) {
     return axios.get('quotation/' + id, {
             headers: {
@@ -360,6 +374,7 @@ export default {
     createUser,
     createRequestQuotation,
     updateUser,
+    getQuotations,
     getQuotationsByID,
     getQuotationsByIDs,
     updateQuotationByID,
