@@ -172,6 +172,50 @@ function getTasks(uri) {
         })
 }
 
+function createTask(task) {
+    return axios.post('task/', {
+        realization_date: task.getRealizationDate(),
+        type_task: task.getTypeTask(),
+        fkAssignment_worker: task.getAssignmentWorker(),
+        fkTask_status: task.getFkTaskStatus(),
+        fkRequestquotation: task.getFkRequestQuotation(),
+    }, {
+        headers: {
+            Authorization: 'Token ' + store.getters.retrieveUser.token,
+        }
+    })
+}
+
+function updateTask(task, id) {
+    return axios.put('task/' + id + '/', {
+            realization_date: task.getRealizationDate(),
+            type_task: task.getTypeTask(),
+            fkAssignment_worker: task.getAssignmentWorker(),
+            fkTask_status: task.getFkTaskStatus(),
+            fkRequestquotation: task.getFkRequestQuotation(),
+        }, {
+            headers: {
+                Authorization: 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch(error => {
+            console.log('Error while updating the task: ' + error)
+        })
+}
+
+function deleteTask(id) {
+    return axios.delete('task/' + id, {
+            headers: {
+                Authorization: 'Token ' + store.getters.retrieveUser.token,
+            }
+        })
+        .then(response => response)
+        .catch(error => {
+            console.log(error)
+        })
+}
+
 function getElement() {
     return axios.get('element/', {
             headers: {
@@ -306,6 +350,9 @@ export default {
     updateQuotationByID,
     deleteQuotationByID,
     getTasks,
+    createTask,
+    updateTask,
+    deleteTask,
     getElement,
     createElement,
     updateElement,

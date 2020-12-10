@@ -1,198 +1,203 @@
 <template>
-  <div>
-    <v-data-table
-      :headers="headers"
-      :items="Task"
-      :items-per-page="5"
-      :search="search"
-      :custom-filter="filterOnlyCapsText"
-      :show-select="isAdmin('getTypeUser')"
-      :expanded.sync="expanded"
-      show-expand
-      class="elevation-1"
-    >
-      <template v-slot:top>
+  <v-data-table
+    :headers="headers"
+    :items="tasks"
+    :search="search"
+    sort-by="calories"
+    class="elevation-1"
+  >
+    <template v-slot:top>
+      <v-toolbar flat>
+        <v-toolbar-title>Tareas</v-toolbar-title>
+        <v-divider class="mx-4" inset vertical></v-divider>
+        <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
           append-icon="fas fa-search"
-          label="Buscar tarea"
-          class="mx-4"
+          label="Buscar..."
           single-line
-        >
-        </v-text-field>
-      </template>
-      <template v-slot:[`item.actions`]="{ item }">
-        <v-icon
-          small
-          class="mr-2"
-          @click="editItem(item)"
-          :disabled="!isAdmin('getTypeUser')"
-        >
-          fas fa-edit
-        </v-icon>
-        <v-icon
-          small
-          @click="deleteItem(item)"
-          :disabled="!isAdmin('getTypeUser')"
-        >
-          fas fa-trash-alt
-        </v-icon>
-      </template>
-      <template v-slot:expanded-item="{ headers, item }">
-        <td :colspan="headers.length">
-          Los detalles de la tarea {{ item.id }}
-        </td>
-      </template>
-    </v-data-table>
-    <v-dialog v-model="dialog" max-width="500px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">{{ formTitle }}</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field v-model="editedItem.id" label="ID"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  v-model="editedItem.approved_date"
-                  label="Fecha de aprovación"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  v-model="editedItem.realization_date"
-                  label="Fecha a realizar"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  v-model="editedItem.fkAssignment_worker"
-                  label="ID Trabajador"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  v-model="editedItem.fkElement_id"
-                  label="Elementos asignados"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  v-model="editedItem.fkTask_status"
-                  label="Estado de la tarea"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            color="primary"
-            class="text-none px-2 __btn-login-text"
-            @click="save"
-          >
-            Guardar
-          </v-btn>
-          <v-btn
-            text
-            color="primary"
-            class="text-none px-2 __btn-login-text"
-            @click="close"
-          >
-            Cancelar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="dialogDelete" max-width="500px">
-      <v-card>
-        <v-card-title class="headline"
-          >Are you sure you want to delete this item?</v-card-title
-        >
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-            >OK</v-btn
-          >
-          <v-spacer></v-spacer>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+          hide-details
+        ></v-text-field>
+        <v-spacer></v-spacer>
+        <v-dialog v-model="dialog" max-width="500px">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+              Nueva Tarea
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="headline">{{ formTitle }}</span>
+            </v-card-title>
+
+            <v-card-text>
+              <v-container>
+                <v-form v-model="valid">
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedTask.id"
+                        label="ID"
+                        :disabled="true"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedTask.approved_date"
+                        label="Fecha de aprovación"
+                        :disabled="true"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedTask.realization_date"
+                        label="Fecha a realizar"
+                        :rules="[rules.required]"
+                        :disabled="editedIndex != -1"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedTask.fkAssignment_worker"
+                        label="ID Trabajador"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedTask.fkRequestquotation"
+                        label="ID Cotización"
+                        :disabled="editedIndex != -1"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedTask.fkTask_status"
+                        label="Estado de la tarea"
+                        :rules="[rules.required]"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-select
+                        v-model="editedTask.type_task"
+                        label="Tipo de tarea"
+                        :items="taskType"
+                        :rules="[rules.required]"
+                        :disabled="editedIndex != -1"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="close"> Cancelar </v-btn>
+              <v-btn :disabled="!valid" color="blue darken-1" text @click="save">
+                {{ btnTitle }}
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="dialogDelete" max-width="520px">
+          <v-card>
+            <v-card-title class="headline"
+              >¿Está seguro que desea eliminar el gasto?</v-card-title
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
+              <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+                >Eliminar</v-btn
+              >
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+      <v-dialog v-model="alertDialog" width="300">
+        <v-alert style="margin-bottom: 0" type="error" transition="scale-transition">
+          {{ alertMessage }}
+        </v-alert>
+      </v-dialog>
+    </template>
+    <template v-slot:[`item.actions`]="{ item }">
+      <v-icon
+        small
+        class="mr-2"
+        @click="editItem(item)"
+        :disabled="!isAdmin('getTypeUser')"
+      >
+        fas fa-edit
+      </v-icon>
+      <v-icon small @click="deleteItem(item)" :disabled="!isAdmin('getTypeUser')">
+        fas fa-trash-alt
+      </v-icon>
+    </template>
+  </v-data-table>
 </template>
 
 <script>
 import api from "@/api";
+import Task from "@/classes/task";
+
+String.prototype.capitalize = function () {
+  return this.charAt(0).toUpperCase() + this.slice(1);
+};
 export default {
   name: "TaskComponent",
-  data() {
-    return {
-      search: "",
-      dialog: false,
-      dialogDelete: false,
-      placeClick: false,
-      check: false,
-      expanded: [],
-      editedIndex: -1,
-      editedItem: {
-        id: 0,
-        approved_date: 0,
-        realization_date: 0,
-        fkAssignment_worker: 0,
-        fkElement_id: 0,
-        fkTask_status: 0,
-      },
-      Task: [
-        {
-          id: 4,
-          approved_date: "2020",
-          realization_date: "2020",
-          fkAssignment_worker: "Arianny",
-          fkElement_id: "Taladro",
-          fkTask_status: "APROBADO",
-        },
-        {
-          id: 5,
-          approved_date: "2020",
-          realization_date: "2020",
-          fkAssignment_worker: "Victor",
-          fkElement_id: "Taladro",
-          fkTask_status: "APROBADO",
-        },
-      ],
-      headers: [
-        { text: "#", align: "start", sortable: false, value: "id" },
-        { text: "Fecha de aprovación", value: "approved_date" },
-        { text: "Fecha a realizar", value: "realization_date" },
-        { text: "Trabajador asignado", value: "fkAssignment_worker" },
-        { text: "Elementos x Tarea", value: "fkElement_id" },
-        { text: "Estado actual", value: "fkTask_status" },
-        { text: "Acciones", value: "actions", sortable: false },
-        { text: "", value: "data-table-expand" },
-      ],
-    };
-  },
-  created() {
-    return api
-      .getTasks(this.isAdmin("request"))
-      .then((response) => {
-        this.Task = response.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  },
+  data: () => ({
+    alertDialog: false,
+    alertMessage: "",
+    valid: false,
+    dialog: false,
+    dialogDelete: false,
+    search: "",
+    headers: [
+      { text: "ID", align: "start", sortable: false, value: "id" },
+      { text: "Fecha de aprovación", value: "approved_date" },
+      { text: "Fecha a realizar", value: "realization_date" },
+      { text: "Trabajador asignado", value: "fkAssignment_worker" },
+      { text: "Tipo de tarea", value: "type_task" },
+      { text: "ID Cotización", value: "fkRequestquotation" },
+      { text: "Estado", value: "fkTask_status" },
+      { text: "Acciones", value: "actions", sortable: false },
+    ],
+    tasks: [],
+    editedIndex: -1,
+    editedTask: {
+      id: "",
+      approved_date: "",
+      realization_date: "",
+      fkAssignment_worker: "",
+      fkRequestquotation: "",
+      fkTask_status: "",
+      type_task: "",
+    },
+    defaultTask: {
+      id: "",
+      approved_date: "",
+      realization_date: "",
+      fkAssignment_worker: "",
+      fkRequestquotation: "",
+      fkTask_status: "",
+      type_task: "",
+    },
+    taskType: ["request_quotation", "job_execution"],
+    rules: {
+      required: (value) => !!value || "Este campo no puede estar vacio",
+    },
+  }),
+
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Nueva Tarea" : "Editar Tarea";
     },
+    btnTitle() {
+      return this.editedIndex === -1 ? "Crear" : "Guardar";
+    },
   },
+
   watch: {
     dialog(val) {
       val || this.close();
@@ -201,37 +206,59 @@ export default {
       val || this.closeDelete();
     },
   },
+
+  created() {
+    this.initialize();
+  },
+
   methods: {
-    filterOnlyCapsText(value, search) {
-      return (
-        value != null &&
-        search != null &&
-        typeof value === "string" &&
-        value.toString().toLocaleUpperCase().indexOf(search.toUpperCase()) !==
-          -1
-      );
+    isNumber: function (evt) {
+      evt = evt ? evt : window.event;
+      var charCode = evt.which ? evt.which : evt.keyCode;
+      if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
+    },
+    initialize() {
+      return api
+        .getTasks(this.isAdmin("request"))
+        .then((response) => {
+          this.tasks = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     editItem(item) {
-      this.editedIndex = this.Task.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+      this.editedIndex = this.tasks.indexOf(item);
+      this.editedTask = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      this.editedIndex = this.Task.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+      this.editedIndex = this.tasks.indexOf(item);
+      this.editedTask = Object.assign({}, item);
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      this.Task.splice(this.editedIndex, 1);
-      this.closeDelete();
+      return api.deleteTask(this.editedTask.id).then((response) => {
+        if (response.status == 400 || response.data.status == 500) {
+          this.alertDialog = true;
+          this.alertMessage = response.data.message;
+        } else {
+          this.tasks.splice(this.editedIndex, 1);
+          this.closeDelete();
+        }
+      });
     },
 
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedTask = Object.assign({}, this.defaultTask);
         this.editedIndex = -1;
       });
     },
@@ -239,25 +266,56 @@ export default {
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedTask = Object.assign({}, this.defaultTask);
         this.editedIndex = -1;
       });
     },
 
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.Task[this.editedIndex], this.editedItem);
-      } else {
-        this.Task.push(this.editedItem);
+      if (this.btnTitle == "Crear") {
+        let task = new Task(
+          null,
+          this.editedTask.realization_date,
+          this.editedTask.fkAssignment_worker,
+          this.editedTask.fkRequestquotation,
+          this.editedTask.fkTask_status,
+          this.editedTask.type_task
+        );
+        return api.createTask(task).then((response) => {
+          if (response.status == 201) {
+            this.tasks = [];
+            this.initialize();
+            this.close();
+          } else {
+            this.alertDialog = true;
+            this.alertMessage = response.data;
+          }
+        });
+      } else if (this.btnTitle == "Guardar") {
+
+        let task = new Task(
+          null,
+          this.editedTask.realization_date,
+          this.editedTask.fkAssignment_worker,
+          this.editedTask.fkRequestquotation,
+          this.editedTask.fkTask_status,
+          this.editedTask.type_task
+        );
+        return api.updateTask(task, this.editedTask.id).then((response) => {
+          if (response.status == 400) {
+            this.alertDialog = true;
+            this.alertMessage = response.data;
+          } else {
+            Object.assign(this.tasks[this.editedIndex], this.editedTask);
+            this.close();
+          }
+        });
       }
-      this.close();
     },
     isAdmin(forWhat) {
       if (forWhat === "request") {
         if (this.$store.getters.retrieveUser.type_user == 3) {
-          return (
-            "task/employee-task/" + this.$store.getters.retrieveUser.id_user
-          );
+          return "task/employee-task/" + this.$store.getters.retrieveUser.id_user;
         } else {
           return "task/";
         }
@@ -274,12 +332,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-#title {
-  font-weight: bold;
-}
-#btnsEdit::before {
-  background-color: transparent !important;
-}
-</style>
