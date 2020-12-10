@@ -21,7 +21,7 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+            <v-btn v-if="!isWorker" color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
               Nueva Tarea
             </v-btn>
           </template>
@@ -70,11 +70,11 @@
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field
+                      <v-select
                         v-model="editedTask.fkTask_status"
                         label="Estado de la tarea"
-                        :rules="[rules.required]"
-                      ></v-text-field>
+                        :items="listStatus"
+                      ></v-select>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-select
@@ -153,6 +153,7 @@ export default {
     dialog: false,
     dialogDelete: false,
     search: "",
+    listStatus: ["CREADA","ASIGNADA","EN REVISIÓN - TÉCNICO","EN REVISIÓN - CLIENTE","ACEPTADA","FINALIZADA","CANCELADA"],
     headers: [
       { text: "ID", align: "start", sortable: false, value: "id" },
       { text: "Fecha de aprovación", value: "approved_date" },
@@ -190,6 +191,9 @@ export default {
   }),
 
   computed: {
+    isWorker(){
+      return this.$store.getters.retrieveUser.type_user === 3 ? true : false
+    },
     formTitle() {
       return this.editedIndex === -1 ? "Nueva Tarea" : "Editar Tarea";
     },
@@ -278,7 +282,7 @@ export default {
           this.editedTask.realization_date,
           this.editedTask.fkAssignment_worker,
           this.editedTask.fkRequestquotation,
-          this.editedTask.fkTask_status,
+          this.listStatus.indexOf(this.editedTask.fkTask_status)+1,
           this.editedTask.type_task
         );
         return api.createTask(task).then((response) => {
@@ -298,7 +302,7 @@ export default {
           this.editedTask.realization_date,
           this.editedTask.fkAssignment_worker,
           this.editedTask.fkRequestquotation,
-          this.editedTask.fkTask_status,
+          this.listStatus.indexOf(this.editedTask.fkTask_status)+1,
           this.editedTask.type_task
         );
         return api.updateTask(task, this.editedTask.id).then((response) => {
