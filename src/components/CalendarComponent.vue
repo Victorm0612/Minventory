@@ -143,15 +143,15 @@
         </v-card-text>
         <v-card-actions>
           <v-btn
-            class="right-position"
-            color="primary"
+            class="text-none right-position"
+            color="dark"
             text
             @click="confirmQuotation"
             >{{ confirmBtnTitle }}</v-btn
           >
           <v-btn
-            class="right-position"
-            color="primary"
+            class="text-none right-position"
+            color="dark"
             text
             @click="confirmDialog = false"
             >Cerrar</v-btn
