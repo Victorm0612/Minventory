@@ -100,19 +100,20 @@
           </v-chip-group>
         </v-card-text>
         <v-card-actions>
+          <v-spacer></v-spacer>
           <v-btn
             class="text-none white--text right-position"
-            color="deep-purple"
-            depresed
-            @click="validateData"
-            >Confirmar</v-btn
-          >
-          <v-btn
-            class="text-none white--text right-position"
-            color="deep-purple"
+            color="black"
             depresed
             @click="closeQuotation"
             >Cerrar</v-btn
+          >
+          <v-btn
+            class="text-none white--text right-position"
+            color="black"
+            depresed
+            @click="validateData"
+            >Confirmar</v-btn
           >
         </v-card-actions>
         <v-alert
